@@ -1,4 +1,4 @@
-export type RolUsuario = "estudiante" | "admin";
+export type RolUsuario = "estudiante" | "profesor" | "admin";
 
 export interface UsuarioMemoria {
   id: number;

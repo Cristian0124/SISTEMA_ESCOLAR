@@ -23,7 +23,7 @@ export const autenticar: RequestHandler = (req, res, next) => {
     if (typeof contenido === "string") return rechazar(res, "TOKEN_INVALIDO", "El token no es valido");
 
     const { id, nombre, rol } = contenido;
-    if (typeof id !== "number" || typeof nombre !== "string" || (rol !== "admin" && rol !== "estudiante")) {
+    if (typeof id !== "number" || typeof nombre !== "string" || (rol !== "admin" && rol !== "estudiante" && rol !== "profesor")) {
       return rechazar(res, "TOKEN_INVALIDO", "El token no es valido");
     }
     res.locals.usuario = { id, nombre, rol } satisfies UsuarioAutenticado;

@@ -84,7 +84,7 @@ async function salir() {
       <div class="topbar-controls">
         <div class="top-control profile-control">
           <span>Perfil</span>
-          <span class="profile-value">{{ auth.usuario?.rol === 'admin' ? 'Administrador' : 'Estudiante' }}</span>
+          <span class="profile-value">{{ auth.usuario?.rol === 'admin' ? 'Administrador' : auth.usuario?.rol === 'profesor' ? 'Profesor' : 'Estudiante' }}</span>
         </div>
         <label class="top-control language-control">
           <span>Idioma</span>
