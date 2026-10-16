@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { NODE_ENV } from "../config/env";
 import { cerrarSesion, iniciarSesion, renovarSesion } from "../services/auth.service";
+import { crearUsuario } from "../repositorios/usuarios.repository";
 
 const opcionesCookie = {
 	httpOnly: true,
@@ -47,4 +48,15 @@ export function logout(req: Request, res: Response) {
 	cerrarSesion(req.cookies?.refreshToken);
 	res.clearCookie("refreshToken", opcionesCookie);
 	return res.status(204).end();
+}
+
+export function registrarUsuario(req: Request, res: Response) {
+	const { nombre, correo, password, cedula, fechaNacimiento, fechaIngreso, nacionalidad, genero } = req.body ?? {};
+	if ([nombre, correo, password, cedula, fechaNacimiento, fechaIngreso, nacionalidad, genero].some((valor) => typeof valor !== "string" || !valor.trim())) {
+		return res.status(400).json({ codigo: "DATOS_INVALIDOS", mensaje: "Completa todos los campos requeridos" });
+	}
+	const usuario = crearUsuario({ nombre, correo, password, cedula, fechaNacimiento, fechaIngreso, nacionalidad, genero });
+	if (!usuario) return res.status(409).json({ codigo: "USUARIO_EXISTENTE", mensaje: "El correo o la cédula ya están registrados" });
+	const { password: _password, ...usuarioPublico } = usuario;
+	return res.status(201).json({ usuario: usuarioPublico });
 }

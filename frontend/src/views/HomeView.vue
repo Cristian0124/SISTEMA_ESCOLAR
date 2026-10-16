@@ -38,17 +38,22 @@ const gruposMenu = [
       { texto: 'Horario del estudiante', icono: '▤', ruta: '/schedule' },
     ],
   },
+  {
+    titulo: 'Administración',
+    opciones: [
+      { texto: 'Registrar usuario', icono: '+', ruta: '/admin/usuarios/nuevo', soloAdmin: true },
+    ],
+  },
 ]
 
 const gruposVisibles = computed(() => {
   const termino = busqueda.value.trim().toLocaleLowerCase()
-  if (!termino) return gruposMenu
-
   return gruposMenu
     .map((grupo) => ({
       ...grupo,
       opciones: grupo.opciones.filter((opcion) =>
-        opcion.texto.toLocaleLowerCase().includes(termino),
+        (!('soloAdmin' in opcion) || auth.usuario?.rol === 'admin') &&
+        (!termino || opcion.texto.toLocaleLowerCase().includes(termino)),
       ),
     }))
     .filter((grupo) => grupo.opciones.length > 0)
