@@ -8,7 +8,6 @@ export function login(datos: LoginRequest) {
 export function refresh() {
   return api.post<LoginResponse>('/auth/refresh')
 }
-
 export function logout() {
   return api.post('/auth/logout')
 }
