@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 
 const auth = useAuthStore()
+const router = useRouter()
 const correo = ref('')
 const password = ref('')
 
@@ -12,11 +14,10 @@ async function iniciarSesion() {
     password: password.value,
   })
 
-  if (inicioCorrecto) password.value = ''
-}
-
-async function cerrarSesion() {
-  await auth.cerrarSesion()
+  if (inicioCorrecto) {
+    password.value = ''
+    await router.push({ name: 'home' })
+  }
 }
 </script>
 
@@ -45,29 +46,11 @@ async function cerrarSesion() {
 
     <section class="form-panel">
       <div class="form-content">
-        <template v-if="auth.autenticado && auth.usuario">
-          <div class="success-mark" aria-hidden="true">✓</div>
-          <p class="eyebrow form-eyebrow">CONEXIÓN ESTABLECIDA</p>
-          <h2>Bienvenido, {{ auth.usuario.nombre }}.</h2>
-          <p class="form-description">
-            Iniciaste sesión como {{ auth.usuario.rol === 'admin' ? 'administrador' : 'estudiante' }}.
-          </p>
-          <div class="session-summary">
-            <span class="session-dot" aria-hidden="true"></span>
-            <span>Sesión activa</span>
-            <strong>{{ auth.usuario.rol }}</strong>
-          </div>
-          <button class="submit-button secondary-button" type="button" @click="cerrarSesion">
-            Cerrar sesión
-          </button>
-        </template>
+        <p class="eyebrow form-eyebrow">PORTAL ACADÉMICO</p>
+        <h2>Iniciar sesión</h2>
+        <p class="form-description">Ingresa con tu cuenta institucional para continuar.</p>
 
-        <template v-else>
-          <p class="eyebrow form-eyebrow">PORTAL ACADÉMICO</p>
-          <h2>Iniciar sesión</h2>
-          <p class="form-description">Ingresa con tu cuenta institucional para continuar.</p>
-
-          <form class="login-form" @submit.prevent="iniciarSesion">
+        <form class="login-form" @submit.prevent="iniciarSesion">
             <label for="correo">Correo institucional</label>
             <input
               id="correo"
@@ -99,10 +82,9 @@ async function cerrarSesion() {
               <span>{{ auth.cargando ? 'Verificando acceso…' : 'Entrar al portal' }}</span>
               <span class="button-arrow" aria-hidden="true">→</span>
             </button>
-          </form>
+        </form>
 
-          <p class="form-footnote">Acceso seguro al Sistema Escolar</p>
-        </template>
+        <p class="form-footnote">Acceso seguro al Sistema Escolar</p>
       </div>
       <footer class="page-footer">
         <span>© 2026 Sistema Escolar</span>

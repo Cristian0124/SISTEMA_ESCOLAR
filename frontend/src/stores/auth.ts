@@ -40,11 +40,8 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function cerrarSesion() {
-    try {
-      await authService.logout()
-    } finally {
-      limpiarSesion()
-    }
+    void authService.logout().catch(() => undefined)
+    limpiarSesion()
   }
 
   function limpiarSesion() {
