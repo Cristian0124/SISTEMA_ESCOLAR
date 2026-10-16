@@ -16,7 +16,7 @@ async function iniciarSesion() {
 
   if (inicioCorrecto) {
     password.value = ''
-    await router.push({ name: 'home' })
+    await router.push({ name: auth.usuario?.rol === 'admin' ? 'admin-home' : 'home' })
   }
 }
 </script>
