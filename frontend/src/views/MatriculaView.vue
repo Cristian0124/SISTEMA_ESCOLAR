@@ -3,8 +3,10 @@ import { computed, onMounted, ref } from 'vue'
 import { isAxiosError } from 'axios'
 import api from '@/api/axios'
 import CourseCard from '@/components/CourseCard.vue'
+import CourseFilters, { type CourseFilters as CourseFiltersState } from '@/components/CourseFilters.vue'
 import { useCoursesStore } from '@/stores/courses.store'
 const store = useCoursesStore()
+const filtrosCursos = ref<CourseFiltersState>({ busqueda: '', semestre: '', disponibilidad: 'todos' })
 const seleccion = ref<number[]>([])
 const confirmando = ref(false)
 const enviando = ref(false)
@@ -45,12 +47,20 @@ async function matricular() {
     <p v-if="store.cargando" role="status">Cargando oferta académica…</p>
     <div v-else-if="store.error" class="notice error" role="alert">{{ store.error }} <button :disabled="enviando" @click="store.cargarCursos">Reintentar</button></div>
     <p v-else-if="!store.cursos.length">No hay cursos publicados.</p>
-    <div v-else class="grid">
-      <div v-for="curso in store.cursos" :key="curso.id" class="choice">
-        <CourseCard :curso="curso" />
-        <label><input v-model="seleccion" type="checkbox" :value="curso.id" :disabled="enviando || confirmando || curso.cuposDisponibles <= 0" />{{ curso.cuposDisponibles > 0 ? `Seleccionar ${curso.nombre}` : 'Sin cupos disponibles' }}</label>
+    <CourseFilters
+      v-else
+      v-model="filtrosCursos"
+      :cursos="store.cursos"
+      v-slot="{ cursos: cursosFiltrados }"
+    >
+      <div v-if="cursosFiltrados.length" class="grid">
+        <div v-for="curso in cursosFiltrados" :key="curso.id" class="choice">
+          <CourseCard :curso="curso" />
+          <label><input v-model="seleccion" type="checkbox" :value="curso.id" :disabled="enviando || confirmando || curso.cuposDisponibles <= 0" />{{ curso.cuposDisponibles > 0 ? `Seleccionar ${curso.nombre}` : 'Sin cupos disponibles' }}</label>
+        </div>
       </div>
-    </div>
+      <div v-else class="notice">No encontramos cursos con ese nombre o esos filtros.</div>
+    </CourseFilters>
     <section class="summary" aria-label="Resumen de matrícula">
       <h2>Resumen de matrícula</h2>
       <p v-if="!seleccionados.length">Todavía no has seleccionado cursos.</p>

@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import CourseCard from '@/components/CourseCard.vue'
+import CourseFilters, { type CourseFilters as CourseFiltersState } from '@/components/CourseFilters.vue'
 import { useCoursesStore } from '@/stores/courses.store'
 
 const store = useCoursesStore()
 const busqueda = ref('')
+const filtrosCursos = ref<CourseFiltersState>({ busqueda: '', semestre: '', disponibilidad: 'todos' })
 const vista = ref<'pensum' | 'oferta'>('pensum')
 const semestreActivo = ref('I')
 
@@ -119,16 +121,6 @@ const materiasFiltradas = computed(() => {
   return semestreSeleccionado.value.materias.filter((materia) => materia.nombre.toLocaleLowerCase().includes(termino))
 })
 
-const cursosFiltrados = computed(() => {
-  const termino = busqueda.value.trim().toLocaleLowerCase()
-  if (!termino) return store.cursos
-
-  return store.cursos.filter((curso) =>
-    [curso.codigo, curso.nombre, curso.docente, curso.horario]
-      .some((campo) => campo.toLocaleLowerCase().includes(termino)),
-  )
-})
-
 function limpiarFiltros() {
   busqueda.value = ''
 }
@@ -225,16 +217,6 @@ async function mostrarOferta() {
     </section>
 
     <section v-else class="catalog-content" aria-label="Cursos disponibles">
-      <div class="toolbar">
-        <label class="search-field">
-          <span class="search-icon" aria-hidden="true">⌕</span>
-          <span class="visually-hidden">Buscar cursos ofertados</span>
-          <input v-model="busqueda" type="search" placeholder="Buscar por código, nombre o docente" />
-          <button v-if="busqueda" class="clear-search" type="button" aria-label="Limpiar búsqueda" @click="busqueda = ''">×</button>
-        </label>
-        <p class="toolbar-hint">{{ store.cursos.length }} cursos en oferta</p>
-      </div>
-
       <div v-if="store.cargando" class="empty-state" role="status">
         <span class="loader" aria-hidden="true"></span>
         <strong>Cargando cursos</strong>
@@ -252,15 +234,20 @@ async function mostrarOferta() {
         <span>La oferta del periodo aparecerá aquí cuando esté publicada.</span>
       </div>
 
-      <div v-else-if="cursosFiltrados.length === 0" class="empty-state">
-        <strong>No encontramos coincidencias</strong>
-        <span>Prueba con otro código, nombre o docente.</span>
-        <button class="retry-button" type="button" @click="limpiarFiltros">Limpiar filtros</button>
-      </div>
-
-      <div v-else class="course-grid" aria-live="polite">
-        <CourseCard v-for="curso in cursosFiltrados" :key="curso.id" :curso="curso" />
-      </div>
+      <CourseFilters
+        v-else
+        v-model="filtrosCursos"
+        :cursos="store.cursos"
+        v-slot="{ cursos: cursosFiltrados }"
+      >
+        <div v-if="cursosFiltrados.length" class="course-grid" aria-live="polite">
+          <CourseCard v-for="curso in cursosFiltrados" :key="curso.id" :curso="curso" />
+        </div>
+        <div v-else class="empty-state">
+          <strong>No encontramos cursos</strong>
+          <span>Prueba con otro nombre o cambia los filtros.</span>
+        </div>
+      </CourseFilters>
     </section>
   </main>
 </template>
