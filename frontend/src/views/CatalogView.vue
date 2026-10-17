@@ -133,6 +133,7 @@ async function mostrarOferta() {
 
 <template>
   <main class="catalog-page">
+    <RouterLink class="back-link" to="/inicio">← Volver al inicio</RouterLink>
     <header class="page-heading">
       <div>
         <p class="eyebrow">Catálogo académico</p>
@@ -263,6 +264,9 @@ async function mostrarOferta() {
   padding: clamp(24px, 4vw, 48px);
   color: var(--ink);
 }
+
+.back-link { display: inline-block; margin-bottom: 18px; color: #176d85; font-size: 13px; text-decoration: none; }
+.back-link:hover { text-decoration: underline; }
 
 .page-heading {
   display: flex;
