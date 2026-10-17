@@ -5,125 +5,12 @@ import { useCoursesStore } from '@/stores/courses.store'
 
 const store = useCoursesStore()
 const busqueda = ref('')
-const vista = ref<'pensum' | 'oferta'>('pensum')
-const semestreActivo = ref('I')
-
-const pensum = [
-  {
-    id: 'I',
-    materias: [
-      { nombre: 'Matemáticas fundamentales', creditos: 3 },
-      { nombre: 'Introducción a la ingeniería', creditos: 3 },
-      { nombre: 'Pensamiento sistémico', creditos: 3 },
-      { nombre: 'Matemáticas discretas', creditos: 3 },
-      { nombre: 'Algoritmos y programación I', creditos: 3 },
-    ],
-  },
-  {
-    id: 'II',
-    materias: [
-      { nombre: 'Cálculo I', creditos: 3 },
-      { nombre: 'Física y laboratorio I', creditos: 4 },
-      { nombre: 'Algoritmos y programación I', creditos: 3 },
-      { nombre: 'Álgebra lineal', creditos: 3 },
-      { nombre: 'Estadística y probabilidad', creditos: 3 },
-    ],
-  },
-  {
-    id: 'III',
-    materias: [
-      { nombre: 'Inglés I', creditos: 3 },
-      { nombre: 'Cálculo II', creditos: 3 },
-      { nombre: 'Física y laboratorio II', creditos: 4 },
-      { nombre: 'Fundamentos de sistemas de información', creditos: 3 },
-      { nombre: 'Estructura de datos', creditos: 3 },
-    ],
-  },
-  {
-    id: 'IV',
-    materias: [
-      { nombre: 'Inglés II', creditos: 3 },
-      { nombre: 'Ecuaciones diferenciales', creditos: 3 },
-      { nombre: 'Proyecto integrador básico', creditos: 3 },
-      { nombre: 'Bases de datos', creditos: 3 },
-      { nombre: 'Análisis de algoritmos', creditos: 3 },
-    ],
-  },
-  {
-    id: 'V',
-    materias: [
-      { nombre: 'Inglés III', creditos: 3 },
-      { nombre: 'Electiva de área I', creditos: 3 },
-      { nombre: 'Autómatas y lenguajes formales', creditos: 3 },
-      { nombre: 'Ingeniería de software I', creditos: 3 },
-      { nombre: 'Arquitectura de tecnología informática', creditos: 3 },
-    ],
-  },
-  {
-    id: 'VI',
-    materias: [
-      { nombre: 'Inglés IV', creditos: 3 },
-      { nombre: 'Razonamiento cuantitativo', creditos: 3 },
-      { nombre: 'Constitución política', creditos: 2 },
-      { nombre: 'Redes y comunicaciones', creditos: 3 },
-      { nombre: 'Ingeniería de software II', creditos: 3 },
-      { nombre: 'Arquitectura de computadores', creditos: 3 },
-    ],
-  },
-  {
-    id: 'VII',
-    materias: [
-      { nombre: 'Lenguajes de programación', creditos: 3 },
-      { nombre: 'Sistemas operativos', creditos: 3 },
-      { nombre: 'Inteligencia artificial', creditos: 3 },
-      { nombre: 'Redes inalámbricas', creditos: 3 },
-      { nombre: 'Arquitectura de software', creditos: 3 },
-      { nombre: 'Gestión de proyectos de TI', creditos: 3 },
-    ],
-  },
-  {
-    id: 'VIII',
-    materias: [
-      { nombre: 'Proyecto integrador profesional', creditos: 3 },
-      { nombre: 'Investigación de operaciones', creditos: 3 },
-      { nombre: 'Computación móvil', creditos: 3 },
-      { nombre: 'Programación orientada a la web', creditos: 3 },
-      { nombre: 'Gobierno y servicios de TI', creditos: 3 },
-    ],
-  },
-  {
-    id: 'IX',
-    materias: [
-      { nombre: 'Electiva de profundización I', creditos: 3 },
-      { nombre: 'Electiva de profundización II', creditos: 3 },
-      { nombre: 'Seguridad en redes', creditos: 3 },
-      { nombre: 'Electiva de profundización III', creditos: 3 },
-      { nombre: 'Arquitectura empresarial', creditos: 3 },
-    ],
-  },
-  {
-    id: 'X',
-    materias: [
-      { nombre: 'Electiva de profundización IV', creditos: 3 },
-      { nombre: 'Electiva de profundización V', creditos: 3 },
-      { nombre: 'Electiva de profundización VI', creditos: 3 },
-      { nombre: 'Proyecto integrador de grado', creditos: 3 },
-    ],
-  },
-]
-
-const semestreSeleccionado = computed(() => pensum.find((semestre) => semestre.id === semestreActivo.value) ?? pensum[0])
-const materiasFiltradas = computed(() => {
-  const termino = busqueda.value.trim().toLocaleLowerCase()
-  if (!termino) return semestreSeleccionado.value.materias
-  return semestreSeleccionado.value.materias.filter((materia) => materia.nombre.toLocaleLowerCase().includes(termino))
-})
 
 const cursosFiltrados = computed(() => {
   const termino = busqueda.value.trim().toLocaleLowerCase()
-  if (!termino) return store.cursos
+  if (!termino) return cursosBase.value
 
-  return store.cursos.filter((curso) =>
+  return cursosBase.value.filter((curso) =>
     [curso.codigo, curso.nombre, curso.docente, curso.horario]
       .some((campo) => campo.toLocaleLowerCase().includes(termino)),
   )
@@ -149,78 +36,7 @@ async function mostrarOferta() {
       </div>
     </header>
 
-    <section class="program-facts" aria-label="Datos del programa">
-      <div><span>Duración</span><strong>10 semestres</strong></div>
-      <div><span>Modalidad</span><strong>Presencial</strong></div>
-    </section>
-
-    <nav class="catalog-tabs" aria-label="Vistas del catálogo">
-      <button
-        type="button"
-        :aria-pressed="vista === 'pensum'"
-        :class="{ 'tab-active': vista === 'pensum' }"
-        @click="vista = 'pensum'"
-      >Plan de estudios</button>
-      <button
-        type="button"
-        :aria-pressed="vista === 'oferta'"
-        :class="{ 'tab-active': vista === 'oferta' }"
-        @click="mostrarOferta"
-      >Oferta vigente</button>
-    </nav>
-
-    <section v-if="vista === 'pensum'" class="curriculum" aria-label="Pensum de Ingeniería de Sistemas">
-      <div class="semester-picker" aria-label="Seleccionar semestre">
-        <button
-          v-for="(semestre, indice) in pensum"
-          :key="semestre.id"
-          type="button"
-          :aria-pressed="semestreActivo === semestre.id"
-          :class="{ 'semester-active': semestreActivo === semestre.id }"
-          @click="semestreActivo = semestre.id"
-        >
-          <span>{{ String(indice + 1).padStart(2, '0') }}</span>
-          <strong>{{ semestre.id }}</strong>
-        </button>
-      </div>
-
-      <div class="curriculum-heading">
-        <div>
-          <p class="eyebrow">Ruta académica</p>
-          <h2>Semestre {{ semestreSeleccionado.id }}</h2>
-        </div>
-        <span class="subject-count">{{ semestreSeleccionado.materias.length }} asignaturas</span>
-      </div>
-
-      <div class="toolbar curriculum-toolbar">
-        <label class="search-field">
-          <span class="search-icon" aria-hidden="true">⌕</span>
-          <span class="visually-hidden">Buscar asignatura en el semestre</span>
-          <input v-model="busqueda" type="search" placeholder="Buscar asignatura en este semestre" />
-          <button v-if="busqueda" class="clear-search" type="button" aria-label="Limpiar búsqueda" @click="busqueda = ''">×</button>
-        </label>
-        <p class="toolbar-hint">Asignaturas organizadas por semestre</p>
-      </div>
-
-      <div v-if="materiasFiltradas.length" class="subject-list" aria-live="polite">
-        <div class="subject-list-header" aria-hidden="true">
-          <span>#</span><span>Asignatura</span><span>Créditos</span>
-        </div>
-        <div v-for="(materia, indice) in materiasFiltradas" :key="materia.nombre" class="subject-row">
-          <span class="subject-index">{{ String(indice + 1).padStart(2, '0') }}</span>
-          <strong>{{ materia.nombre }}</strong>
-          <span class="credit-value">{{ materia.creditos }} <small>cr.</small></span>
-        </div>
-      </div>
-      <div v-else class="empty-state">
-        <strong>No encontramos asignaturas</strong>
-        <span>Prueba con otro término o cambia de semestre.</span>
-        <button class="retry-button" type="button" @click="busqueda = ''">Limpiar búsqueda</button>
-      </div>
-      <p class="source-note">Malla curricular organizada en 10 semestres.</p>
-    </section>
-
-    <section v-else class="catalog-content" aria-label="Cursos ofertados">
+    <section class="catalog-content" aria-label="Cursos disponibles">
       <div class="toolbar">
         <label class="search-field">
           <span class="search-icon" aria-hidden="true">⌕</span>
@@ -228,7 +44,7 @@ async function mostrarOferta() {
           <input v-model="busqueda" type="search" placeholder="Buscar por código, nombre o docente" />
           <button v-if="busqueda" class="clear-search" type="button" aria-label="Limpiar búsqueda" @click="busqueda = ''">×</button>
         </label>
-        <p class="toolbar-hint">{{ cursosFiltrados.length }} {{ cursosFiltrados.length === 1 ? 'curso' : 'cursos' }}</p>
+        <p class="toolbar-hint">{{ store.cursos.length }} cursos en la oferta</p>
       </div>
 
       <div v-if="store.cargando" class="empty-state" role="status">
@@ -251,7 +67,7 @@ async function mostrarOferta() {
       <div v-else-if="cursosFiltrados.length === 0" class="empty-state">
         <strong>No encontramos coincidencias</strong>
         <span>Prueba con otro código, nombre o docente.</span>
-        <button class="retry-button" type="button" @click="busqueda = ''">Limpiar búsqueda</button>
+        <button class="retry-button" type="button" @click="limpiarFiltros">Limpiar filtros</button>
       </div>
 
       <div v-else class="course-grid" aria-live="polite">
@@ -336,6 +152,7 @@ h1 {
 }
 
 .toolbar {
+  flex-wrap: wrap;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -639,4 +456,7 @@ h1 {
     padding-left: 2px;
   }
 }
+.academic-nav { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 20px; }
+.academic-nav a { color: #176d85; }
+select { padding: 8px; border: 1px solid #d5dfdf; border-radius: 6px; background: white; }
 </style>

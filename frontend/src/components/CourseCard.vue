@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import type { Curso } from '@/api/courses.api'
 
-defineProps<{ curso: Curso }>()
+// Los créditos son opcionales hasta que el backend publique este dato.
+defineProps<{ curso: Curso & { creditos?: number } }>()
 </script>
 
 <template>
@@ -18,6 +19,8 @@ defineProps<{ curso: Curso }>()
     </header>
 
     <dl class="course-details">
+      <div class="detail-row"><dt>Créditos</dt><dd>{{ curso.creditos ?? 'No informados' }}</dd></div>
+      <div class="detail-row"><dt>Estado</dt><dd>{{ curso.cuposDisponibles > 0 ? 'Disponible' : 'Sin cupos' }}</dd></div>
       <div class="detail-row">
         <dt><span aria-hidden="true">◉</span> Docente</dt>
         <dd>{{ curso.docente }}</dd>
