@@ -6,6 +6,7 @@ import {
 	buscarUsuarioPorCorreo,
 	buscarUsuarioPorId,
 	crearEstudiante,
+	crearUsuarioAdministrado,
 	type NuevoEstudiante,
 	type RolUsuario,
 	type UsuarioAuth
@@ -54,6 +55,15 @@ export async function registrarEstudiante(datos: NuevoEstudiante): Promise<Usuar
  const { password, ...datosUsuario } = datos;
  const passwordHash = await bcrypt.hash(password, 12);
  return crearEstudiante(datosUsuario, passwordHash);
+}
+
+export async function registrarUsuarioAdmin(
+	datos: NuevoEstudiante,
+	rol: "estudiante" | "profesor"
+): Promise<UsuarioAuth | null> {
+	const { password, ...datosUsuario } = datos;
+	const passwordHash = await bcrypt.hash(password, 12);
+	return crearUsuarioAdministrado(datosUsuario, passwordHash, rol);
 }
 
 export async function renovarSesion(refreshToken: unknown): Promise<Sesion | null> {

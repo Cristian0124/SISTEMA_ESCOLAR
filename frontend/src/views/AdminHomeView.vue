@@ -17,6 +17,12 @@ const iniciales = computed(() =>
 
 const modulos = [
   {
+    titulo: 'Registrar usuarios',
+    descripcion: 'Crea cuentas de estudiantes y profesores con sus datos personales y acceso al sistema.',
+    icono: '+',
+    ruta: '/admin/usuarios/nuevo',
+  },
+  {
     titulo: 'Catálogo de cursos',
     descripcion: 'Consulta la oferta académica y los cursos disponibles.',
     icono: '▦',
@@ -80,6 +86,9 @@ async function salir() {
         <nav class="admin-nav">
           <RouterLink class="nav-link active-link" to="/admin/home">
             <span aria-hidden="true">⌂</span> Resumen
+          </RouterLink>
+          <RouterLink class="nav-link" to="/admin/usuarios/nuevo">
+            <span aria-hidden="true">+</span> Registrar usuarios
           </RouterLink>
           <RouterLink class="nav-link" to="/catalog">
             <span aria-hidden="true">▦</span> Catálogo de cursos
