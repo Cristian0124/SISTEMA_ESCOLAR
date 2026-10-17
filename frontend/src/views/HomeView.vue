@@ -141,7 +141,16 @@ async function salir() {
 
       <main class="main-area">
         <div class="view-tab"><span class="home-icon" aria-hidden="true">⌂</span>Inicio</div>
-        <section class="welcome-canvas" aria-label="Inicio del sistema académico"></section>
+        <section class="welcome-canvas" aria-label="Inicio del sistema académico">
+          <div class="welcome-content">
+            <p class="welcome-eyebrow">PORTAL ACADÉMICO</p>
+            <h1>Bienvenido, {{ auth.usuario?.nombre ?? 'Estudiante' }}</h1>
+            <p class="welcome-description">
+              Desde aquí puedes consultar la oferta académica y acceder a los procesos de tu perfil.
+            </p>
+            <RouterLink class="catalog-link" to="/catalog">Consultar cursos <span aria-hidden="true">→</span></RouterLink>
+          </div>
+        </section>
       </main>
     </div>
 
@@ -430,41 +439,58 @@ async function salir() {
 }
 
 .welcome-canvas {
-  display: grid;
+  display: flex;
+  align-items: flex-start;
   min-height: 300px;
-  place-items: center;
-  padding: 30px;
+  padding: clamp(24px, 5vw, 56px);
   background: #fff;
 }
 
-.university-watermark {
+.welcome-content {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  max-width: 620px;
+}
+
+.welcome-eyebrow {
+  margin: 0 0 12px;
+  color: #1685a2;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.welcome-content h1 {
+  margin: 0;
+  color: #243a3c;
+  font-size: clamp(24px, 4vw, 34px);
+}
+
+.welcome-description {
+  max-width: 480px;
+  margin: 12px 0 22px;
+  color: #718083;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.catalog-link {
+  display: inline-flex;
   align-items: center;
-  width: 240px;
-  padding: 22px 18px 18px;
-  border-radius: 0 0 30px 30px;
-  color: rgba(255, 255, 255, 0.92);
-  background: #dfe8ef;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 23px;
-  line-height: 1.05;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 4px;
+  color: #fff;
+  background: #176d85;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
 }
 
-.watermark-acronym {
-  font-size: 76px;
-  line-height: 0.98;
-}
-
-.watermark-rule {
-  width: 100%;
-  height: 1px;
-  margin: 5px 0 7px;
-  background: rgba(255, 255, 255, 0.9);
-}
-
-.watermark-last-line {
-  font-size: 20px;
+.catalog-link:hover {
+  background: #12586d;
 }
 
 .statusbar {
