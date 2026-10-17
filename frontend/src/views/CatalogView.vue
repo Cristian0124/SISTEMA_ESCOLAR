@@ -1,134 +1,54 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import CourseCard from '@/components/CourseCard.vue'
 import CourseFilters, { type CourseFilters as CourseFiltersState } from '@/components/CourseFilters.vue'
+import { consultarAvancePensum, type MateriaAvance } from '@/api/pensum.api'
 import { useCoursesStore } from '@/stores/courses.store'
 
 const store = useCoursesStore()
 const busqueda = ref('')
 const filtrosCursos = ref<CourseFiltersState>({ busqueda: '', semestre: '', disponibilidad: 'todos' })
 const vista = ref<'pensum' | 'oferta'>('pensum')
-const semestreActivo = ref('I')
+const semestreActivo = ref(1)
+const semestresRomanos = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X']
+const materiasPensum = ref<MateriaAvance[]>([])
+const cargandoPensum = ref(false)
+const errorPensum = ref<string | null>(null)
 
-const pensum = [
-  {
-    id: 'I',
-    materias: [
-      { nombre: 'Matemáticas fundamentales', creditos: 3 },
-      { nombre: 'Introducción a la ingeniería', creditos: 3 },
-      { nombre: 'Pensamiento sistémico', creditos: 3 },
-      { nombre: 'Matemáticas discretas', creditos: 3 },
-      { nombre: 'Algoritmos y programación I', creditos: 3 },
-    ],
-  },
-  {
-    id: 'II',
-    materias: [
-      { nombre: 'Cálculo I', creditos: 3 },
-      { nombre: 'Física y laboratorio I', creditos: 4 },
-      { nombre: 'Algoritmos y programación I', creditos: 3 },
-      { nombre: 'Álgebra lineal', creditos: 3 },
-      { nombre: 'Estadística y probabilidad', creditos: 3 },
-    ],
-  },
-  {
-    id: 'III',
-    materias: [
-      { nombre: 'Inglés I', creditos: 3 },
-      { nombre: 'Cálculo II', creditos: 3 },
-      { nombre: 'Física y laboratorio II', creditos: 4 },
-      { nombre: 'Fundamentos de sistemas de información', creditos: 3 },
-      { nombre: 'Estructura de datos', creditos: 3 },
-    ],
-  },
-  {
-    id: 'IV',
-    materias: [
-      { nombre: 'Inglés II', creditos: 3 },
-      { nombre: 'Ecuaciones diferenciales', creditos: 3 },
-      { nombre: 'Proyecto integrador básico', creditos: 3 },
-      { nombre: 'Bases de datos', creditos: 3 },
-      { nombre: 'Análisis de algoritmos', creditos: 3 },
-    ],
-  },
-  {
-    id: 'V',
-    materias: [
-      { nombre: 'Inglés III', creditos: 3 },
-      { nombre: 'Electiva de área I', creditos: 3 },
-      { nombre: 'Autómatas y lenguajes formales', creditos: 3 },
-      { nombre: 'Ingeniería de software I', creditos: 3 },
-      { nombre: 'Arquitectura de tecnología informática', creditos: 3 },
-    ],
-  },
-  {
-    id: 'VI',
-    materias: [
-      { nombre: 'Inglés IV', creditos: 3 },
-      { nombre: 'Razonamiento cuantitativo', creditos: 3 },
-      { nombre: 'Constitución política', creditos: 2 },
-      { nombre: 'Redes y comunicaciones', creditos: 3 },
-      { nombre: 'Ingeniería de software II', creditos: 3 },
-      { nombre: 'Arquitectura de computadores', creditos: 3 },
-    ],
-  },
-  {
-    id: 'VII',
-    materias: [
-      { nombre: 'Lenguajes de programación', creditos: 3 },
-      { nombre: 'Sistemas operativos', creditos: 3 },
-      { nombre: 'Inteligencia artificial', creditos: 3 },
-      { nombre: 'Redes inalámbricas', creditos: 3 },
-      { nombre: 'Arquitectura de software', creditos: 3 },
-      { nombre: 'Gestión de proyectos de TI', creditos: 3 },
-    ],
-  },
-  {
-    id: 'VIII',
-    materias: [
-      { nombre: 'Proyecto integrador profesional', creditos: 3 },
-      { nombre: 'Investigación de operaciones', creditos: 3 },
-      { nombre: 'Computación móvil', creditos: 3 },
-      { nombre: 'Programación orientada a la web', creditos: 3 },
-      { nombre: 'Gobierno y servicios de TI', creditos: 3 },
-    ],
-  },
-  {
-    id: 'IX',
-    materias: [
-      { nombre: 'Electiva de profundización I', creditos: 3 },
-      { nombre: 'Electiva de profundización II', creditos: 3 },
-      { nombre: 'Seguridad en redes', creditos: 3 },
-      { nombre: 'Electiva de profundización III', creditos: 3 },
-      { nombre: 'Arquitectura empresarial', creditos: 3 },
-    ],
-  },
-  {
-    id: 'X',
-    materias: [
-      { nombre: 'Electiva de profundización IV', creditos: 3 },
-      { nombre: 'Electiva de profundización V', creditos: 3 },
-      { nombre: 'Electiva de profundización VI', creditos: 3 },
-      { nombre: 'Proyecto integrador de grado', creditos: 3 },
-    ],
-  },
-]
-
-const semestreSeleccionado = computed(() => pensum.find((semestre) => semestre.id === semestreActivo.value) ?? pensum[0])
+const semestres = computed(() => [...new Set(materiasPensum.value.map((materia) => materia.semestre))])
+const semestreSeleccionado = computed(() => materiasPensum.value.filter((materia) => materia.semestre === semestreActivo.value))
 const materiasFiltradas = computed(() => {
   const termino = busqueda.value.trim().toLocaleLowerCase()
-  if (!termino) return semestreSeleccionado.value.materias
-  return semestreSeleccionado.value.materias.filter((materia) => materia.nombre.toLocaleLowerCase().includes(termino))
+  if (!termino) return semestreSeleccionado.value
+  return semestreSeleccionado.value.filter((materia) =>
+    [materia.codigo, materia.nombre, ...materia.prerrequisitos, ...materia.requisitosPendientes]
+      .some((campo) => campo.toLocaleLowerCase().includes(termino)),
+  )
 })
 
 function limpiarFiltros() {
   busqueda.value = ''
 }
 
+async function cargarPensum() {
+  cargandoPensum.value = true
+  errorPensum.value = null
+  try {
+    materiasPensum.value = await consultarAvancePensum()
+    if (!semestres.value.includes(semestreActivo.value)) semestreActivo.value = semestres.value[0] ?? 1
+  } catch {
+    errorPensum.value = 'No fue posible consultar tus materias aprobadas y sus prerrequisitos.'
+  } finally {
+    cargandoPensum.value = false
+  }
+}
+
 async function mostrarOferta() {
   vista.value = 'oferta'
   if (!store.hayCursos && !store.cargando) await store.cargarCursos()
 }
+
+onMounted(() => void cargarPensum())
 </script>
 
 <template>
@@ -167,26 +87,37 @@ async function mostrarOferta() {
     </nav>
 
     <section v-if="vista === 'pensum'" class="curriculum" aria-label="Plan de estudios de Ingeniería de Sistemas">
+      <div v-if="cargandoPensum" class="empty-state" role="status">
+        <span class="loader" aria-hidden="true"></span>
+        <strong>Consultando prerrequisitos</strong>
+        <span>Estamos verificando tus materias aprobadas.</span>
+      </div>
+      <div v-else-if="errorPensum" class="empty-state empty-state-error" role="alert">
+        <strong>No pudimos consultar tu avance</strong>
+        <span>{{ errorPensum }}</span>
+        <button class="retry-button" type="button" @click="cargarPensum">Intentar de nuevo</button>
+      </div>
+      <div v-else>
       <div class="semester-picker" aria-label="Seleccionar semestre">
         <button
-          v-for="(semestre, indice) in pensum"
-          :key="semestre.id"
+          v-for="semestre in semestres"
+          :key="semestre"
           type="button"
-          :aria-pressed="semestreActivo === semestre.id"
-          :class="{ 'semester-active': semestreActivo === semestre.id }"
-          @click="semestreActivo = semestre.id; limpiarFiltros()"
+          :aria-pressed="semestreActivo === semestre"
+          :class="{ 'semester-active': semestreActivo === semestre }"
+          @click="semestreActivo = semestre; limpiarFiltros()"
         >
-          <span>{{ String(indice + 1).padStart(2, '0') }}</span>
-          <strong>{{ semestre.id }}</strong>
+          <span>{{ String(semestre).padStart(2, '0') }}</span>
+          <strong>{{ semestresRomanos[semestre - 1] }}</strong>
         </button>
       </div>
 
       <div class="curriculum-heading">
         <div>
           <p class="eyebrow">Ruta académica</p>
-          <h2>Semestre {{ semestreSeleccionado.id }}</h2>
+          <h2>Semestre {{ semestresRomanos[semestreActivo - 1] }}</h2>
         </div>
-        <span class="subject-count">{{ semestreSeleccionado.materias.length }} asignaturas</span>
+        <span class="subject-count">{{ semestreSeleccionado.length }} asignaturas</span>
       </div>
 
       <div class="toolbar curriculum-toolbar">
@@ -201,11 +132,25 @@ async function mostrarOferta() {
 
       <div v-if="materiasFiltradas.length" class="subject-list" aria-live="polite">
         <div class="subject-list-header" aria-hidden="true">
-          <span>#</span><span>Asignatura</span><span>Créditos</span>
+          <span>Código</span><span>Asignatura</span><span>Créditos</span>
         </div>
-        <div v-for="(materia, indice) in materiasFiltradas" :key="materia.nombre" class="subject-row">
-          <span class="subject-index">{{ String(indice + 1).padStart(2, '0') }}</span>
-          <strong>{{ materia.nombre }}</strong>
+        <div
+          v-for="materia in materiasFiltradas"
+          :key="materia.codigo"
+          class="subject-row"
+          :class="{ 'subject-row-locked': materia.bloqueada }"
+        >
+          <span class="subject-index">{{ materia.codigo }}</span>
+          <div class="subject-main">
+            <strong>{{ materia.nombre }}</strong>
+            <span
+              class="subject-status"
+              :class="materia.aprobada ? 'status-passed' : materia.bloqueada ? 'status-locked' : 'status-available'"
+            >{{ materia.aprobada ? 'Aprobada' : materia.bloqueada ? 'Bloqueada' : 'Disponible' }}</span>
+            <small v-if="materia.bloqueada" class="prerequisite-message">
+              Requisitos pendientes: {{ materia.requisitosPendientes.join(', ') }}
+            </small>
+          </div>
           <span class="credit-value">{{ materia.creditos }} <small>cr.</small></span>
         </div>
       </div>
@@ -215,6 +160,7 @@ async function mostrarOferta() {
         <button class="retry-button" type="button" @click="limpiarFiltros">Limpiar filtros</button>
       </div>
       <p class="source-note">Malla curricular organizada en 10 semestres.</p>
+      </div>
     </section>
 
     <section v-else class="catalog-content" aria-label="Cursos disponibles">
@@ -516,8 +462,15 @@ h1 {
 .subject-list-header span:last-child { text-align: right; }
 .subject-row { min-height: 58px; padding: 0 18px; border-bottom: 1px solid #edf1f1; }
 .subject-row:last-child { border-bottom: 0; }
+.subject-row-locked { background: #fcf8f1; }
 .subject-index { color: #90a0a2; font-size: 11px; font-variant-numeric: tabular-nums; }
-.subject-row strong { min-width: 0; color: #31494d; font-size: 13px; font-weight: 600; }
+.subject-main { display: grid; justify-items: start; gap: 5px; min-width: 0; padding: 9px 0; }
+.subject-main strong { min-width: 0; color: #31494d; font-size: 13px; font-weight: 600; }
+.subject-status { padding: 3px 7px; border-radius: 3px; font-size: 10px; font-weight: 700; }
+.status-passed { color: #246c4a; background: #eaf5ee; }
+.status-available { color: #176d85; background: #eaf3f5; }
+.status-locked { color: #925b13; background: #fff0d1; }
+.prerequisite-message { color: #8a5b20; font-size: 11px; line-height: 1.45; }
 .credit-value { justify-self: end; color: var(--accent); font-size: 13px; font-weight: 700; }
 .credit-value small { color: var(--muted); font-size: 10px; font-weight: 500; }
 .source-note { margin: 12px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; }

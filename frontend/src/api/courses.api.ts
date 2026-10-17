@@ -8,6 +8,7 @@ export interface Curso {
   horario: string
   cuposTotales: number
   cuposDisponibles: number
+  codigoPensum: string
   semestre?: number
   creditos?: number
 }

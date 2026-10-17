@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import CourseCard from '@/components/CourseCard.vue'
 import CourseFilters, { type CourseFilters as CourseFiltersState } from '@/components/CourseFilters.vue'
+import { consultarAvancePensum, type MateriaAvance } from '@/api/pensum.api'
 import { useCoursesStore } from '@/stores/courses.store'
 import { useAuthStore } from '@/stores/auth'
 const store = useCoursesStore()
@@ -13,6 +14,10 @@ const enviando = ref(false)
 const error = ref('')
 const exitos = ref<string[]>([])
 const sesionRequerida = ref(false)
+const avanceMaterias = ref<MateriaAvance[]>([])
+const cargandoAvance = ref(false)
+const avanceCargado = ref(false)
+const errorAvance = ref('')
 const seleccionados = computed(() => store.cursos.filter(c => seleccion.value.includes(c.id)))
 const apiBaseUrl = (import.meta.env.VITE_API_URL
   ?? `${window.location.protocol}//${window.location.hostname}:3000/api`).replace(/\/+$/, '')
@@ -20,7 +25,41 @@ const totalCreditos = computed(() => {
   const valores = seleccionados.value.map(c => (c as typeof c & { creditos?: number }).creditos)
   return valores.length > 0 && valores.every((v): v is number => typeof v === 'number') ? valores.reduce((a, b) => a + b, 0) : null
 })
-onMounted(() => { void store.cargarCursos() })
+function avanceDeCurso(curso: (typeof store.cursos)[number]) {
+  return avanceMaterias.value.find((materia) => materia.codigo === curso.codigoPensum)
+}
+
+function requisitosPendientes(curso: (typeof store.cursos)[number]) {
+  return avanceDeCurso(curso)?.requisitosPendientes ?? []
+}
+
+function cursoBloqueado(curso: (typeof store.cursos)[number]) {
+  const avance = avanceDeCurso(curso)
+  return avance?.bloqueada === true || avance?.aprobada === true
+}
+
+async function cargarAvance() {
+  cargandoAvance.value = true
+  errorAvance.value = ''
+  try {
+    if (!auth.accessToken) await auth.restaurarSesion()
+    if (!auth.accessToken) {
+      errorAvance.value = 'Inicia sesión para consultar tus prerrequisitos. El servidor también los validará al confirmar.'
+      return
+    }
+    avanceMaterias.value = await consultarAvancePensum()
+    avanceCargado.value = true
+  } catch {
+    errorAvance.value = 'No se pudo consultar tu avance. El servidor verificará los prerrequisitos al confirmar.'
+  } finally {
+    cargandoAvance.value = false
+  }
+}
+
+onMounted(() => {
+  void store.cargarCursos()
+  void cargarAvance()
+})
 
 async function confirmarMatricula(cursoId: number): Promise<Response> {
   if (!auth.accessToken) await auth.restaurarSesion()
@@ -54,6 +93,7 @@ async function confirmarMatricula(cursoId: number): Promise<Response> {
 async function matricular() {
   if (enviando.value || !seleccionados.value.length) return
   enviando.value = true; error.value = ''; exitos.value = []; sesionRequerida.value = false; confirmando.value = false
+  if (!avanceCargado.value && auth.accessToken) await cargarAvance()
   // Una petición por curso: se conservan los pendientes si hay un fallo parcial.
   const pendientes = [...seleccionados.value]
   try {
@@ -90,6 +130,8 @@ async function matricular() {
   <main class="academic-page">
     <RouterLink class="back-link" to="/inicio">← Volver al inicio</RouterLink>
     <h1>Matrícula</h1><p class="intro">Selecciona tus cursos y revisa el resumen antes de confirmar.</p>
+    <p v-if="cargandoAvance" class="notice" role="status">Consultando tus prerrequisitos…</p>
+    <p v-else-if="errorAvance" class="notice" role="status">{{ errorAvance }}</p>
     <p v-if="store.cargando" role="status">Cargando oferta académica…</p>
     <div v-else-if="store.error" class="notice error" role="alert">{{ store.error }} <button :disabled="enviando" @click="store.cargarCursos">Reintentar</button></div>
     <p v-else-if="!store.cursos.length">No hay cursos publicados.</p>
@@ -102,7 +144,10 @@ async function matricular() {
       <div v-if="cursosFiltrados.length" class="grid">
         <div v-for="curso in cursosFiltrados" :key="curso.id" class="choice">
           <CourseCard :curso="curso" />
-          <label><input v-model="seleccion" type="checkbox" :value="curso.id" :disabled="enviando || confirmando || curso.cuposDisponibles <= 0" />{{ curso.cuposDisponibles > 0 ? `Seleccionar ${curso.nombre}` : 'Sin cupos disponibles' }}</label>
+          <label><input v-model="seleccion" type="checkbox" :value="curso.id" :disabled="enviando || confirmando || cargandoAvance || curso.cuposDisponibles <= 0 || cursoBloqueado(curso)" />{{ curso.cuposDisponibles > 0 ? `Seleccionar ${curso.nombre}` : 'Sin cupos disponibles' }}</label>
+          <p v-if="avanceDeCurso(curso)?.aprobada" class="prerequisite-state state-passed">Materia aprobada; no necesitas volver a matricularla.</p>
+          <p v-else-if="requisitosPendientes(curso).length" class="prerequisite-state state-locked">Bloqueada. Aprueba primero: {{ requisitosPendientes(curso).join(', ') }}.</p>
+          <p v-else-if="avanceCargado && curso.codigoPensum" class="prerequisite-state state-available">Prerrequisitos cumplidos.</p>
         </div>
       </div>
       <div v-else class="notice">No encontramos cursos con ese nombre o esos filtros.</div>
@@ -136,6 +181,8 @@ h1 { margin-bottom: 8px; } .intro { color: #536b6e; }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 20px 0; }
 .choice, .summary, .notice, .enrollment { padding: 16px; border: 1px solid #dfe7e7; border-radius: 8px; background: #fff; margin: 16px 0; }
 .choice { margin: 0; padding: 10px; } .choice label { display: flex; gap: 8px; padding: 12px 2px; align-items: center; }
+.prerequisite-state { margin: 0 2px 10px; font-size: 12px; line-height: 1.45; }
+.state-passed { color: #246c4a; }.state-locked { color: #925b13; }.state-available { color: #176d85; }
 button { padding: 10px 16px; border: 1px solid #176d85; border-radius: 6px; background: #176d85; color: white; cursor: pointer; margin: 5px; font: inherit; }
 button:disabled { opacity: .55; cursor: not-allowed; } button:focus-visible, a:focus-visible { outline: 3px solid #d5a348; outline-offset: 3px; }
 .error { color: #8d3028; background: #fff4f2; } .success { color: #246c4a; background: #eaf5ee; }

@@ -8,6 +8,8 @@
 	```powershell
 	$env:DATABASE_URL = "postgresql://usuario:contrasena@host:5432/base"
 	psql $env:DATABASE_URL -f src/database/migrations/001_usuarios.sql
+	$env:PGCLIENTENCODING = "UTF8"
+	psql $env:DATABASE_URL -f src/database/migrations/002_prerrequisitos_calificaciones.sql
 	```
 
 	Sustituye la URL de ejemplo por la misma URL configurada en `.env`.
@@ -21,3 +23,9 @@ El inicio de sesión ahora valida hashes bcrypt guardados en PostgreSQL. Las cue
 ### Crear el primer administrador
 
 Desde la carpeta `backend`, ejecuta `npm run admin:create`. El comando solicita los datos del perfil y la contraseña (que se escribe oculta), guarda el hash en PostgreSQL y no crea otro administrador si ya existe uno. Después inicia sesión en `/login` y usa **Registrar usuarios** desde el panel administrativo para elegir entre estudiante y profesor.
+
+### Prerrequisitos y calificaciones
+
+El avance del estudiante está en `GET /api/matriculas/avance`. Las materias se consideran aprobadas con nota igual o superior a `3.0`. Al matricular un curso que tenga prerrequisitos pendientes, `POST /api/matriculas` responde `409 PRERREQUISITOS_PENDIENTES`.
+
+Un usuario con rol `admin` o `profesor` registra o actualiza una nota con `PUT /api/matriculas/calificaciones/:usuarioId/:codigoMateria`, enviando un token Bearer y un cuerpo como `{ "nota": 3.5 }`. El código es el del pensum, por ejemplo `ISI01`; las notas aceptadas van de `0.0` a `5.0` con un decimal.

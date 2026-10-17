@@ -4,7 +4,9 @@ import { HttpError } from "../types/http-error";
 import {
   crearMatricula as crearMatriculaServicio,
   listarMisMatriculas as listarMisMatriculasServicio,
-  eliminarMatricula as eliminarMatriculaServicio
+  eliminarMatricula as eliminarMatriculaServicio,
+  obtenerAvancePensum as obtenerAvancePensumServicio,
+  registrarCalificacion as registrarCalificacionServicio
 } from "../services/matriculas.service";
 
 function obtenerUsuarioId(res: Response): number {
@@ -74,6 +76,37 @@ export const listarMisMatriculas: RequestHandler = async (
 
     // El frontend espera directamente un arreglo.
     res.status(200).json(matriculas);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const obtenerAvancePensum: RequestHandler = async (_req, res, next) => {
+  try {
+    const usuarioId = obtenerUsuarioId(res);
+    const avance = await obtenerAvancePensumServicio(usuarioId);
+    res.status(200).json(avance);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const registrarCalificacion: RequestHandler = async (req, res, next) => {
+  try {
+    const registradaPor = obtenerUsuarioId(res);
+    const usuarioId = Number(req.params.usuarioId);
+    const codigoMateria = req.params.codigoMateria;
+    const nota: unknown = req.body?.nota;
+
+    if (!esIdValido(usuarioId) || typeof codigoMateria !== "string" || !/^[A-Z]{3}\d{2}$/.test(codigoMateria)) {
+      throw new HttpError(400, "DATOS_INVALIDOS", "El estudiante o el código de materia no es válido");
+    }
+    if (typeof nota !== "number") {
+      throw new HttpError(400, "NOTA_INVALIDA", "La nota debe ser un número");
+    }
+
+    await registrarCalificacionServicio(registradaPor, usuarioId, codigoMateria, nota);
+    res.status(204).end();
   } catch (error) {
     next(error);
   }

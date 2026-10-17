@@ -1,6 +1,12 @@
 import { HttpError } from "../types/http-error";
 import { buscarUsuarioPorId } from "../repositorios/auth.repository";
 import { listarCursos } from "../repositorios/cursos.repository";
+import {
+  guardarCalificacion,
+  listarAvanceEstudiante,
+  listarCodigosAprobados,
+  materiaExiste
+} from "../repositorios/calificaciones.repository";
 import * as repositorio from "../repositorios/matriculas.repository";
 
 async function validarEstudiante(usuarioId: number): Promise<void> {
@@ -39,7 +45,71 @@ export async function crearMatricula(
     );
   }
 
+  if (curso.codigoPensum) {
+    const aprobadas = new Set(await listarCodigosAprobados(usuarioId));
+    if (aprobadas.has(curso.codigoPensum)) {
+      throw new HttpError(
+        409,
+        "MATERIA_YA_APROBADA",
+        "Ya aprobaste esta materia y no puedes matricularla de nuevo"
+      );
+    }
+
+    const avance = await listarAvanceEstudiante(usuarioId);
+    const materia = avance.find((item) => item.codigo === curso.codigoPensum);
+    const pendientes = materia?.prerrequisitos.filter((codigo) => !aprobadas.has(codigo)) ?? [];
+    if (pendientes.length) {
+      throw new HttpError(
+        409,
+        "PRERREQUISITOS_PENDIENTES",
+        `Debes aprobar primero: ${pendientes.join(", ")}`
+      );
+    }
+  }
+
   return repositorio.crearMatricula(usuarioId, curso);
+}
+
+export async function obtenerAvancePensum(usuarioId: number) {
+  await validarEstudiante(usuarioId);
+  const [materias, codigosAprobados] = await Promise.all([
+    listarAvanceEstudiante(usuarioId),
+    listarCodigosAprobados(usuarioId)
+  ]);
+  const aprobadas = new Set(codigosAprobados);
+
+  return materias.map((materia) => {
+    const requisitosPendientes = materia.prerrequisitos.filter((codigo) => !aprobadas.has(codigo));
+    const aprobada = aprobadas.has(materia.codigo);
+
+    return {
+      ...materia,
+      nota: undefined,
+      aprobada,
+      bloqueada: !aprobada && requisitosPendientes.length > 0,
+      requisitosPendientes
+    };
+  });
+}
+
+export async function registrarCalificacion(
+  registradaPor: number,
+  usuarioId: number,
+  codigoMateria: string,
+  nota: number
+): Promise<void> {
+  const usuario = await buscarUsuarioPorId(usuarioId);
+  if (!usuario || usuario.rol !== "estudiante") {
+    throw new HttpError(404, "ESTUDIANTE_NO_ENCONTRADO", "No se encontró el estudiante");
+  }
+  if (!(await materiaExiste(codigoMateria))) {
+    throw new HttpError(404, "MATERIA_NO_ENCONTRADA", "No se encontró la materia del pensum");
+  }
+  if (!Number.isFinite(nota) || nota < 0 || nota > 5 || Math.round(nota * 10) !== nota * 10) {
+    throw new HttpError(400, "NOTA_INVALIDA", "La nota debe estar entre 0.0 y 5.0 con máximo un decimal");
+  }
+
+  await guardarCalificacion(usuarioId, codigoMateria, nota, registradaPor);
 }
 
 export async function listarMisMatriculas(usuarioId: number) {
