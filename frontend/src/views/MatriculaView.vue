@@ -1,38 +1,84 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import { isAxiosError } from 'axios'
-import api from '@/api/axios'
 import CourseCard from '@/components/CourseCard.vue'
 import CourseFilters, { type CourseFilters as CourseFiltersState } from '@/components/CourseFilters.vue'
 import { useCoursesStore } from '@/stores/courses.store'
+import { useAuthStore } from '@/stores/auth'
 const store = useCoursesStore()
+const auth = useAuthStore()
 const filtrosCursos = ref<CourseFiltersState>({ busqueda: '', semestre: '', disponibilidad: 'todos' })
 const seleccion = ref<number[]>([])
 const confirmando = ref(false)
 const enviando = ref(false)
 const error = ref('')
 const exitos = ref<string[]>([])
+const sesionRequerida = ref(false)
 const seleccionados = computed(() => store.cursos.filter(c => seleccion.value.includes(c.id)))
+const apiBaseUrl = (import.meta.env.VITE_API_URL
+  ?? `${window.location.protocol}//${window.location.hostname}:3000/api`).replace(/\/+$/, '')
 const totalCreditos = computed(() => {
   const valores = seleccionados.value.map(c => (c as typeof c & { creditos?: number }).creditos)
   return valores.length > 0 && valores.every((v): v is number => typeof v === 'number') ? valores.reduce((a, b) => a + b, 0) : null
 })
 onMounted(() => { void store.cargarCursos() })
+
+async function confirmarMatricula(cursoId: number): Promise<Response> {
+  if (!auth.accessToken) await auth.restaurarSesion()
+  if (!auth.accessToken) {
+    sesionRequerida.value = true
+    throw new Error('Inicia sesión para confirmar la matrícula. Tu selección se conserva.')
+  }
+
+  const solicitar = () => fetch(`${apiBaseUrl}/matriculas`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${auth.accessToken}`,
+    },
+    body: JSON.stringify({ cursoId }),
+  })
+
+  let respuesta = await solicitar()
+  if (respuesta.status === 401) {
+    await auth.restaurarSesion()
+    if (!auth.accessToken) {
+      sesionRequerida.value = true
+      return respuesta
+    }
+    respuesta = await solicitar()
+  }
+  return respuesta
+}
+
 async function matricular() {
   if (enviando.value || !seleccionados.value.length) return
-  enviando.value = true; error.value = ''; exitos.value = []; confirmando.value = false
+  enviando.value = true; error.value = ''; exitos.value = []; sesionRequerida.value = false; confirmando.value = false
   // Una petición por curso: se conservan los pendientes si hay un fallo parcial.
   const pendientes = [...seleccionados.value]
   try {
     for (const curso of pendientes) {
       if (curso.cuposDisponibles <= 0) { error.value = `${curso.nombre} ya no tiene cupos.`; break }
-      await api.post('/matriculas', { cursoId: curso.id })
+      const respuesta = await confirmarMatricula(curso.id)
+      if (!respuesta.ok) {
+        const cuerpo: unknown = await respuesta.json().catch(() => null)
+        const mensaje = typeof cuerpo === 'object' && cuerpo !== null && 'mensaje' in cuerpo
+          && typeof cuerpo.mensaje === 'string'
+          ? cuerpo.mensaje
+          : 'No fue posible confirmar el curso seleccionado.'
+        error.value = respuesta.status === 401
+          ? 'Inicia sesión para confirmar la matrícula. Tu selección se conserva.'
+          : respuesta.status === 501
+            ? 'El servidor todavía no permite registrar matrículas. Tu selección se conserva.'
+            : mensaje
+        break
+      }
       exitos.value.push(curso.nombre)
       seleccion.value = seleccion.value.filter(id => id !== curso.id)
     }
   } catch (e) {
-    error.value = isAxiosError(e) && e.response?.status === 501
-      ? 'El servidor todavía no permite registrar matrículas. Tu selección se conserva; no se confirmó ningún curso adicional.'
+    error.value = e instanceof Error
+      ? e.message
       : 'No fue posible confirmar el curso pendiente. Consulta Mis matrículas antes de reintentar para comprobar si se registró.'
   } finally {
     await store.cargarCursos()
@@ -73,7 +119,10 @@ async function matricular() {
       </div>
     </section>
     <p v-if="enviando" role="status">Registrando matrícula…</p>
-    <p v-if="error" class="notice error" role="alert">{{ error }}</p>
+    <p v-if="error" class="notice error" role="alert">
+      {{ error }}
+      <RouterLink v-if="sesionRequerida" to="/login">Iniciar sesión</RouterLink>
+    </p>
     <div v-if="exitos.length" class="notice success" role="status">El servidor confirmó: {{ exitos.join(', ') }}. <RouterLink to="/mis-matriculas">Ver mis matrículas</RouterLink></div>
   </main>
 </template>

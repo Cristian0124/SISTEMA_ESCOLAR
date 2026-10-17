@@ -24,7 +24,8 @@ const matriculas = ref<Matricula[]>([])
 const cargando = ref(false)
 const error = ref('')
 const auth = useAuthStore()
-const apiBaseUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api'
+const apiBaseUrl = (import.meta.env.VITE_API_URL
+  ?? `${window.location.protocol}//${window.location.hostname}:3000/api`).replace(/\/+$/, '')
 
 const bloques = computed(() =>
   matriculas.value.flatMap(({ id, curso }) => crearBloques(curso, id)),
