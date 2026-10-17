@@ -42,7 +42,7 @@ async function matricular() {
 </script>
 <template>
   <main class="academic-page">
-    <nav aria-label="Navegación académica"><RouterLink to="/home">Inicio</RouterLink><RouterLink to="/catalog">Catálogo</RouterLink><RouterLink to="/mis-matriculas">Mis matrículas</RouterLink></nav>
+    <RouterLink class="back-link" to="/inicio">← Volver al inicio</RouterLink>
     <h1>Matrícula</h1><p class="intro">Selecciona tus cursos y revisa el resumen antes de confirmar.</p>
     <p v-if="store.cargando" role="status">Cargando oferta académica…</p>
     <div v-else-if="store.error" class="notice error" role="alert">{{ store.error }} <button :disabled="enviando" @click="store.cargarCursos">Reintentar</button></div>
@@ -80,7 +80,9 @@ async function matricular() {
 
 <style scoped>
 .academic-page { max-width: 1120px; margin: auto; padding: 28px 18px; color: #243a3c; }
-nav { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 24px; } a { color: #176d85; }
+.back-link { display: inline-block; margin-bottom: 18px; color: #176d85; font-size: 13px; text-decoration: none; }
+.back-link:hover { text-decoration: underline; }
+a { color: #176d85; }
 h1 { margin-bottom: 8px; } .intro { color: #536b6e; }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 20px 0; }
 .choice, .summary, .notice, .enrollment { padding: 16px; border: 1px solid #dfe7e7; border-radius: 8px; background: #fff; margin: 16px 0; }
