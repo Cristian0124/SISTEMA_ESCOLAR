@@ -12,8 +12,8 @@ const gruposMenu = [
   {
     titulo: 'Proceso de Administración',
     opciones: [
-      { texto: 'Actualización de datos personales', icono: '▤', ruta: '/matricula' },
-      { texto: 'Hoja de vida', icono: '▤', ruta: '/matricula' },
+      { texto: 'Actualización de datos personales', icono: '▤', ruta: '/perfil' },
+      { texto: 'Hoja de vida', icono: '▤', ruta: '/hoja-de-vida' },
       { texto: 'Consulta de documentos', icono: '▤', ruta: '/mis-matriculas' },
     ],
   },
