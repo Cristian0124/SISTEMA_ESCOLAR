@@ -5,12 +5,21 @@ import { useCoursesStore } from '@/stores/courses.store'
 
 const store = useCoursesStore()
 const busqueda = ref('')
+const disponibilidad = ref('todos')
+const creditos = ref('todos')
+const opcionesCreditos = computed(() => [...new Set(store.cursos.map(c => (c as typeof c & { creditos?: number }).creditos).filter((n): n is number => typeof n === 'number'))].sort((a, b) => a - b))
+const cursosBase = computed(() => store.cursos.filter(c =>
+  (disponibilidad.value === 'todos' || (disponibilidad.value === 'disponibles' ? c.cuposDisponibles > 0 : c.cuposDisponibles <= 0)) &&
+  (creditos.value === 'todos' || String((c as typeof c & { creditos?: number }).creditos) === creditos.value)
+))
+function limpiarFiltros() { busqueda.value = ''; disponibilidad.value = 'todos'; creditos.value = 'todos' }
+
 
 const cursosFiltrados = computed(() => {
   const termino = busqueda.value.trim().toLocaleLowerCase()
-  if (!termino) return store.cursos
+  if (!termino) return cursosBase.value
 
-  return store.cursos.filter((curso) =>
+  return cursosBase.value.filter((curso) =>
     [curso.codigo, curso.nombre, curso.docente, curso.horario]
       .some((campo) => campo.toLocaleLowerCase().includes(termino)),
   )
@@ -35,6 +44,7 @@ onMounted(() => {
       </div>
     </header>
 
+    <nav class="academic-nav" aria-label="Navegación académica"><RouterLink to="/home">Inicio</RouterLink><RouterLink to="/matricula">Seleccionar cursos</RouterLink><RouterLink to="/mis-matriculas">Mis matrículas</RouterLink></nav>
     <section class="catalog-content" aria-label="Cursos disponibles">
       <div class="toolbar">
         <label class="search-field">
@@ -49,6 +59,8 @@ onMounted(() => {
             ×
           </button>
         </label>
+        <label>Estado <select v-model="disponibilidad"><option value="todos">Todos</option><option value="disponibles">Disponibles</option><option value="sin-cupos">Sin cupos</option></select></label>
+        <label>Créditos <select v-model="creditos"><option value="todos">Todos</option><option v-for="n in opcionesCreditos" :key="n" :value="String(n)">{{ n }}</option></select></label>
         <p class="toolbar-hint">{{ store.cursos.length }} cursos en la oferta</p>
       </div>
 
@@ -72,7 +84,7 @@ onMounted(() => {
       <div v-else-if="cursosFiltrados.length === 0" class="empty-state">
         <strong>No encontramos coincidencias</strong>
         <span>Prueba con otro código, nombre o docente.</span>
-        <button class="retry-button" type="button" @click="busqueda = ''">Limpiar búsqueda</button>
+        <button class="retry-button" type="button" @click="limpiarFiltros">Limpiar filtros</button>
       </div>
 
       <div v-else class="course-grid" aria-live="polite">
@@ -157,6 +169,7 @@ h1 {
 }
 
 .toolbar {
+  flex-wrap: wrap;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -327,4 +340,7 @@ h1 {
     padding-left: 2px;
   }
 }
+.academic-nav { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 20px; }
+.academic-nav a { color: #176d85; }
+select { padding: 8px; border: 1px solid #d5dfdf; border-radius: 6px; background: white; }
 </style>
