@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { isAxiosError } from 'axios'
 import api from '@/api/axios'
 import type { Curso } from '@/api/courses.api'
-import { useAuthStore } from '@/stores/auth'
 
 interface Matricula {
   id: number
@@ -25,7 +24,6 @@ const horas = Array.from({ length: 24 }, (_, hora) => `${String(hora).padStart(2
 const matriculas = ref<Matricula[]>([])
 const cargando = ref(false)
 const error = ref('')
-const auth = useAuthStore()
 
 const bloques = computed(() =>
   matriculas.value.flatMap(({ id, curso }) => crearBloques(curso, id)),
@@ -51,7 +49,7 @@ function crearBloques(curso: Curso, matriculaId: number): BloqueHorario[] {
   const diasDelHorario = horario.slice(0, intervalo.index).split(/[/,;|&\s]+|\by\b/)
   const abreviaturas: RegExp[] = [
     /^(lunes|lun)$/,
-    /^(martes|mar|martes)$/,
+    /^(martes|mar)$/,
     /^(miercoles|mie|mier)$/,
     /^(jueves|jue|juev)$/,
     /^(viernes|vie|vier)$/,
@@ -71,8 +69,8 @@ function crearBloques(curso: Curso, matriculaId: number): BloqueHorario[] {
     fila: Math.floor(inicio) + 2,
     duracion: Math.ceil(fin) - Math.floor(inicio),
     curso,
-    inicio: intervalo[1] + ':' + intervalo[2],
-    fin: intervalo[3] + ':' + intervalo[4],
+    inicio: `${intervalo[1]}:${intervalo[2]}`,
+    fin: `${intervalo[3]}:${intervalo[4]}`,
   }))
 }
 
@@ -81,7 +79,7 @@ async function cargarHorario(): Promise<void> {
   cargando.value = true
   error.value = ''
   try {
-    const { data } = await api.get<Matricula[]>('/matriculas/mias', { skipAuthRedirect: true })
+    const { data } = await api.get<Matricula[]>('/matriculas/mias')
     if (!Array.isArray(data) || !data.every(
       (matricula) => matricula
         && typeof matricula.id === 'number'
@@ -93,10 +91,10 @@ async function cargarHorario(): Promise<void> {
     }
     matriculas.value = data
   } catch (e) {
-    error.value = isAxiosError(e) && e.response?.status === 401
-      ? ''
-      : isAxiosError(e) && e.response?.status === 501
-        ? 'La consulta de matrículas todavía no está implementada en el servidor.'
+    error.value = isAxiosError(e) && e.response?.status === 501
+      ? 'La consulta de matrículas todavía no está implementada en el servidor.'
+      : isAxiosError(e) && e.response?.status === 401
+        ? 'Inicia sesión para consultar las asignaturas matriculadas.'
         : 'No fue posible consultar tus matrículas.'
   } finally {
     cargando.value = false
@@ -105,10 +103,6 @@ async function cargarHorario(): Promise<void> {
 
 onMounted(() => {
   void cargarHorario()
-})
-
-watch(() => auth.accessToken, (accessToken, previousToken) => {
-  if (accessToken && accessToken !== previousToken) void cargarHorario()
 })
 </script>
 
@@ -119,11 +113,8 @@ watch(() => auth.accessToken, (accessToken, previousToken) => {
       <div>
         <p class="eyebrow">Proceso académico</p>
         <h1>Horario del estudiante</h1>
-        <p> Calendario semanal de horario estudiantil. </p>
+        <p>Calendario semanal de lunes a domingo, con las horas de cada asignatura matriculada.</p>
       </div>
-      <button class="refresh-button" type="button" :disabled="cargando" @click="cargarHorario">
-        {{ cargando ? 'Actualizando…' : 'Actualizar horario' }}
-      </button>
     </header>
 
     <p v-if="cargando" class="loading-status" role="status">Consultando tus asignaturas matriculadas…</p>
@@ -134,7 +125,7 @@ watch(() => auth.accessToken, (accessToken, previousToken) => {
     <section class="calendar-section" aria-label="Calendario semanal de asignaturas">
       <p v-if="matriculas.length > 0" class="course-count">{{ matriculas.length }} asignaturas matriculadas</p>
       <p v-if="!cargando && !error && matriculas.length === 0" class="notice error empty-schedule" role="status">
-        Aún no hay materias matriculadas. Cuando inicies sesión y matricules tus materias, aparecerán aquí.
+        Aún no hay materias matriculadas.
       </p>
       <div class="calendar-scroll">
         <div class="week-grid">
@@ -189,16 +180,14 @@ watch(() => auth.accessToken, (accessToken, previousToken) => {
 .eyebrow { margin: 0 0 7px; color: #1685a2; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 h1 { margin: 0; font-size: clamp(24px, 4vw, 32px); }
 .page-heading p:last-child { color: #718083; font-size: 14px; line-height: 1.5; }
-.refresh-button { min-height: 38px; flex: 0 0 auto; padding: 0 14px; border: 1px solid #176d85; border-radius: 5px; color: #fff; background: #176d85; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
-.refresh-button:disabled { opacity: .6; cursor: wait; }
 .notice { margin: 18px 0; padding: 20px; border: 1px solid #dce3e3; border-radius: 8px; background: #fff; }
-.loading-status { margin: 0 0 12px; color: #718083; font-size: 12px; }
 .notice strong { color: #405458; font-size: 15px; }
 .notice p { color: #718083; font-size: 13px; line-height: 1.6; }
-.notice a { color: #176d85; font-size: 13px; }
 .error { border-color: #e8c9c5; background: #fff8f7; }
 .error strong, .error p { color: #8d3028; }
 .empty-schedule { color: #8d3028; }
+.loading-status { margin: 0 0 12px; color: #718083; font-size: 12px; }
+.calendar-section { margin-top: 18px; padding: 18px; border: 1px solid #dce3e3; border-radius: 10px; background: #fff; box-shadow: 0 4px 14px rgb(36 58 60 / 6%); }
 .course-count { margin: 0 0 10px; color: #536b6e; font-size: 12px; }
 .calendar-scroll { overflow: auto; border: 1px solid #dce3e3; border-radius: 7px; background: #fff; }
 .week-grid { --hour-height: 54px; display: grid; min-width: 920px; grid-template-columns: 68px repeat(7, minmax(115px, 1fr)); grid-template-rows: 42px repeat(24, var(--hour-height)); position: relative; }
@@ -211,6 +200,6 @@ h1 { margin: 0; font-size: clamp(24px, 4vw, 32px); }
 .course-block strong, .course-block span { display: block; overflow: hidden; text-overflow: ellipsis; }
 .course-block strong { margin-bottom: 3px; font-size: 11px; }
 .course-block span { margin-top: 2px; }
-.schedule-note { margin-top: 12px; color: #8b641f; font-size: 12px; }
-@media (max-width: 640px) { .page-heading { align-items: flex-start; flex-direction: column; }.refresh-button { align-self: flex-start; } }
+.schedule-note { margin: 12px 0 0; color: #8b641f; font-size: 12px; }
+@media (max-width: 640px) { .page-heading { align-items: flex-start; flex-direction: column; } }
 </style>
