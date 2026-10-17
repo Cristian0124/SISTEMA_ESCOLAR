@@ -14,7 +14,7 @@ const gruposMenu = [
     opciones: [
       { texto: 'Actualización de datos personales', icono: '▤', ruta: '/perfil' },
       { texto: 'Hoja de vida', icono: '▤', ruta: '/hoja-de-vida' },
-      { texto: 'Consulta de documentos', icono: '▤', ruta: '/mis-matriculas' },
+      { texto: 'Consulta de documentos', icono: '▤', ruta: '/documentos' },
     ],
   },
   {
@@ -26,14 +26,14 @@ const gruposMenu = [
   {
     titulo: 'Proceso Matrícula Académica',
     opciones: [
-      { texto: 'Consulta de requisitos de matrícula', icono: '▤', ruta: '/catalog' },
+      { texto: 'Consulta de requisitos de materia', icono: '▤', ruta: '/requisitos-materia' },
       { texto: 'Matrícula individual', icono: '▤', ruta: '/matricula' },
     ],
   },
   {
     titulo: 'Favoritos',
     opciones: [
-      { texto: 'Notas registradas', icono: '▤', ruta: '/my-enrollments' },
+      { texto: 'Notas registradas', icono: '▤', ruta: '/notas-registradas' },
       { texto: 'Matrícula individual', icono: '▤', ruta: '/matricula' },
       { texto: 'Horario del estudiante', icono: '▤', ruta: '/schedule' },
     ],
