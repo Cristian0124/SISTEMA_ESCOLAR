@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import { isAxiosError } from 'axios'
-import api from '@/api/axios'
+import { computed, onMounted, ref, watch } from 'vue'
 import type { Curso } from '@/api/courses.api'
+import { useAuthStore } from '@/stores/auth'
 
 interface Matricula {
   id: number
@@ -24,6 +23,8 @@ const horas = Array.from({ length: 24 }, (_, hora) => `${String(hora).padStart(2
 const matriculas = ref<Matricula[]>([])
 const cargando = ref(false)
 const error = ref('')
+const auth = useAuthStore()
+const apiBaseUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api'
 
 const bloques = computed(() =>
   matriculas.value.flatMap(({ id, curso }) => crearBloques(curso, id)),
@@ -79,7 +80,33 @@ async function cargarHorario(): Promise<void> {
   cargando.value = true
   error.value = ''
   try {
-    const { data } = await api.get<Matricula[]>('/matriculas/mias')
+    if (!auth.accessToken) await auth.restaurarSesion()
+    if (!auth.accessToken) {
+      matriculas.value = []
+      return
+    }
+
+    const consultarMatriculas = () => fetch(`${apiBaseUrl}/matriculas/mias`, {
+      credentials: 'include',
+      headers: { Authorization: `Bearer ${auth.accessToken}` },
+    })
+    let respuesta = await consultarMatriculas()
+    if (respuesta.status === 401) {
+      await auth.restaurarSesion()
+      if (!auth.accessToken) {
+        matriculas.value = []
+        return
+      }
+      respuesta = await consultarMatriculas()
+    }
+    if (!respuesta.ok) {
+      error.value = respuesta.status === 501
+        ? 'La consulta de matrículas todavía no está implementada en el servidor.'
+        : 'No fue posible consultar tus matrículas.'
+      return
+    }
+
+    const data: unknown = await respuesta.json()
     if (!Array.isArray(data) || !data.every(
       (matricula) => matricula
         && typeof matricula.id === 'number'
@@ -90,18 +117,22 @@ async function cargarHorario(): Promise<void> {
       throw new Error('La respuesta de matrículas no tiene un formato válido.')
     }
     matriculas.value = data
-  } catch (e) {
-    error.value = isAxiosError(e) && e.response?.status === 501
-      ? 'La consulta de matrículas todavía no está implementada en el servidor.'
-      : isAxiosError(e) && e.response?.status === 401
-        ? 'Inicia sesión para consultar las asignaturas matriculadas.'
-        : 'No fue posible consultar tus matrículas.'
+  } catch {
+    error.value = 'No fue posible consultar tus matrículas.'
   } finally {
     cargando.value = false
   }
 }
 
 onMounted(() => {
+  void cargarHorario()
+})
+
+watch(() => auth.accessToken, (accessToken) => {
+  if (!accessToken) {
+    matriculas.value = []
+    return
+  }
   void cargarHorario()
 })
 </script>
