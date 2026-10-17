@@ -1,7 +1,15 @@
 import { randomUUID } from "node:crypto";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } from "../config/env";
-import { buscarUsuarioPorCorreo, buscarUsuarioPorId, type RolUsuario } from "../repositorios/usuarios.repository";
+import {
+	buscarUsuarioPorCorreo,
+	buscarUsuarioPorId,
+	crearEstudiante,
+	type NuevoEstudiante,
+	type RolUsuario,
+	type UsuarioAuth
+} from "../repositorios/auth.repository";
 
 export interface UsuarioPublico {
 	id: number;
@@ -17,8 +25,8 @@ export interface Sesion {
 
 const refreshTokensValidos = new Set<string>();
 
-function emitirSesion(id: number): Sesion | null {
-	const usuario = buscarUsuarioPorId(id);
+async function emitirSesion(id: number): Promise<Sesion | null> {
+ const usuario = await buscarUsuarioPorId(id);
 	if (!usuario) return null;
 
 	const usuarioPublico: UsuarioPublico = {
@@ -35,22 +43,27 @@ function emitirSesion(id: number): Sesion | null {
 	return { accessToken, refreshToken, usuario: usuarioPublico };
 }
 
-export function iniciarSesion(correo: string, password: string): Sesion | null {
-	const usuario = buscarUsuarioPorCorreo(correo);
-	// TODO: hash con Argon2id/bcrypt.
-	if (!usuario || usuario.password !== password) return null;
+export async function iniciarSesion(correo: string, password: string): Promise<Sesion | null> {
+ const usuario = await buscarUsuarioPorCorreo(correo);
+ if (!usuario || !usuario.activo || !(await bcrypt.compare(password, usuario.password_hash))) return null;
 
-	return emitirSesion(usuario.id);
+ return emitirSesion(usuario.id);
 }
 
-export function renovarSesion(refreshToken: unknown): Sesion | null {
+export async function registrarEstudiante(datos: NuevoEstudiante): Promise<UsuarioAuth | null> {
+ const { password, ...datosUsuario } = datos;
+ const passwordHash = await bcrypt.hash(password, 12);
+ return crearEstudiante(datosUsuario, passwordHash);
+}
+
+export async function renovarSesion(refreshToken: unknown): Promise<Sesion | null> {
 	if (typeof refreshToken !== "string" || !refreshTokensValidos.has(refreshToken)) return null;
 
 	try {
 		const contenido = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
 		if (typeof contenido === "string" || typeof contenido.sub !== "string") return null;
 
-		const sesion = emitirSesion(Number(contenido.sub));
+		const sesion = await emitirSesion(Number(contenido.sub));
 		if (sesion) refreshTokensValidos.delete(refreshToken);
 		return sesion;
 	} catch {

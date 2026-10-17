@@ -1,7 +1,7 @@
 import type { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import { JWT_ACCESS_SECRET } from "../config/env";
-import type { RolUsuario } from "../repositorios/usuarios.repository";
+import type { RolUsuario } from "../repositorios/auth.repository";
 
 export interface UsuarioAutenticado {
   id: number;

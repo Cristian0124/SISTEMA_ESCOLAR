@@ -58,7 +58,7 @@ async function registrar() {
       <h2>Acceso al sistema</h2>
       <div class="fields">
         <label>Correo electrónico<input v-model.trim="formulario.correo" type="email" required autocomplete="email" /></label>
-        <label>Contraseña<input v-model="formulario.password" type="password" required minlength="6" autocomplete="new-password" /></label>
+        <label>Contraseña<input v-model="formulario.password" type="password" required minlength="8" autocomplete="new-password" /></label>
       </div>
       <p v-if="mensaje" class="notice success" role="status">{{ mensaje }}</p>
       <p v-if="error" class="notice failure" role="alert">{{ error }}</p>
