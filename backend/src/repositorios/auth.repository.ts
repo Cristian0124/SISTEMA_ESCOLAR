@@ -1,12 +1,5 @@
 
-import { Pool } from "pg";
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DB_SSL === "true"
-    ? { rejectUnauthorized: false }
-    : undefined
-});
+import { pool } from "../config/database";
 
 export interface UsuarioAuth {
   id: number;
@@ -66,17 +59,48 @@ export async function crearEstudiante(
   datos: Omit<NuevoEstudiante, "password">,
   passwordHash: string
 ): Promise<UsuarioAuth | null> {
+  return insertarUsuario(datos, passwordHash, "estudiante");
+}
+
+export async function crearUsuarioAdministrado(
+  datos: Omit<NuevoEstudiante, "password">,
+  passwordHash: string,
+  rol: "estudiante" | "profesor"
+): Promise<UsuarioAuth | null> {
+  return insertarUsuario(datos, passwordHash, rol);
+}
+
+export async function crearAdministrador(
+  datos: Omit<NuevoEstudiante, "password">,
+  passwordHash: string
+): Promise<UsuarioAuth | null> {
+  return insertarUsuario(datos, passwordHash, "admin");
+}
+
+export async function existeAdministrador(): Promise<boolean> {
+  const resultado = await pool.query(
+    "SELECT 1 FROM usuarios WHERE rol = 'admin' LIMIT 1"
+  );
+  return resultado.rowCount !== 0;
+}
+
+async function insertarUsuario(
+  datos: Omit<NuevoEstudiante, "password">,
+  passwordHash: string,
+  rol: RolUsuario
+): Promise<UsuarioAuth | null> {
   try {
     const resultado = await pool.query<UsuarioAuth>(
       `INSERT INTO usuarios (
         nombre, correo, password_hash, rol, activo, cedula,
         fecha_nacimiento, fecha_ingreso, nacionalidad, genero
-      ) VALUES ($1, $2, $3, 'estudiante', TRUE, $4, $5, $6, $7, $8)
+      ) VALUES ($1, $2, $3, $4, TRUE, $5, $6, $7, $8, $9)
       RETURNING ${columnasUsuario}`,
       [
         datos.nombre,
         datos.correo.trim().toLowerCase(),
         passwordHash,
+        rol,
         datos.cedula.trim(),
         datos.fechaNacimiento,
         datos.fechaIngreso,

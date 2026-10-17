@@ -1,7 +1,14 @@
 import type { Request, Response } from "express";
 import { z } from "zod";
 import { NODE_ENV } from "../config/env";
-import { cerrarSesion, iniciarSesion, registrarEstudiante as crearEstudiante, renovarSesion, type Sesion } from "../services/auth.service";
+import {
+	cerrarSesion,
+	iniciarSesion,
+	registrarEstudiante as crearEstudiante,
+	registrarUsuarioAdmin as crearUsuarioAdmin,
+	renovarSesion,
+	type Sesion
+} from "../services/auth.service";
 
 const opcionesCookie = {
 	httpOnly: true,
@@ -55,7 +62,7 @@ const fechaValida = (valor: string) => {
  return !Number.isNaN(fecha.getTime()) && fecha.toISOString().slice(0, 10) === valor;
 };
 
-const esquemaRegistro = z.object({
+const camposRegistro = {
  nombre: z.string().trim().min(1).max(150),
  correo: z.string().trim().email().max(254).transform((valor) => valor.toLowerCase()),
  password: z.string().min(8).refine((valor) => Buffer.byteLength(valor, "utf8") <= 72),
@@ -64,10 +71,16 @@ const esquemaRegistro = z.object({
  fechaIngreso: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(fechaValida),
  nacionalidad: z.string().trim().min(1).max(100),
  genero: z.string().trim().min(1).max(50)
+};
+
+const esquemaRegistro = z.object(camposRegistro).strict();
+const esquemaRegistroAdmin = z.object({
+	...camposRegistro,
+	rol: z.enum(["estudiante", "profesor"]).default("estudiante")
 }).strict();
 
 export async function registrarUsuario(req: Request, res: Response) {
- const datos = esquemaRegistro.safeParse(req.body);
+	const datos = esquemaRegistroAdmin.safeParse(req.body);
  if (!datos.success) {
   return res.status(400).json({
    codigo: "DATOS_INVALIDOS",
@@ -76,8 +89,25 @@ export async function registrarUsuario(req: Request, res: Response) {
   });
  }
 
- const usuario = await crearEstudiante(datos.data);
+	const { rol, ...datosUsuario } = datos.data;
+	const usuario = await crearUsuarioAdmin(datosUsuario, rol);
  if (!usuario) return res.status(409).json({ codigo: "USUARIO_EXISTENTE", mensaje: "El correo o la cédula ya están registrados" });
  const { password_hash: _passwordHash, ...usuarioPublico } = usuario;
+	return res.status(201).json({ usuario: usuarioPublico });
+}
+
+export async function registrarEstudiante(req: Request, res: Response) {
+	const datos = esquemaRegistro.safeParse(req.body);
+	if (!datos.success) {
+		return res.status(400).json({
+			codigo: "DATOS_INVALIDOS",
+			mensaje: "Revisa los campos requeridos, el correo y la contraseña (mínimo 8 caracteres)",
+			errores: datos.error.flatten().fieldErrors
+		});
+	}
+
+	const usuario = await crearEstudiante(datos.data);
+	if (!usuario) return res.status(409).json({ codigo: "USUARIO_EXISTENTE", mensaje: "El correo o la cédula ya están registrados" });
+	const { password_hash: _passwordHash, ...usuarioPublico } = usuario;
 	return res.status(201).json({ usuario: usuarioPublico });
 }

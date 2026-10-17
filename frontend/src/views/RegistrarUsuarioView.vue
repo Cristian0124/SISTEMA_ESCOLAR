@@ -4,7 +4,7 @@ import axios from 'axios'
 import api from '@/api/axios'
 
 const formulario = reactive({
-  nombre: '', correo: '', password: '', cedula: '', fechaNacimiento: '',
+  nombre: '', correo: '', password: '', rol: 'estudiante', cedula: '', fechaNacimiento: '',
   fechaIngreso: '', nacionalidad: '', genero: '',
 })
 const guardando = ref(false)
@@ -18,7 +18,7 @@ async function registrar() {
   try {
     await api.post('/auth/usuarios', formulario)
     mensaje.value = 'Usuario registrado correctamente.'
-    Object.assign(formulario, { nombre: '', correo: '', password: '', cedula: '', fechaNacimiento: '', fechaIngreso: '', nacionalidad: '', genero: '' })
+    Object.assign(formulario, { nombre: '', correo: '', password: '', rol: 'estudiante', cedula: '', fechaNacimiento: '', fechaIngreso: '', nacionalidad: '', genero: '' })
   } catch (e) {
     if (axios.isAxiosError(e)) {
       error.value = e.response?.data?.mensaje ?? 'No fue posible registrar el usuario.'
@@ -36,12 +36,18 @@ async function registrar() {
     <header>
       <p class="eyebrow">Administración de usuarios</p>
       <h1>Registrar usuario</h1>
-      <p>Completa los datos personales y las credenciales de acceso.</p>
+      <p>Registra una cuenta de estudiante o profesor.</p>
     </header>
 
     <form class="registration-form" @submit.prevent="registrar">
       <h2>Datos personales</h2>
       <div class="fields">
+        <label>Tipo de usuario
+          <select v-model="formulario.rol" required>
+            <option value="estudiante">Estudiante</option>
+            <option value="profesor">Profesor</option>
+          </select>
+        </label>
         <label>Nombre completo<input v-model.trim="formulario.nombre" required autocomplete="name" /></label>
         <label>Cédula<input v-model.trim="formulario.cedula" required inputmode="numeric" /></label>
         <label>Fecha de nacimiento<input v-model="formulario.fechaNacimiento" type="date" required /></label>
