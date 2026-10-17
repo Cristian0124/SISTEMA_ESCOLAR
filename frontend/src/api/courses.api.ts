@@ -8,6 +8,8 @@ export interface Curso {
   horario: string
   cuposTotales: number
   cuposDisponibles: number
+  semestre?: number
+  creditos?: number
 }
 
 export async function listarCursos(): Promise<Curso[]> {

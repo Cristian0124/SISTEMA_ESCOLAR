@@ -232,7 +232,7 @@ async function mostrarOferta() {
           <input v-model="busqueda" type="search" placeholder="Buscar por código, nombre o docente" />
           <button v-if="busqueda" class="clear-search" type="button" aria-label="Limpiar búsqueda" @click="busqueda = ''">×</button>
         </label>
-        <p class="toolbar-hint">{{ store.cursos.length }} cursos en la oferta</p>
+        <p class="toolbar-hint">{{ store.cursos.length }} cursos en oferta</p>
       </div>
 
       <div v-if="store.cargando" class="empty-state" role="status">

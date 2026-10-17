@@ -3,7 +3,7 @@ import { useAuthStore } from '@/stores/auth'
 import type { LoginResponse } from '@/types'
 
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api',
   withCredentials: true, // envía la cookie del refresh token
   timeout: 10000
 })
