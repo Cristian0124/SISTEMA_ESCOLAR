@@ -2,14 +2,24 @@ import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import type { LoginResponse } from '@/types'
 
+declare module 'axios' {
+  interface AxiosRequestConfig {
+    skipAuthRedirect?: boolean
+  }
+}
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL ?? 'http://localhost:3000/api',
+  baseURL: import.meta.env.VITE_API_URL
+    || (typeof window !== 'undefined'
+      ? `${window.location.protocol}//${window.location.hostname}:3000/api`
+      : 'http://localhost:3000/api'),
   withCredentials: true, // envía la cookie del refresh token
   timeout: 10000
 })
 
 interface ConfigReintento extends InternalAxiosRequestConfig {
   _reintentado?: boolean
+  skipAuthRedirect?: boolean
 }
 
 // Si varias peticiones fallan con 401 a la vez, se renueva una sola vez
@@ -48,7 +58,7 @@ api.interceptors.response.use(
       return api(original) // reintenta la petición original
     } catch {
       auth.limpiarSesion()
-      window.location.assign('/login')
+      if (!original.skipAuthRedirect) window.location.assign('/login')
       return Promise.reject(error)
     }
   }
