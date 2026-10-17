@@ -148,7 +148,6 @@ async function salir() {
             <p class="welcome-description">
               Desde aquí puedes consultar la oferta académica y acceder a los procesos de tu perfil.
             </p>
-            <RouterLink class="catalog-link" to="/catalog">Consultar cursos <span aria-hidden="true">→</span></RouterLink>
           </div>
         </section>
       </main>
@@ -473,24 +472,6 @@ async function salir() {
   color: #718083;
   font-size: 14px;
   line-height: 1.6;
-}
-
-.catalog-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 40px;
-  padding: 0 14px;
-  border-radius: 4px;
-  color: #fff;
-  background: #176d85;
-  font-size: 13px;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.catalog-link:hover {
-  background: #12586d;
 }
 
 .statusbar {
