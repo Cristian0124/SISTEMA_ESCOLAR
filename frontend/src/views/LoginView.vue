@@ -16,7 +16,12 @@ async function iniciarSesion() {
 
   if (inicioCorrecto) {
     password.value = ''
-    await router.push({ name: auth.usuario?.rol === 'admin' ? 'admin-home' : 'home' })
+    const destino = auth.usuario?.rol === 'admin'
+      ? 'admin-home'
+      : auth.usuario?.rol === 'profesor'
+        ? 'profesor-home'
+        : 'home'
+    await router.push({ name: destino })
   }
 }
 </script>

@@ -9,6 +9,37 @@ import {
 } from "../repositorios/calificaciones.repository";
 import * as repositorio from "../repositorios/matriculas.repository";
 
+function normalizarNombre(nombre: string): string {
+  return nombre.normalize("NFD").replace(/\p{Diacritic}/gu, "").trim().toLocaleLowerCase();
+}
+
+async function obtenerCursoAsignado(profesorId: number, cursoId: number) {
+  const profesor = await buscarUsuarioPorId(profesorId);
+  if (!profesor || !profesor.activo || profesor.rol !== "profesor") {
+    throw new HttpError(403, "ACCESO_DENEGADO", "Solo los profesores pueden consultar sus cursos asignados");
+  }
+
+  const curso = listarCursos().find((item) => item.id === cursoId);
+  if (!curso || normalizarNombre(curso.docente) !== normalizarNombre(profesor.nombre)) {
+    throw new HttpError(403, "CURSO_NO_ASIGNADO", "No tienes asignado este curso");
+  }
+  return curso;
+}
+
+export async function listarCursosAsignadosProfesor(profesorId: number) {
+  const profesor = await buscarUsuarioPorId(profesorId);
+  if (!profesor || !profesor.activo || profesor.rol !== "profesor") {
+    throw new HttpError(403, "ACCESO_DENEGADO", "Solo los profesores pueden consultar sus cursos asignados");
+  }
+
+  return listarCursos().filter((curso) => normalizarNombre(curso.docente) === normalizarNombre(profesor.nombre));
+}
+
+export async function listarEstudiantesDeCursoProfesor(profesorId: number, cursoId: number) {
+  const curso = await obtenerCursoAsignado(profesorId, cursoId);
+  return repositorio.listarEstudiantesPorCurso(curso.id, curso.codigoPensum);
+}
+
 async function validarEstudiante(usuarioId: number): Promise<void> {
   const usuario = await buscarUsuarioPorId(usuarioId);
 
@@ -98,6 +129,11 @@ export async function registrarCalificacion(
   codigoMateria: string,
   nota: number
 ): Promise<void> {
+  const registrador = await buscarUsuarioPorId(registradaPor);
+  if (!registrador || !registrador.activo || (registrador.rol !== "admin" && registrador.rol !== "profesor")) {
+    throw new HttpError(403, "ACCESO_DENEGADO", "No tienes permisos para registrar calificaciones");
+  }
+
   const usuario = await buscarUsuarioPorId(usuarioId);
   if (!usuario || usuario.rol !== "estudiante") {
     throw new HttpError(404, "ESTUDIANTE_NO_ENCONTRADO", "No se encontró el estudiante");
@@ -105,12 +141,24 @@ export async function registrarCalificacion(
   if (!(await materiaExiste(codigoMateria))) {
     throw new HttpError(404, "MATERIA_NO_ENCONTRADA", "No se encontró la materia del pensum");
   }
+  if (registrador.rol === "profesor") {
+    const curso = listarCursos().find((item) =>
+      item.codigoPensum === codigoMateria && normalizarNombre(item.docente) === normalizarNombre(registrador.nombre),
+    );
+    if (!curso) {
+      throw new HttpError(403, "CURSO_NO_ASIGNADO", "No tienes asignada esta materia");
+    }
+    if (!(await repositorio.estaMatriculadoEnCurso(usuarioId, curso.id))) {
+      throw new HttpError(409, "ESTUDIANTE_NO_MATRICULADO", "El estudiante no está matriculado en tu curso");
+    }
+  }
   if (!Number.isFinite(nota) || nota < 0 || nota > 5 || Math.round(nota * 10) !== nota * 10) {
     throw new HttpError(400, "NOTA_INVALIDA", "La nota debe estar entre 0.0 y 5.0 con máximo un decimal");
   }
 
   await guardarCalificacion(usuarioId, codigoMateria, nota, registradaPor);
 }
+
 
 export async function listarMisMatriculas(usuarioId: number) {
   await validarEstudiante(usuarioId);

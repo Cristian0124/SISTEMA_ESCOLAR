@@ -18,6 +18,13 @@ interface Matricula {
   fecha: Date;
 }
 
+export interface EstudianteMatriculado {
+  id: number;
+  nombre: string;
+  cedula: string;
+  nota: number | null;
+}
+
 export async function crearMatricula(
   usuarioId: number,
   curso: Curso
@@ -93,6 +100,41 @@ export async function crearMatricula(
   } finally {
     cliente.release();
   }
+}
+
+export async function listarEstudiantesPorCurso(
+  cursoId: number,
+  codigoMateria: string
+): Promise<EstudianteMatriculado[]> {
+  const resultado = await pool.query<Omit<EstudianteMatriculado, "nota"> & { nota: string | null }>(
+    `SELECT usuario.id, usuario.nombre, usuario.cedula, calificacion.nota::text AS nota
+     FROM matriculas AS matricula
+     JOIN usuarios AS usuario ON usuario.id = matricula.usuario_id
+     LEFT JOIN calificaciones AS calificacion
+       ON calificacion.usuario_id = usuario.id
+       AND calificacion.codigo_materia = $2
+     WHERE matricula.curso_id = $1
+       AND matricula.estado = 'Activa'
+       AND usuario.rol = 'estudiante'
+       AND usuario.activo = TRUE
+     ORDER BY usuario.nombre, usuario.id`,
+    [cursoId, codigoMateria]
+  );
+
+  return resultado.rows.map((estudiante) => ({
+    ...estudiante,
+    nota: estudiante.nota === null ? null : Number(estudiante.nota)
+  }));
+}
+
+export async function estaMatriculadoEnCurso(usuarioId: number, cursoId: number): Promise<boolean> {
+  const resultado = await pool.query(
+    `SELECT 1 FROM matriculas
+     WHERE usuario_id = $1 AND curso_id = $2 AND estado = 'Activa'
+     LIMIT 1`,
+    [usuarioId, cursoId]
+  );
+  return resultado.rowCount !== 0;
 }
 
 export async function listarPorEstudiante(

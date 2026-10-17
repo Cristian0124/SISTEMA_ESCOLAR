@@ -6,7 +6,9 @@ import {
   listarMisMatriculas as listarMisMatriculasServicio,
   eliminarMatricula as eliminarMatriculaServicio,
   obtenerAvancePensum as obtenerAvancePensumServicio,
-  registrarCalificacion as registrarCalificacionServicio
+  registrarCalificacion as registrarCalificacionServicio,
+  listarCursosAsignadosProfesor as listarCursosAsignadosProfesorServicio,
+  listarEstudiantesDeCursoProfesor as listarEstudiantesDeCursoProfesorServicio
 } from "../services/matriculas.service";
 
 function obtenerUsuarioId(res: Response): number {
@@ -107,6 +109,31 @@ export const registrarCalificacion: RequestHandler = async (req, res, next) => {
 
     await registrarCalificacionServicio(registradaPor, usuarioId, codigoMateria, nota);
     res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const listarCursosDocente: RequestHandler = async (_req, res, next) => {
+  try {
+    res.status(200).json(await listarCursosAsignadosProfesorServicio(obtenerUsuarioId(res)));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const listarEstudiantesDeCursoDocente: RequestHandler = async (req, res, next) => {
+  try {
+    const parametro = req.params.cursoId;
+    if (typeof parametro !== "string" || !/^[1-9]\d*$/.test(parametro)) {
+      throw new HttpError(400, "CURSO_INVALIDO", "El identificador del curso no es válido");
+    }
+    const cursoId = Number(parametro);
+    if (!esIdValido(cursoId)) {
+      throw new HttpError(400, "CURSO_INVALIDO", "El identificador del curso no es válido");
+    }
+
+    res.status(200).json(await listarEstudiantesDeCursoProfesorServicio(obtenerUsuarioId(res), cursoId));
   } catch (error) {
     next(error);
   }

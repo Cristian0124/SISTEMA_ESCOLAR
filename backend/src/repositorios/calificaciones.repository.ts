@@ -71,3 +71,22 @@ export async function guardarCalificacion(
     [usuarioId, codigoMateria, nota, registradaPor]
   );
 }
+
+export interface EstudianteEncontrado {
+  id: number;
+  nombre: string;
+  cedula: string;
+}
+
+export async function buscarEstudiantePorCedula(cedula: string): Promise<EstudianteEncontrado | null> {
+  const resultado = await pool.query<EstudianteEncontrado>(
+    `SELECT id, nombre, cedula
+     FROM usuarios
+     WHERE LOWER(BTRIM(cedula)) = LOWER(BTRIM($1))
+       AND rol = 'estudiante'
+       AND activo = TRUE
+     LIMIT 1`,
+    [cedula]
+  );
+  return resultado.rows[0] ?? null;
+}

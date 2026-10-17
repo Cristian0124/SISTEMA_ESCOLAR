@@ -7,13 +7,17 @@ import jwt from "jsonwebtoken";
 import app from "../src/app";
 import { JWT_ACCESS_SECRET } from "../src/config/env";
 import { pool } from "../src/config/database";
-import { crearAdministrador } from "../src/repositorios/auth.repository";
+import { crearAdministrador, crearUsuarioAdministrado } from "../src/repositorios/auth.repository";
 
 const sufijo = randomUUID().replaceAll("-", "");
 const correo = `registro.${sufijo}@example.test`;
 const cedula = `T${sufijo.slice(0, 31)}`;
 const correoAdmin = `admin.${sufijo}@example.test`;
 const cedulaAdmin = `A${sufijo.slice(0, 31)}`;
+const correoProfesor = `profesor.${sufijo}@example.test`;
+const cedulaProfesor = `P${sufijo.slice(0, 31)}`;
+const correoProfesorSinAsignacion = `profesor.sin.asignacion.${sufijo}@example.test`;
+const cedulaProfesorSinAsignacion = `N${sufijo.slice(0, 31)}`;
 const password = "PruebaSegura123!";
 const datosRegistro = {
   nombre: "Usuario de prueba",
@@ -30,8 +34,10 @@ let servidor: Server;
 let baseUrl: string;
 let estudianteId: number;
 let administradorId: number;
+let profesorId: number;
+let profesorSinAsignacionId: number;
 
-function tokenPara(id: number, rol: "admin" | "estudiante") {
+function tokenPara(id: number, rol: "admin" | "estudiante" | "profesor") {
   return jwt.sign({ id, nombre: "Usuario de prueba", rol }, JWT_ACCESS_SECRET);
 }
 
@@ -48,6 +54,30 @@ before(async () => {
   assert.ok(administrador);
   administradorId = administrador.id;
 
+  const profesor = await crearUsuarioAdministrado({
+    nombre: "Laura Gómez",
+    correo: correoProfesor,
+    cedula: cedulaProfesor,
+    fechaNacimiento: "1985-01-01",
+    fechaIngreso: new Date().toISOString().slice(0, 10),
+    nacionalidad: "Prueba",
+    genero: "Prefiero no indicar"
+  }, await bcrypt.hash("ProfesorPrueba123!", 4), "profesor");
+  assert.ok(profesor);
+  profesorId = profesor.id;
+
+  const profesorSinAsignacion = await crearUsuarioAdministrado({
+    nombre: "Profesor sin cursos",
+    correo: correoProfesorSinAsignacion,
+    cedula: cedulaProfesorSinAsignacion,
+    fechaNacimiento: "1985-01-01",
+    fechaIngreso: new Date().toISOString().slice(0, 10),
+    nacionalidad: "Prueba",
+    genero: "Prefiero no indicar"
+  }, await bcrypt.hash("ProfesorPrueba456!", 4), "profesor");
+  assert.ok(profesorSinAsignacion);
+  profesorSinAsignacionId = profesorSinAsignacion.id;
+
   servidor = app.listen(0);
   await new Promise<void>((resolve, reject) => {
     servidor.once("listening", resolve);
@@ -61,7 +91,12 @@ before(async () => {
 
 after(async () => {
   try {
-    await pool.query("DELETE FROM usuarios WHERE correo = ANY($1::text[])", [[correo, correoAdmin]]);
+    const correosPrueba = [correo, correoAdmin, correoProfesor, correoProfesorSinAsignacion];
+    await pool.query(
+      "DELETE FROM matriculas WHERE usuario_id IN (SELECT id FROM usuarios WHERE correo = ANY($1::text[]))",
+      [correosPrueba]
+    );
+    await pool.query("DELETE FROM usuarios WHERE correo = ANY($1::text[])", [correosPrueba]);
   } finally {
     if (servidor?.listening) {
       await new Promise<void>((resolve, reject) => {
@@ -129,6 +164,50 @@ test("registro y autenticación", async (contexto) => {
     assert.equal(cuerpo.codigo, "CREDENCIALES_INVALIDAS");
   });
 
+  await contexto.test("el profesor asignado solo ve sus matriculados y puede calificarlos", async () => {
+    const tokenProfesor = `Bearer ${tokenPara(profesorId, "profesor")}`;
+    const matricula = await fetch(`${baseUrl}/api/matriculas`, {
+      method: "POST",
+      headers: { authorization: `Bearer ${tokenPara(estudianteId, "estudiante")}`, "content-type": "application/json" },
+      body: JSON.stringify({ cursoId: 2 })
+    });
+    assert.equal(matricula.status, 201);
+
+    const cursosRespuesta = await fetch(`${baseUrl}/api/matriculas/docente/cursos`, {
+      headers: { authorization: tokenProfesor }
+    });
+    const cursosAsignados = await cursosRespuesta.json() as Array<{ id: number; codigoPensum: string }>;
+    assert.equal(cursosRespuesta.status, 200);
+    assert.deepEqual(cursosAsignados.map((curso) => curso.id), [2]);
+
+    const listaRespuesta = await fetch(`${baseUrl}/api/matriculas/docente/cursos/2/estudiantes`, {
+      headers: { authorization: tokenProfesor }
+    });
+    const estudiantes = await listaRespuesta.json() as Array<{ id: number; nombre: string; cedula: string; nota: number | null }>;
+    assert.equal(listaRespuesta.status, 200);
+    assert.equal(estudiantes.length, 1);
+    assert.equal(estudiantes[0].id, estudianteId);
+    assert.equal(estudiantes[0].nota, null);
+
+    const noAsignado = await fetch(`${baseUrl}/api/matriculas/docente/cursos/2/estudiantes`, {
+      headers: { authorization: `Bearer ${tokenPara(profesorSinAsignacionId, "profesor")}` }
+    });
+    assert.equal(noAsignado.status, 403);
+
+    const calificacion = await fetch(`${baseUrl}/api/matriculas/calificaciones/${estudianteId}/ISI05`, {
+      method: "PUT",
+      headers: { authorization: tokenProfesor, "content-type": "application/json" },
+      body: JSON.stringify({ nota: 4.1 })
+    });
+    assert.equal(calificacion.status, 204);
+
+    const resultado = await pool.query<{ registrada_por: number }>(
+      "SELECT registrada_por FROM calificaciones WHERE usuario_id = $1 AND codigo_materia = 'ISI05'",
+      [estudianteId]
+    );
+    assert.equal(resultado.rows[0].registrada_por, profesorId);
+  });
+
   await contexto.test("bloquea una matrícula si falta aprobar el prerrequisito", async () => {
     const respuesta = await fetch(`${baseUrl}/api/matriculas`, {
       method: "POST",
@@ -176,4 +255,5 @@ test("registro y autenticación", async (contexto) => {
     assert.equal(calculo?.aprobada, false);
     assert.equal(calculo?.bloqueada, false);
   });
+
 });
