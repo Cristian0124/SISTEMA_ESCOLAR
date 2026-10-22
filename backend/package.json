@@ -10,7 +10,8 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "test": "tsx --test tests/*.test.ts",
-    "admin:create": "tsx src/scripts/create-admin.ts"
+    "admin:create": "tsx src/scripts/create-admin.ts",
+    "admin:recreate": "tsx src/scripts/recreate-admin.ts"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",
