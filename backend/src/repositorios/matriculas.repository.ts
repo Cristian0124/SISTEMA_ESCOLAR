@@ -50,17 +50,52 @@ export async function crearMatricula(
       };
     }
 
+    const limite = await cliente.query<{ cupos_disponibles: number }>(
+      "SELECT cupos_disponibles FROM cursos WHERE id = $1 FOR UPDATE",
+      [curso.id]
+    );
+    if (!limite.rows[0]) {
+      throw new HttpError(404, "CURSO_NO_ENCONTRADO", "El curso seleccionado ya no existe");
+    }
+
+    const aprobada = await cliente.query(
+      `SELECT 1 FROM calificaciones
+       WHERE usuario_id = $1 AND codigo_materia = $2 AND nota >= 3.0
+       LIMIT 1`,
+      [usuarioId, curso.codigoPensum]
+    );
+    if (aprobada.rowCount) {
+      throw new HttpError(409, "MATERIA_YA_APROBADA", "Ya aprobaste esta materia y no puedes matricularla de nuevo");
+    }
+
+    const requisitosPendientes = await cliente.query<{ codigo_requisito: string }>(
+      `SELECT prerrequisito.codigo_requisito
+       FROM prerrequisitos_materia AS prerrequisito
+       LEFT JOIN calificaciones AS calificacion
+         ON calificacion.usuario_id = $1
+         AND calificacion.codigo_materia = prerrequisito.codigo_requisito
+         AND calificacion.nota >= 3.0
+       WHERE prerrequisito.codigo_materia = $2
+         AND calificacion.usuario_id IS NULL
+       ORDER BY prerrequisito.codigo_requisito`,
+      [usuarioId, curso.codigoPensum]
+    );
+    if (requisitosPendientes.rowCount) {
+      const codigos = requisitosPendientes.rows.map((fila) => fila.codigo_requisito);
+      throw new HttpError(409, "PRERREQUISITOS_PENDIENTES", `Debes aprobar primero: ${codigos.join(", ")}`);
+    }
+
     const ocupacion = await cliente.query<{ cantidad: number }>(
       `SELECT COUNT(*)::integer AS cantidad
        FROM matriculas
-       WHERE curso_id = $1`,
+       WHERE curso_id = $1 AND estado = 'Activa'`,
       [curso.id]
     );
 
     const cantidad = ocupacion.rows[0].cantidad;
 
-    // El catálogo actual contiene los cupos disponibles iniciales.
-    if (cantidad >= curso.cuposDisponibles) {
+    // cupos_disponibles stores the enrollment limit; the catalog subtracts active registrations.
+    if (cantidad >= limite.rows[0].cupos_disponibles) {
       throw new HttpError(
         409,
         "SIN_CUPOS",

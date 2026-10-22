@@ -1,12 +1,7 @@
 import { HttpError } from "../types/http-error";
 import { buscarUsuarioPorId } from "../repositorios/auth.repository";
 import { buscarCursoPorId, listarCursos } from "../repositorios/cursos.repository";
-import {
-  guardarCalificacion,
-  listarAvanceEstudiante,
-  listarCodigosAprobados,
-  materiaExiste
-} from "../repositorios/calificaciones.repository";
+import { guardarCalificacion, listarAvanceEstudiante, listarCodigosAprobados, materiaExiste } from "../repositorios/calificaciones.repository";
 import * as repositorio from "../repositorios/matriculas.repository";
 
 function normalizarNombre(nombre: string): string {
@@ -74,28 +69,6 @@ export async function crearMatricula(
       "CURSO_NO_ENCONTRADO",
       "El curso seleccionado no existe"
     );
-  }
-
-  if (curso.codigoPensum) {
-    const aprobadas = new Set(await listarCodigosAprobados(usuarioId));
-    if (aprobadas.has(curso.codigoPensum)) {
-      throw new HttpError(
-        409,
-        "MATERIA_YA_APROBADA",
-        "Ya aprobaste esta materia y no puedes matricularla de nuevo"
-      );
-    }
-
-    const avance = await listarAvanceEstudiante(usuarioId);
-    const materia = avance.find((item) => item.codigo === curso.codigoPensum);
-    const pendientes = materia?.prerrequisitos.filter((codigo) => !aprobadas.has(codigo)) ?? [];
-    if (pendientes.length) {
-      throw new HttpError(
-        409,
-        "PRERREQUISITOS_PENDIENTES",
-        `Debes aprobar primero: ${pendientes.join(", ")}`
-      );
-    }
   }
 
   return repositorio.crearMatricula(usuarioId, curso);

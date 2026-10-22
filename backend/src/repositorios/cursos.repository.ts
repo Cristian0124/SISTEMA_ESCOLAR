@@ -21,24 +21,29 @@ const consultaCursos = `
     curso.docente,
     curso.horario,
     curso.cupos_totales AS "cuposTotales",
-    curso.cupos_disponibles AS "cuposDisponibles",
+    GREATEST(
+      curso.cupos_disponibles - COUNT(matricula.id)::integer,
+      0
+    ) AS "cuposDisponibles",
     materia.semestre,
     materia.creditos,
     curso.codigo_pensum AS "codigoPensum"
   FROM cursos AS curso
   JOIN materias_pensum AS materia ON materia.codigo = curso.codigo_pensum
+  LEFT JOIN matriculas AS matricula
+    ON matricula.curso_id = curso.id AND matricula.estado = 'Activa'
 `;
 
 export async function listarCursos(): Promise<Curso[]> {
   const resultado = await pool.query<Curso>(
-    `${consultaCursos} ORDER BY curso.id`
+    `${consultaCursos} GROUP BY curso.id, materia.codigo ORDER BY curso.id`
   );
   return resultado.rows;
 }
 
 export async function buscarCursoPorId(id: number): Promise<Curso | null> {
   const resultado = await pool.query<Curso>(
-    `${consultaCursos} WHERE curso.id = $1 LIMIT 1`,
+    `${consultaCursos} WHERE curso.id = $1 GROUP BY curso.id, materia.codigo LIMIT 1`,
     [id]
   );
   return resultado.rows[0] ?? null;
