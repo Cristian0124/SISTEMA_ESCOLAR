@@ -1,6 +1,6 @@
 import { HttpError } from "../types/http-error";
 import { buscarUsuarioPorId } from "../repositorios/auth.repository";
-import { listarCursos } from "../repositorios/cursos.repository";
+import { buscarCursoPorId, listarCursos } from "../repositorios/cursos.repository";
 import {
   guardarCalificacion,
   listarAvanceEstudiante,
@@ -19,7 +19,7 @@ async function obtenerCursoAsignado(profesorId: number, cursoId: number) {
     throw new HttpError(403, "ACCESO_DENEGADO", "Solo los profesores pueden consultar sus cursos asignados");
   }
 
-  const curso = listarCursos().find((item) => item.id === cursoId);
+  const curso = await buscarCursoPorId(cursoId);
   if (!curso || normalizarNombre(curso.docente) !== normalizarNombre(profesor.nombre)) {
     throw new HttpError(403, "CURSO_NO_ASIGNADO", "No tienes asignado este curso");
   }
@@ -32,7 +32,7 @@ export async function listarCursosAsignadosProfesor(profesorId: number) {
     throw new HttpError(403, "ACCESO_DENEGADO", "Solo los profesores pueden consultar sus cursos asignados");
   }
 
-  return listarCursos().filter((curso) => normalizarNombre(curso.docente) === normalizarNombre(profesor.nombre));
+  return (await listarCursos()).filter((curso) => normalizarNombre(curso.docente) === normalizarNombre(profesor.nombre));
 }
 
 export async function listarEstudiantesDeCursoProfesor(profesorId: number, cursoId: number) {
@@ -66,7 +66,7 @@ export async function crearMatricula(
 ) {
   await validarEstudiante(usuarioId);
 
-  const curso = listarCursos().find((item) => item.id === cursoId);
+  const curso = await buscarCursoPorId(cursoId);
 
   if (!curso) {
     throw new HttpError(
@@ -142,7 +142,8 @@ export async function registrarCalificacion(
     throw new HttpError(404, "MATERIA_NO_ENCONTRADA", "No se encontró la materia del pensum");
   }
   if (registrador.rol === "profesor") {
-    const curso = listarCursos().find((item) =>
+    const cursos = await listarCursos();
+    const curso = cursos.find((item) =>
       item.codigoPensum === codigoMateria && normalizarNombre(item.docente) === normalizarNombre(registrador.nombre),
     );
     if (!curso) {

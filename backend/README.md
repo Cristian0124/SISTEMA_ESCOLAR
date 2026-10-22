@@ -11,9 +11,11 @@
 	psql $env:DATABASE_URL -f src/database/migrations/002_matriculas.sql
 	$env:PGCLIENTENCODING = "UTF8"
 	psql $env:DATABASE_URL -f src/database/migrations/002_prerrequisitos_calificaciones.sql
+	psql $env:DATABASE_URL -f src/database/migrations/003_cursos.sql
 	```
 
 	Sustituye la URL de ejemplo por la misma URL configurada en `.env`.
+	La migración `003_cursos.sql` crea el catálogo y conserva los IDs usados por las matrículas. Su reversión está en `003_cursos.down.sql`; úsala solo si quieres retirar el catálogo creado por esa migración, pues elimina esa tabla y sus filas.
 
 3. Inicia el backend con `npm run dev`.
 

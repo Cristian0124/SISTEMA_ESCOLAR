@@ -1,15 +1,6 @@
-import "../config/env";
-import { Pool } from "pg";
+import { pool } from "../config/database";
 import type { Curso } from "./cursos.repository";
 import { HttpError } from "../types/http-error";
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl:
-    process.env.DB_SSL === "true"
-      ? { rejectUnauthorized: false }
-      : undefined
-});
 
 interface Matricula {
   id: number;
