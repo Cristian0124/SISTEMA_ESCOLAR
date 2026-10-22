@@ -16,7 +16,7 @@ const router = useRouter()
 const cursos = ref<Curso[]>([])
 const cursoId = ref<number | null>(null)
 const estudiantes = ref<EstudianteDeCurso[]>([])
-const notas = ref<Record<number, number | undefined>>({})
+const notas = ref<Record<number, { corte1?: number; corte2?: number; corte3?: number }>>({})
 const cursoSeleccionado = computed(() => cursos.value.find((curso) => curso.id === cursoId.value) ?? null)
 const cargandoCursos = ref(false)
 const cargandoEstudiantes = ref(false)
@@ -48,6 +48,11 @@ async function cargarEstudiantes() {
   cargandoEstudiantes.value = true
   try {
     estudiantes.value = await listarEstudiantesDelCurso(cursoId.value)
+    notas.value = Object.fromEntries(estudiantes.value.map((estudiante) => [estudiante.id, {
+      corte1: estudiante.corte1 ?? undefined,
+      corte2: estudiante.corte2 ?? undefined,
+      corte3: estudiante.corte3 ?? undefined,
+    }]))
   } catch (fallo) {
     error.value = axios.isAxiosError(fallo)
       ? fallo.response?.data?.mensaje ?? 'No fue posible consultar los estudiantes de este curso.'
@@ -58,17 +63,24 @@ async function cargarEstudiantes() {
 }
 
 async function guardarCalificacion(estudiante: EstudianteDeCurso) {
-  const nota = notas.value[estudiante.id]
+  const cortes = notas.value[estudiante.id]
   const curso = cursoSeleccionado.value
-  if (!curso || typeof nota !== 'number' || !Number.isFinite(nota)) return
+  if (!curso || !cortes || typeof cortes.corte1 !== 'number' || typeof cortes.corte2 !== 'number' || typeof cortes.corte3 !== 'number') return
 
   guardandoEstudianteId.value = estudiante.id
   error.value = ''
   resultados.value[estudiante.id] = ''
   try {
-    await registrarNota(estudiante.id, curso.codigoPensum, nota)
-    estudiante.nota = nota
-    resultados.value[estudiante.id] = 'Nota guardada.'
+    const resultado = await registrarNota(estudiante.id, curso.codigoPensum, {
+      corte1: cortes.corte1,
+      corte2: cortes.corte2,
+      corte3: cortes.corte3,
+    })
+    estudiante.corte1 = cortes.corte1
+    estudiante.corte2 = cortes.corte2
+    estudiante.corte3 = cortes.corte3
+    estudiante.nota = resultado.nota
+    resultados.value[estudiante.id] = `Nota final: ${resultado.nota.toFixed(2)}.`
   } catch (fallo) {
     error.value = axios.isAxiosError(fallo)
       ? fallo.response?.data?.mensaje ?? 'No fue posible guardar la calificación.'
@@ -121,29 +133,47 @@ async function salir() {
           <p v-else-if="cursoId !== null && estudiantes.length === 0 && !error" class="notice">Aún no hay estudiantes matriculados en este curso.</p>
 
           <section v-if="estudiantes.length" class="student-list" aria-label="Estudiantes matriculados">
-            <div class="student-list-header"><span>Estudiante</span><span>Nota actual</span><span>Nueva nota</span><span></span></div>
+            <div class="student-list-header"><span>Estudiante</span><span>Final</span><span>Corte 1 · 30%</span><span>Corte 2 · 30%</span><span>Corte 3 · 40%</span><span></span></div>
             <div v-for="estudiante in estudiantes" :key="estudiante.id" class="student-row">
               <div class="student-name"><strong>{{ estudiante.nombre }}</strong><span>Cédula {{ estudiante.cedula }}</span></div>
-              <span class="current-grade">{{ estudiante.nota === null ? '—' : estudiante.nota.toFixed(1) }}</span>
+              <span class="current-grade">{{ estudiante.nota === null ? '—' : estudiante.nota.toFixed(2) }}</span>
               <input
-                v-model.number="notas[estudiante.id]"
+                v-model.number="notas[estudiante.id].corte1"
                 class="grade-input"
                 type="number"
                 min="0"
                 max="5"
                 step="0.1"
-                :aria-label="`Nueva nota para ${estudiante.nombre}`"
+                :aria-label="`Corte 1 para ${estudiante.nombre}`"
+              />
+              <input
+                v-model.number="notas[estudiante.id].corte2"
+                class="grade-input"
+                type="number"
+                min="0"
+                max="5"
+                step="0.1"
+                :aria-label="`Corte 2 para ${estudiante.nombre}`"
+              />
+              <input
+                v-model.number="notas[estudiante.id].corte3"
+                class="grade-input"
+                type="number"
+                min="0"
+                max="5"
+                step="0.1"
+                :aria-label="`Corte 3 para ${estudiante.nombre}`"
               />
               <button
                 class="primary-button"
                 type="button"
-                :disabled="guardandoEstudianteId !== null || notas[estudiante.id] === undefined"
+                :disabled="guardandoEstudianteId !== null || !notas[estudiante.id] || notas[estudiante.id].corte1 === undefined || notas[estudiante.id].corte2 === undefined || notas[estudiante.id].corte3 === undefined"
                 @click="guardarCalificacion(estudiante)"
               >{{ guardandoEstudianteId === estudiante.id ? 'Guardando…' : 'Guardar' }}</button>
               <span v-if="resultados[estudiante.id]" class="row-result" role="status">{{ resultados[estudiante.id] }}</span>
             </div>
           </section>
-          <p class="grade-hint">Escala de 0.0 a 5.0. Una nota de 3.0 o más aprueba la materia y puede habilitar sus prerrequisitos.</p>
+          <p class="grade-hint">Cada corte se califica de 0.0 a 5.0. La nota final se calcula: corte 1 × 30% + corte 2 × 30% + corte 3 × 40%. Una nota final de 3.0 o más aprueba la materia.</p>
         </template>
       </section>
     </main>
@@ -177,7 +207,7 @@ label { color: #405458; font-size: 12px; font-weight: 700; }
 input, select { width: 100%; min-height: 42px; padding: 8px 11px; border: 1px solid #cbd7d8; border-radius: 4px; color: var(--ink); background: #fff; font: inherit; }
 input:focus, select:focus { outline: 2px solid #1685a244; border-color: var(--accent); }
 .student-list { border: 1px solid var(--line); }
-.student-list-header, .student-row { display: grid; grid-template-columns: minmax(180px, 1.5fr) 90px 110px 100px; align-items: center; gap: 12px; padding: 11px 12px; }
+.student-list-header, .student-row { display: grid; grid-template-columns: minmax(160px, 1.5fr) 65px repeat(3, minmax(85px, 1fr)) 90px; align-items: center; gap: 9px; padding: 11px 12px; }
 .student-list-header { color: var(--muted); background: #f5f8f8; font-size: 10px; font-weight: 700; }
 .student-row { border-top: 1px solid var(--line); }
 .student-name { display: grid; gap: 4px; min-width: 0; }
@@ -194,5 +224,5 @@ input:focus, select:focus { outline: 2px solid #1685a244; border-color: var(--ac
 button:disabled { opacity: .55; cursor: not-allowed; }
 .statusbar { display: flex; align-items: center; gap: 14px; padding: 0 12px; border-top: 1px solid var(--line); color: #637477; background: #f8faf9; font-size: 10px; }
 .connection { display: flex; align-items: center; gap: 5px; margin-left: auto; }.connection i { width: 7px; height: 7px; border-radius: 50%; background: #4d9a72; }
-@media (max-width: 680px) { .topbar { padding: 0 12px; }.user-name { display: none; }.student-list-header { display: none; }.student-row { grid-template-columns: minmax(0, 1fr) 72px 88px; gap: 8px; padding: 10px; }.student-row .primary-button { grid-column: 3; }.student-row .row-result { grid-column: 1 / -1; }.statusbar { gap: 8px; font-size: 9px; } }
+@media (max-width: 820px) { .topbar { padding: 0 12px; }.user-name { display: none; }.student-list-header { display: none; }.student-row { grid-template-columns: minmax(0, 1fr) 65px repeat(3, minmax(60px, 1fr)); gap: 8px; padding: 10px; }.student-row .primary-button { grid-column: 1 / -1; }.student-row .row-result { grid-column: 1 / -1; }.statusbar { gap: 8px; font-size: 9px; } }
 </style>

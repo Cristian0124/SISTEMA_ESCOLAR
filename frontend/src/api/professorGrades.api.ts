@@ -6,6 +6,9 @@ export interface EstudianteDeCurso {
   nombre: string
   cedula: string
   nota: number | null
+  corte1: number | null
+  corte2: number | null
+  corte3: number | null
 }
 
 export async function listarCursosAsignados(): Promise<Curso[]> {
@@ -18,6 +21,7 @@ export async function listarEstudiantesDelCurso(cursoId: number): Promise<Estudi
   return data
 }
 
-export async function registrarNota(estudianteId: number, codigoMateria: string, nota: number): Promise<void> {
-  await api.put(`/matriculas/calificaciones/${estudianteId}/${codigoMateria}`, { nota })
+export async function registrarNota(estudianteId: number, codigoMateria: string, cortes: { corte1: number; corte2: number; corte3: number }): Promise<{ nota: number }> {
+  const { data } = await api.put<{ nota: number }>(`/matriculas/calificaciones/${estudianteId}/${codigoMateria}`, cortes)
+  return data
 }

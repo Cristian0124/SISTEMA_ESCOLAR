@@ -6,6 +6,7 @@ import {
   listarMisMatriculas as listarMisMatriculasServicio,
   eliminarMatricula as eliminarMatriculaServicio,
   obtenerAvancePensum as obtenerAvancePensumServicio,
+  listarMisCalificaciones as listarMisCalificacionesServicio,
   registrarCalificacion as registrarCalificacionServicio,
   listarCursosAsignadosProfesor as listarCursosAsignadosProfesorServicio,
   listarEstudiantesDeCursoProfesor as listarEstudiantesDeCursoProfesorServicio
@@ -93,22 +94,31 @@ export const obtenerAvancePensum: RequestHandler = async (_req, res, next) => {
   }
 };
 
+export const listarMisCalificaciones: RequestHandler = async (_req, res, next) => {
+  try {
+    const calificaciones = await listarMisCalificacionesServicio(obtenerUsuarioId(res));
+    res.status(200).json(calificaciones);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const registrarCalificacion: RequestHandler = async (req, res, next) => {
   try {
     const registradaPor = obtenerUsuarioId(res);
     const usuarioId = Number(req.params.usuarioId);
     const codigoMateria = req.params.codigoMateria;
-    const nota: unknown = req.body?.nota;
+    const cortes = { corte1: req.body?.corte1, corte2: req.body?.corte2, corte3: req.body?.corte3 };
 
     if (!esIdValido(usuarioId) || typeof codigoMateria !== "string" || !/^[A-Z]{3}\d{2}$/.test(codigoMateria)) {
       throw new HttpError(400, "DATOS_INVALIDOS", "El estudiante o el código de materia no es válido");
     }
-    if (typeof nota !== "number") {
-      throw new HttpError(400, "NOTA_INVALIDA", "La nota debe ser un número");
+    if (Object.values(cortes).some((corte) => typeof corte !== "number")) {
+      throw new HttpError(400, "CORTES_INVALIDOS", "Debes enviar los tres cortes como valores numericos");
     }
 
-    await registrarCalificacionServicio(registradaPor, usuarioId, codigoMateria, nota);
-    res.status(204).end();
+    const resultado = await registrarCalificacionServicio(registradaPor, usuarioId, codigoMateria, cortes as { corte1: number; corte2: number; corte3: number });
+    res.status(200).json(resultado);
   } catch (error) {
     next(error);
   }

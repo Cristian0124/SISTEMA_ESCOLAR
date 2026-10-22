@@ -4,6 +4,7 @@ import {
   eliminarMatricula,
   listarMisMatriculas,
   obtenerAvancePensum,
+  listarMisCalificaciones,
   registrarCalificacion,
   listarCursosDocente,
   listarEstudiantesDeCursoDocente
@@ -16,6 +17,7 @@ router.use(autenticar);
 router.post("/", crearMatricula);
 router.get("/mias", listarMisMatriculas);
 router.get("/avance", obtenerAvancePensum);
+router.get("/calificaciones/mias", listarMisCalificaciones);
 router.get("/docente/cursos", autorizar("profesor"), listarCursosDocente);
 router.get("/docente/cursos/:cursoId/estudiantes", autorizar("profesor"), listarEstudiantesDeCursoDocente);
 router.put("/calificaciones/:usuarioId/:codigoMateria", autorizar("admin", "profesor"), registrarCalificacion);
