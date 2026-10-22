@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import * as authService from '@/services/authService'
-import type { LoginRequest, Usuario } from '@/types'
+import type { LoginRequest, LoginResponse, Usuario } from '@/types'
 
 export const useAuthStore = defineStore('auth', () => {
   // El access token vive solo en memoria (no en localStorage)
@@ -9,6 +9,8 @@ export const useAuthStore = defineStore('auth', () => {
   const usuario = ref<Usuario | null>(null)
   const cargando = ref(false)
   const error = ref<string | null>(null)
+  const sesionRestaurada = ref(false)
+  let restauracionEnCurso: Promise<void> | null = null
 
   const autenticado = computed(() => accessToken.value !== null)
 
@@ -17,8 +19,7 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null
     try {
       const { data } = await authService.login(datos)
-      accessToken.value = data.accessToken
-      usuario.value = data.usuario
+      establecerSesion(data)
       return true
     } catch {
       error.value = 'Credenciales inválidas o servidor no disponible'
@@ -29,14 +30,24 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   // Al recargar la página el token en memoria se pierde: se recupera con la cookie
-  async function restaurarSesion() {
-    try {
-      const { data } = await authService.refresh()
-      accessToken.value = data.accessToken
-      usuario.value = data.usuario
-    } catch {
-      limpiarSesion()
-    }
+  function establecerSesion(sesion: LoginResponse) {
+    accessToken.value = sesion.accessToken
+    usuario.value = sesion.usuario
+    sesionRestaurada.value = true
+  }
+
+  async function restaurarSesion(): Promise<void> {
+    if (sesionRestaurada.value) return
+    if (restauracionEnCurso) return restauracionEnCurso
+
+    restauracionEnCurso = authService.refresh()
+      .then(({ data }) => establecerSesion(data))
+      .catch(() => limpiarSesion())
+      .finally(() => {
+        restauracionEnCurso = null
+      })
+
+    return restauracionEnCurso
   }
 
   async function cerrarSesion() {
@@ -47,6 +58,7 @@ export const useAuthStore = defineStore('auth', () => {
   function limpiarSesion() {
     accessToken.value = null
     usuario.value = null
+    sesionRestaurada.value = true
   }
 
   return {
@@ -55,6 +67,8 @@ export const useAuthStore = defineStore('auth', () => {
     cargando,
     error,
     autenticado,
+    sesionRestaurada,
+    establecerSesion,
     iniciarSesion,
     restaurarSesion,
     cerrarSesion,

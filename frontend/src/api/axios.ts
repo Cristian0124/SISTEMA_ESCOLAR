@@ -44,7 +44,7 @@ api.interceptors.response.use(
           renovando = null
         })
       const datos = await renovando
-      auth.accessToken = datos.accessToken
+      auth.establecerSesion(datos)
       return api(original) // reintenta la petición original
     } catch {
       auth.limpiarSesion()
