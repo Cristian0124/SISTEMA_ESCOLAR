@@ -5,6 +5,7 @@ import CourseFilters, { type CourseFilters as CourseFiltersState } from '@/compo
 import { consultarAvancePensum, type MateriaAvance } from '@/api/pensum.api'
 import { useCoursesStore } from '@/stores/courses.store'
 import { useAuthStore } from '@/stores/auth'
+import { useCourseAutoRefresh } from '@/composables/useCourseAutoRefresh'
 const store = useCoursesStore()
 const auth = useAuthStore()
 const filtrosCursos = ref<CourseFiltersState>({ busqueda: '', semestre: '', disponibilidad: 'todos' })
@@ -18,6 +19,7 @@ const avanceMaterias = ref<MateriaAvance[]>([])
 const cargandoAvance = ref(false)
 const avanceCargado = ref(false)
 const errorAvance = ref('')
+useCourseAutoRefresh(() => true, () => enviando.value)
 const seleccionados = computed(() => store.cursos.filter(c => seleccion.value.includes(c.id)))
 const apiBaseUrl = (import.meta.env.VITE_API_URL
   ?? `${window.location.protocol}//${window.location.hostname}:3000/api`).replace(/\/+$/, '')

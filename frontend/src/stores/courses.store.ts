@@ -5,6 +5,7 @@ import { listarCursos, type Curso } from '@/api/courses.api'
 export const useCoursesStore = defineStore('courses', () => {
   const cursos = ref<Curso[]>([])
   const cargando = ref(false)
+  const cargado = ref(false)
   const error = ref<string | null>(null)
   const hayCursos = computed(() => cursos.value.length > 0)
 
@@ -17,8 +18,9 @@ export const useCoursesStore = defineStore('courses', () => {
       error.value = 'No fue posible consultar los cursos. Intenta nuevamente.'
     } finally {
       cargando.value = false
+      cargado.value = true
     }
   }
 
-  return { cursos, cargando, error, hayCursos, cargarCursos }
+  return { cursos, cargando, cargado, error, hayCursos, cargarCursos }
 })

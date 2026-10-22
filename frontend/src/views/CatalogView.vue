@@ -4,6 +4,7 @@ import CourseCard from '@/components/CourseCard.vue'
 import CourseFilters, { type CourseFilters as CourseFiltersState } from '@/components/CourseFilters.vue'
 import { consultarAvancePensum, type MateriaAvance } from '@/api/pensum.api'
 import { useCoursesStore } from '@/stores/courses.store'
+import { useCourseAutoRefresh } from '@/composables/useCourseAutoRefresh'
 
 const store = useCoursesStore()
 const busqueda = ref('')
@@ -14,6 +15,7 @@ const semestresRomanos = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'
 const materiasPensum = ref<MateriaAvance[]>([])
 const cargandoPensum = ref(false)
 const errorPensum = ref<string | null>(null)
+useCourseAutoRefresh(() => vista.value === 'oferta')
 
 const semestres = computed(() => [...new Set(materiasPensum.value.map((materia) => materia.semestre))])
 const semestreSeleccionado = computed(() => materiasPensum.value.filter((materia) => materia.semestre === semestreActivo.value))
@@ -45,7 +47,7 @@ async function cargarPensum() {
 
 async function mostrarOferta() {
   vista.value = 'oferta'
-  if (!store.hayCursos && !store.cargando) await store.cargarCursos()
+  if (!store.cargando) await store.cargarCursos()
 }
 
 onMounted(() => void cargarPensum())
@@ -164,13 +166,13 @@ onMounted(() => void cargarPensum())
     </section>
 
     <section v-else class="catalog-content" aria-label="Cursos disponibles">
-      <div v-if="store.cargando" class="empty-state" role="status">
+      <div v-if="store.cargando && !store.cargado" class="empty-state" role="status">
         <span class="loader" aria-hidden="true"></span>
         <strong>Cargando cursos</strong>
         <span>Estamos consultando la oferta académica.</span>
       </div>
 
-      <div v-else-if="store.error" class="empty-state empty-state-error" role="alert">
+      <div v-else-if="store.error && store.cursos.length === 0" class="empty-state empty-state-error" role="alert">
         <strong>No pudimos cargar los cursos</strong>
         <span>{{ store.error }}</span>
         <button class="retry-button" type="button" @click="store.cargarCursos">Intentar de nuevo</button>
@@ -187,6 +189,9 @@ onMounted(() => void cargarPensum())
         :cursos="store.cursos"
         v-slot="{ cursos: cursosFiltrados }"
       >
+        <p v-if="store.error" class="refresh-error" role="status">
+          No se pudo actualizar la disponibilidad. Se muestran los últimos datos recibidos.
+        </p>
         <div v-if="cursosFiltrados.length" class="course-grid" aria-live="polite">
           <CourseCard v-for="curso in cursosFiltrados" :key="curso.id" :curso="curso" />
         </div>
@@ -345,6 +350,8 @@ h1 {
   padding: 20px;
   background: #f8fafa;
 }
+
+.refresh-error { margin: 0; padding: 10px 20px; color: #7a5617; background: #fff8e8; font-size: 12px; }
 
 .program-total {
   display: grid;
