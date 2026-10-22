@@ -6,6 +6,7 @@ import {
 	iniciarSesion,
 	registrarEstudiante as crearEstudiante,
 	registrarUsuarioAdmin as crearUsuarioAdmin,
+	listarProfesoresActivos as obtenerProfesoresActivos,
 	renovarSesion,
 	type Sesion
 } from "../services/auth.service";
@@ -94,6 +95,10 @@ export async function registrarUsuario(req: Request, res: Response) {
  if (!usuario) return res.status(409).json({ codigo: "USUARIO_EXISTENTE", mensaje: "El correo o la cédula ya están registrados" });
  const { password_hash: _passwordHash, ...usuarioPublico } = usuario;
 	return res.status(201).json({ usuario: usuarioPublico });
+}
+
+export async function listarProfesores(_req: Request, res: Response) {
+	return res.status(200).json(await obtenerProfesoresActivos());
 }
 
 export async function registrarEstudiante(req: Request, res: Response) {

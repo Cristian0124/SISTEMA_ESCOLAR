@@ -48,3 +48,11 @@ export async function buscarCursoPorId(id: number): Promise<Curso | null> {
   );
   return resultado.rows[0] ?? null;
 }
+
+export async function asignarDocente(cursoId: number, nombreDocente: string): Promise<boolean> {
+  const resultado = await pool.query(
+    "UPDATE cursos SET docente = $2 WHERE id = $1 RETURNING id",
+    [cursoId, nombreDocente]
+  );
+  return resultado.rowCount !== 0;
+}

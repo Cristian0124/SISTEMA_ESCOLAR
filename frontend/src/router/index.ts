@@ -24,6 +24,7 @@ const router = createRouter({
     { path: '/mis-matriculas', component: () => import('../views/MyEnrollmentsView.vue') },
     { path: '/telemetria', component: () => import('../views/AdminTelemetryView.vue') },
     { path: '/admin/usuarios/nuevo', name: 'registrar-usuario', component: () => import('../views/RegistrarUsuarioView.vue') },
+    { path: '/admin/cursos/profesores', name: 'asignar-profesores', component: () => import('../views/AdminCourseAssignmentsView.vue') },
     { path: '/schedule', component: () => import('../views/ScheduleView.vue') },
     { path: '/my-enrollments', component: () => import('../views/MyEnrollmentsView.vue') },
     { path: '/admin/telemetry', component: () => import('../views/AdminTelemetryView.vue') },

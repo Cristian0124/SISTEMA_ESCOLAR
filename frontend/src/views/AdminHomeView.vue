@@ -23,6 +23,12 @@ const modulos = [
     ruta: '/admin/usuarios/nuevo',
   },
   {
+    titulo: 'Asignar profesores a cursos',
+    descripcion: 'Vincula profesores registrados con los cursos que tienen a cargo.',
+    icono: '✓',
+    ruta: '/admin/cursos/profesores',
+  },
+  {
     titulo: 'Catálogo de cursos',
     descripcion: 'Consulta la oferta académica y los cursos disponibles.',
     icono: '▦',
@@ -89,6 +95,9 @@ async function salir() {
           </RouterLink>
           <RouterLink class="nav-link" to="/admin/usuarios/nuevo">
             <span aria-hidden="true">+</span> Registrar usuarios
+          </RouterLink>
+          <RouterLink class="nav-link" to="/admin/cursos/profesores">
+            <span aria-hidden="true">✓</span> Asignar profesores
           </RouterLink>
           <RouterLink class="nav-link" to="/catalog">
             <span aria-hidden="true">▦</span> Catálogo de cursos

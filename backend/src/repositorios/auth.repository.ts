@@ -12,6 +12,12 @@ export interface UsuarioAuth {
 
 export type RolUsuario = "estudiante" | "profesor" | "admin";
 
+export interface ProfesorDisponible {
+  id: number;
+  nombre: string;
+  correo: string;
+}
+
 export interface NuevoEstudiante {
   nombre: string;
   correo: string;
@@ -53,6 +59,16 @@ export async function buscarUsuarioPorId(id: number): Promise<UsuarioAuth | null
   );
 
   return resultado.rows[0] ?? null;
+}
+
+export async function listarProfesoresActivos(): Promise<ProfesorDisponible[]> {
+  const resultado = await pool.query<ProfesorDisponible>(
+    `SELECT id, nombre, correo
+     FROM usuarios
+     WHERE rol = 'profesor' AND activo = TRUE
+     ORDER BY nombre, id`
+  );
+  return resultado.rows;
 }
 
 export async function crearEstudiante(

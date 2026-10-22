@@ -5,6 +5,7 @@ import { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } from "../config/env";
 import {
 	buscarUsuarioPorCorreo,
 	buscarUsuarioPorId,
+	listarProfesoresActivos as listarProfesoresActivosRepositorio,
 	crearEstudiante,
 	crearUsuarioAdministrado,
 	type NuevoEstudiante,
@@ -64,6 +65,10 @@ export async function registrarUsuarioAdmin(
 	const { password, ...datosUsuario } = datos;
 	const passwordHash = await bcrypt.hash(password, 12);
 	return crearUsuarioAdministrado(datosUsuario, passwordHash, rol);
+}
+
+export function listarProfesoresActivos() {
+	return listarProfesoresActivosRepositorio();
 }
 
 export async function renovarSesion(refreshToken: unknown): Promise<Sesion | null> {
