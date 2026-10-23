@@ -130,6 +130,7 @@ export async function listarCalificacionesMateriasMatriculadas(
        ON calificacion.usuario_id = matricula.usuario_id
        AND calificacion.codigo_materia = materia.codigo
      WHERE matricula.usuario_id = $1 AND matricula.estado = 'Activa'
+       AND matricula.periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
      ORDER BY materia.semestre, materia.nombre, curso.codigo`,
     [usuarioId]
   );

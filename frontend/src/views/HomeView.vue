@@ -20,7 +20,7 @@ const gruposMenu = [
   {
     titulo: 'Proceso Novedades Académicas',
     opciones: [
-      { texto: 'Adición de asignaturas', icono: '◉', ruta: '/catalog' },
+      { texto: 'Adición de créditos', icono: '◉', ruta: '/adicion-creditos' },
     ],
   },
   {

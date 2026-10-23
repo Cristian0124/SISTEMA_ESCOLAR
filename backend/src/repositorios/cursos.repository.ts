@@ -32,6 +32,7 @@ const consultaCursos = `
   JOIN materias_pensum AS materia ON materia.codigo = curso.codigo_pensum
   LEFT JOIN matriculas AS matricula
     ON matricula.curso_id = curso.id AND matricula.estado = 'Activa'
+    AND matricula.periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
 `;
 
 export async function listarCursos(): Promise<Curso[]> {

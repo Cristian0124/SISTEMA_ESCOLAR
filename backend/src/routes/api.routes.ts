@@ -2,6 +2,7 @@ import { Router } from "express";
 import authRoutes from "./auth.routes";
 import cursosRoutes from "./cursos.routes";
 import matriculasRoutes from "./matriculas.routes";
+import creditosRoutes from "./creditos.routes";
 import telemetriaRoutes from "./telemetria.routes";
 
 const router = Router();
@@ -14,6 +15,7 @@ router.get("/health", (_req, res) => res.status(200).json({
 router.use("/auth", authRoutes);
 router.use("/cursos", cursosRoutes);
 router.use("/matriculas", matriculasRoutes);
+router.use("/creditos", creditosRoutes);
 router.use("/telemetria", telemetriaRoutes);
 
 export default router;
