@@ -187,13 +187,13 @@ watch(() => auth.accessToken, (accessToken) => {
               gridColumn: String(bloque.dia + 2),
               gridRow: `${bloque.fila} / span ${bloque.duracion}`,
             }"
-            :aria-label="`${bloque.curso.nombre}, ${dias[bloque.dia]} de ${bloque.inicio} a ${bloque.fin}, docente ${bloque.curso.docente}`"
-            :title="`${bloque.curso.nombre} · ${bloque.curso.docente} · ${dias[bloque.dia]} ${bloque.inicio}–${bloque.fin}`"
+              :aria-label="`${bloque.curso.nombre}, ${dias[bloque.dia]} de ${bloque.inicio} a ${bloque.fin}, docente ${bloque.curso.docente ?? 'Sin asignar'}`"
+              :title="`${bloque.curso.nombre} · ${bloque.curso.docente ?? 'Sin asignar'} · ${dias[bloque.dia]} ${bloque.inicio}–${bloque.fin}`"
           >
             <strong>{{ bloque.curso.nombre }}</strong>
             <span>{{ bloque.curso.codigo }}</span>
             <span>{{ bloque.inicio }}–{{ bloque.fin }}</span>
-            <span>{{ bloque.curso.docente }}</span>
+            <span>{{ bloque.curso.docente ?? 'Sin asignar' }}</span>
           </article>
         </div>
       </div>

@@ -35,7 +35,7 @@ onMounted(cargar)
       <p role="status">{{ matriculas.length }} matrículas registradas</p>
       <article v-for="matricula in matriculas" :key="matricula.id" class="enrollment">
         <h2>{{ matricula.curso.codigo }} — {{ matricula.curso.nombre }}</h2>
-        <p>Docente: {{ matricula.curso.docente }}</p><p>Horario: {{ matricula.curso.horario }}</p>
+        <p>Docente: {{ matricula.curso.docente ?? 'Sin asignar' }}</p><p>Horario: {{ matricula.curso.horario }}</p>
         <p>Créditos: {{ matricula.curso.creditos ?? 'No informados' }}</p>
         <p>Estado: {{ matricula.estado ?? 'No informado' }}</p><p v-if="matricula.fecha">Fecha: {{ matricula.fecha }}</p>
       </article>

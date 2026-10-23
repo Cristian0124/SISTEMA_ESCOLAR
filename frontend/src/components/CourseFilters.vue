@@ -32,7 +32,7 @@ const cursosFiltrados = computed(() => {
   return props.cursos.filter((curso) => {
     const coincideBusqueda = !termino
       || [curso.nombre, curso.codigo, curso.docente]
-        .some((campo) => normalizar(campo).includes(termino))
+        .some((campo) => normalizar(campo ?? '').includes(termino))
     const coincideSemestre = !props.modelValue.semestre
       || curso.semestre === Number(props.modelValue.semestre)
     const coincideDisponibilidad = props.modelValue.disponibilidad === 'todos'

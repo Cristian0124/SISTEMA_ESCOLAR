@@ -118,7 +118,7 @@ async function salir() {
       <section class="grade-form" aria-label="Formulario de calificación">
         <p v-if="cargandoCursos" class="notice" role="status">Consultando tus cursos…</p>
         <p v-else-if="error && !cursoId" class="notice error" role="alert">{{ error }}</p>
-        <p v-else-if="!cursos.length" class="notice">No tienes cursos asignados. Verifica que tu nombre coincida con el docente configurado en el curso.</p>
+      <p v-else-if="!cursos.length" class="notice">No tienes cursos asignados. Verifica con el administrador que te haya asignado un curso.</p>
         <template v-else>
           <label for="curso">Curso asignado</label>
           <select id="curso" v-model.number="cursoId" @change="cargarEstudiantes">

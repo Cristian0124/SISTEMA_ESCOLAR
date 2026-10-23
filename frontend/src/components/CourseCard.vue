@@ -23,7 +23,7 @@ defineProps<{ curso: Curso & { creditos?: number } }>()
       <div class="detail-row"><dt>Estado</dt><dd>{{ curso.cuposDisponibles > 0 ? 'Disponible' : 'Sin cupos' }}</dd></div>
       <div class="detail-row">
         <dt><span aria-hidden="true">◉</span> Docente</dt>
-        <dd>{{ curso.docente }}</dd>
+        <dd>{{ curso.docente ?? 'Sin asignar' }}</dd>
       </div>
       <div class="detail-row">
         <dt><span aria-hidden="true">◷</span> Horario</dt>

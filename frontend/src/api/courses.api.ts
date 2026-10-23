@@ -4,7 +4,8 @@ export interface Curso {
   id: number
   codigo: string
   nombre: string
-  docente: string
+  docente: string | null
+  docenteId: number | null
   horario: string
   cuposTotales: number
   cuposDisponibles: number

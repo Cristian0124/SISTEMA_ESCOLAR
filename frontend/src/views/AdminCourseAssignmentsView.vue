@@ -11,10 +11,6 @@ const error = ref('')
 const mensaje = ref('')
 const guardandoCursoId = ref<number | null>(null)
 
-function normalizar(valor: string): string {
-  return valor.normalize('NFD').replace(/\p{Diacritic}/gu, '').trim().toLocaleLowerCase()
-}
-
 async function cargar(): Promise<void> {
   cargando.value = true
   error.value = ''
@@ -23,8 +19,7 @@ async function cargar(): Promise<void> {
     cursos.value = listaCursos
     profesores.value = listaProfesores
     for (const curso of listaCursos) {
-      const profesor = listaProfesores.find((item) => normalizar(item.nombre) === normalizar(curso.docente))
-      seleccionados[curso.id] = profesor?.id ?? ''
+      seleccionados[curso.id] = curso.docenteId ?? ''
     }
   } catch (fallo) {
     error.value = axios.isAxiosError(fallo)
@@ -45,7 +40,10 @@ async function guardar(curso: Curso): Promise<void> {
   try {
     await asignarProfesor(curso.id, profesorId)
     const profesor = profesores.value.find((item) => item.id === profesorId)
-    if (profesor) curso.docente = profesor.nombre
+    if (profesor) {
+      curso.docente = profesor.nombre
+      curso.docenteId = profesor.id
+    }
     mensaje.value = `Se asignó ${profesor?.nombre ?? 'el profesor'} a ${curso.codigo}.`
   } catch (fallo) {
     error.value = axios.isAxiosError(fallo)
