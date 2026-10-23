@@ -34,7 +34,10 @@ const router = createRouter({
 
 router.beforeEach(async (to) => {
   const auth = useAuthStore()
-  await auth.restaurarSesion()
+
+  if (!auth.usuario) {
+    return to.path === '/login' ? true : { path: '/login' }
+  }
 
   const inicioPorRol = auth.usuario?.rol === 'admin'
     ? 'admin-home'
