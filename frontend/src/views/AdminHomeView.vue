@@ -29,6 +29,12 @@ const modulos = [
     ruta: '/admin/cursos/profesores',
   },
   {
+    titulo: 'Solicitudes de créditos',
+    descripcion: 'Revisa y decide las solicitudes de créditos adicionales enviadas por estudiantes.',
+    icono: '+',
+    ruta: '/admin/solicitudes-creditos',
+  },
+  {
     titulo: 'Catálogo de cursos',
     descripcion: 'Consulta la oferta académica y los cursos disponibles.',
     icono: '▦',
@@ -98,6 +104,9 @@ async function salir() {
           </RouterLink>
           <RouterLink class="nav-link" to="/admin/cursos/profesores">
             <span aria-hidden="true">✓</span> Asignar profesores
+          </RouterLink>
+          <RouterLink class="nav-link" to="/admin/solicitudes-creditos">
+            <span aria-hidden="true">+</span> Solicitudes de créditos
           </RouterLink>
           <RouterLink class="nav-link" to="/catalog">
             <span aria-hidden="true">▦</span> Catálogo de cursos

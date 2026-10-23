@@ -38,7 +38,8 @@ export async function crearMatricula(
     const existente = await cliente.query<Matricula>(
       `SELECT id, curso, estado, fecha
        FROM matriculas
-       WHERE usuario_id = $1 AND curso_id = $2`,
+       WHERE usuario_id = $1 AND curso_id = $2
+         AND periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END`,
       [usuarioId, curso.id]
     );
 
@@ -51,6 +52,47 @@ export async function crearMatricula(
         creada: false,
         matricula: matriculaExistente
       };
+    }
+
+    // Serializa las matrículas del estudiante para que las solicitudes paralelas
+    // no permitan superar su cupo de créditos.
+    await cliente.query("SELECT id FROM usuarios WHERE id = $1 FOR UPDATE", [usuarioId]);
+    const balance = await cliente.query<{ creditosPermitidos: number; creditosUsados: number }>(
+      `WITH nivel AS (
+         SELECT LEAST(COALESCE((
+           SELECT MAX(materia.semestre)::integer + 1
+           FROM calificaciones AS calificacion
+           JOIN materias_pensum AS materia ON materia.codigo = calificacion.codigo_materia
+           WHERE calificacion.usuario_id = $1 AND calificacion.nota >= 3.0
+         ), 1), 10)::integer AS semestre
+       ), base AS (
+         SELECT COALESCE(SUM(creditos), 0)::integer AS creditos
+         FROM materias_pensum WHERE semestre = (SELECT semestre FROM nivel)
+       ), extra AS (
+         SELECT COALESCE(SUM(creditos), 0)::integer AS creditos
+         FROM solicitudes_creditos
+         WHERE usuario_id = $1
+           AND periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
+           AND estado = 'Aprobada'
+       ), usados AS (
+         SELECT COALESCE(SUM(materia.creditos), 0)::integer AS creditos
+         FROM matriculas AS matricula
+         JOIN cursos AS curso ON curso.id = matricula.curso_id
+         JOIN materias_pensum AS materia ON materia.codigo = curso.codigo_pensum
+         WHERE matricula.usuario_id = $1 AND matricula.estado = 'Activa'
+           AND matricula.periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
+       )
+       SELECT base.creditos + extra.creditos AS "creditosPermitidos",
+              usados.creditos AS "creditosUsados"
+       FROM base CROSS JOIN extra CROSS JOIN usados`,
+      [usuarioId]
+    );
+    if (balance.rows[0].creditosUsados + curso.creditos > balance.rows[0].creditosPermitidos) {
+      throw new HttpError(
+        409,
+        "CREDITOS_INSUFICIENTES",
+        `No tienes créditos suficientes. Disponibles: ${Math.max(0, balance.rows[0].creditosPermitidos - balance.rows[0].creditosUsados)}; esta materia requiere ${curso.creditos}.`
+      );
     }
 
     const limite = await cliente.query<{ cupos_disponibles: number }>(
@@ -91,7 +133,8 @@ export async function crearMatricula(
     const ocupacion = await cliente.query<{ cantidad: number }>(
       `SELECT COUNT(*)::integer AS cantidad
        FROM matriculas
-       WHERE curso_id = $1 AND estado = 'Activa'`,
+       WHERE curso_id = $1 AND estado = 'Activa'
+         AND periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END`,
       [curso.id]
     );
 
@@ -145,6 +188,7 @@ export async function listarEstudiantesPorCurso(
        AND calificacion.codigo_materia = $2
      WHERE matricula.curso_id = $1
        AND matricula.estado = 'Activa'
+       AND matricula.periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
        AND usuario.rol = 'estudiante'
        AND usuario.activo = TRUE
      ORDER BY usuario.nombre, usuario.id`,
@@ -164,6 +208,7 @@ export async function estaMatriculadoEnCurso(usuarioId: number, cursoId: number)
   const resultado = await pool.query(
     `SELECT 1 FROM matriculas
      WHERE usuario_id = $1 AND curso_id = $2 AND estado = 'Activa'
+       AND periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
      LIMIT 1`,
     [usuarioId, cursoId]
   );
@@ -177,6 +222,7 @@ export async function listarPorEstudiante(
     `SELECT id, curso, estado, fecha
      FROM matriculas
      WHERE usuario_id = $1
+       AND periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
      ORDER BY fecha DESC, id DESC`,
     [usuarioId]
   );
@@ -191,6 +237,7 @@ export async function eliminarMatricula(
   const resultado = await pool.query(
     `DELETE FROM matriculas
      WHERE id = $1 AND usuario_id = $2
+       AND periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
      RETURNING id`,
     [matriculaId, usuarioId]
   );
