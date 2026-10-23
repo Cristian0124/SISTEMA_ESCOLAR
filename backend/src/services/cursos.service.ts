@@ -13,7 +13,7 @@ export async function asignarDocente(cursoId: number, profesorId: number) {
     throw new HttpError(404, "PROFESOR_NO_ENCONTRADO", "El profesor no existe o está inactivo");
   }
 
-  const actualizado = await asignarDocenteRepositorio(cursoId, profesor.nombre);
+  const actualizado = await asignarDocenteRepositorio(cursoId, profesor.id);
   if (!actualizado) {
     throw new HttpError(404, "CURSO_NO_ENCONTRADO", "El curso seleccionado no existe");
   }

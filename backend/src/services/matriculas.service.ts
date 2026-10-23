@@ -12,10 +12,6 @@ import {
 import * as repositorio from "../repositorios/matriculas.repository";
 import * as creditosRepositorio from "../repositorios/creditos.repository";
 
-function normalizarNombre(nombre: string): string {
-  return nombre.normalize("NFD").replace(/\p{Diacritic}/gu, "").trim().toLocaleLowerCase();
-}
-
 async function obtenerCursoAsignado(profesorId: number, cursoId: number) {
   const profesor = await buscarUsuarioPorId(profesorId);
   if (!profesor || !profesor.activo || profesor.rol !== "profesor") {
@@ -23,7 +19,7 @@ async function obtenerCursoAsignado(profesorId: number, cursoId: number) {
   }
 
   const curso = await buscarCursoPorId(cursoId);
-  if (!curso || normalizarNombre(curso.docente) !== normalizarNombre(profesor.nombre)) {
+  if (!curso || curso.docenteId !== profesor.id) {
     throw new HttpError(403, "CURSO_NO_ASIGNADO", "No tienes asignado este curso");
   }
   return curso;
@@ -35,7 +31,7 @@ export async function listarCursosAsignadosProfesor(profesorId: number) {
     throw new HttpError(403, "ACCESO_DENEGADO", "Solo los profesores pueden consultar sus cursos asignados");
   }
 
-  return (await listarCursos()).filter((curso) => normalizarNombre(curso.docente) === normalizarNombre(profesor.nombre));
+  return (await listarCursos()).filter((curso) => curso.docenteId === profesor.id);
 }
 
 export async function listarEstudiantesDeCursoProfesor(profesorId: number, cursoId: number) {
@@ -183,7 +179,7 @@ export async function registrarCalificacion(
   if (registrador.rol === "profesor") {
     const cursos = await listarCursos();
     const curso = cursos.find((item) =>
-      item.codigoPensum === codigoMateria && normalizarNombre(item.docente) === normalizarNombre(registrador.nombre),
+      item.codigoPensum === codigoMateria && item.docenteId === registrador.id,
     );
     if (!curso) {
       throw new HttpError(403, "CURSO_NO_ASIGNADO", "No tienes asignada esta materia");
