@@ -166,15 +166,15 @@ async function salir() {
 
 <style scoped>
 .academic-shell {
-  --ink: #243a3c;
-  --muted: #718083;
-  --line: #dce3e3;
-  --accent: #1685a2;
+  --ink: #1e3558;
+  --muted: #6e7f96;
+  --line: #dce5f0;
+  --accent: #2862b2;
   display: grid;
   grid-template-rows: 54px minmax(0, 1fr) 34px;
   min-height: 100vh;
   color: var(--ink);
-  background: #f4f7f6;
+  background: #f1f5fb;
   font-family: 'Trebuchet MS', 'Aptos', sans-serif;
 }
 
@@ -185,7 +185,7 @@ async function salir() {
   justify-content: space-between;
   min-width: 0;
   padding: 0 18px 0 14px;
-  border-top: 4px solid #25454a;
+  border-top: 4px solid #2458a6;
   border-bottom: 1px solid var(--line);
   background: #fff;
 }
@@ -305,7 +305,7 @@ async function salir() {
   border: 2px solid #d7e4e5;
   border-radius: 50%;
   color: white;
-  background: #397784;
+  background: #2a64b5;
   font-family: Georgia, serif;
   font-size: 20px;
 }
@@ -394,7 +394,7 @@ async function salir() {
 .menu-link:hover,
 .menu-link.router-link-active {
   color: #0d6d86;
-  background: #edf7f8;
+  background: #edf3fc;
 }
 
 .menu-icon {

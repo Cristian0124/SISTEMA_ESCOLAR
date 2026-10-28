@@ -91,10 +91,6 @@ async function iniciarSesion() {
 
         <p class="form-footnote">Acceso seguro al Sistema Escolar</p>
       </div>
-      <footer class="page-footer">
-        <span>© 2026 Sistema Escolar</span>
-        <span>Acceso institucional</span>
-      </footer>
     </section>
   </main>
 </template>
@@ -468,9 +464,9 @@ async function iniciarSesion() {
 .login-page {
   --ink: #263238;
   --muted: #66727a;
-  --paper: #f0f2f4;
-  --line: #d1d7dc;
-  --accent: #356b94;
+  --paper: #edf3fb;
+  --line: #d6e1ef;
+  --accent: #2458a6;
   display: grid;
   grid-template-columns: 1fr;
   place-items: center;
@@ -501,9 +497,9 @@ async function iniciarSesion() {
   min-height: 0;
   padding: 32px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 14px;
   background: white;
-  box-shadow: none;
+  box-shadow: 0 20px 55px rgba(26, 57, 101, 0.12);
 }
 
 .form-content {
@@ -513,7 +509,7 @@ async function iniciarSesion() {
 
 .eyebrow {
   margin-bottom: 10px;
-  color: #58656d;
+  color: #63758c;
   font-size: 12px;
   letter-spacing: 0;
 }
@@ -524,7 +520,8 @@ async function iniciarSesion() {
 
 .form-content h2 {
   font-family: Arial, sans-serif;
-  font-size: 28px;
+  color: #183b70;
+  font-size: 30px;
   font-weight: 700;
   line-height: 1.25;
 }
@@ -545,28 +542,28 @@ async function iniciarSesion() {
   margin-bottom: 18px;
   padding: 0 11px;
   border-color: #bfc8ce;
-  border-radius: 4px;
+  border-radius: 7px;
   font-size: 14px;
   transition: border-color 120ms ease;
 }
 
 .login-form input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(53, 107, 148, 0.15);
+  box-shadow: 0 0 0 3px rgba(53, 107, 148, 0.15);
 }
 
 .submit-button {
   min-height: 44px;
   padding: 0 13px;
   border-color: var(--accent);
-  border-radius: 4px;
+  border-radius: 7px;
   background: var(--accent);
   font-size: 14px;
   transition: background 120ms ease;
 }
 
 .submit-button:hover:not(:disabled) {
-  background: #285778;
+  background: #173f7b;
   transform: none;
 }
 
@@ -615,7 +612,7 @@ async function iniciarSesion() {
 }
 
 .secondary-button:hover:not(:disabled) {
-  background: #e9edef;
+  background: #e8f0fb;
 }
 
 .page-footer {
