@@ -9,6 +9,8 @@ const router = createRouter({
     { path: '/admin/home', name: 'admin-home', component: () => import('../views/AdminHomeView.vue') },
     { path: '/profesor/home', name: 'profesor-home', component: () => import('../views/ProfessorHomeView.vue') },
     { path: '/profesor/calificaciones', name: 'profesor-calificaciones', component: () => import('../views/ProfessorGradesView.vue') },
+    { path: '/profesor/horario', name: 'profesor-horario', component: () => import('../views/ProfessorScheduleView.vue') },
+    { path: '/profesor/soporte', name: 'profesor-soporte', component: () => import('../views/ProfessorSupportView.vue') },
     { path: '/inicio', component: () => import('../views/HomeView.vue') },
     { path: '/login', component: () => import('../views/LoginView.vue') },
     { path: '/status', component: () => import('../views/StatusView.vue') },
@@ -26,6 +28,7 @@ const router = createRouter({
     { path: '/admin/usuarios/nuevo', name: 'registrar-usuario', component: () => import('../views/RegistrarUsuarioView.vue') },
     { path: '/admin/cursos/profesores', name: 'asignar-profesores', component: () => import('../views/AdminCourseAssignmentsView.vue') },
     { path: '/admin/solicitudes-creditos', name: 'solicitudes-creditos', component: () => import('../views/AdminCreditRequestsView.vue') },
+    { path: '/admin/soporte-docente', name: 'admin-soporte-docente', component: () => import('../views/AdminSupportView.vue') },
     { path: '/adicion-creditos', name: 'adicion-creditos', component: () => import('../views/AdditionCreditsView.vue') },
     { path: '/schedule', component: () => import('../views/ScheduleView.vue') },
     { path: '/my-enrollments', component: () => import('../views/MyEnrollmentsView.vue') },
@@ -46,6 +49,17 @@ router.beforeEach(async (to) => {
     : auth.usuario?.rol === 'profesor'
       ? 'profesor-home'
       : 'home'
+
+  const rutasProfesor = ['/profesor/home', '/profesor/calificaciones', '/profesor/horario', '/profesor/soporte']
+  if (auth.usuario.rol === 'profesor' && !rutasProfesor.includes(to.path)) {
+    return { name: 'profesor-home' }
+  }
+  if (to.path.startsWith('/profesor/') && auth.usuario.rol !== 'profesor') {
+    return { name: inicioPorRol }
+  }
+  if (to.path.startsWith('/admin/') && auth.usuario.rol !== 'admin') {
+    return { name: inicioPorRol }
+  }
 
   if (to.path === '/inicio' || (to.path === '/login' && auth.usuario)) {
     return { name: inicioPorRol }

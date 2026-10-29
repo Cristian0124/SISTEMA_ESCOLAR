@@ -29,16 +29,16 @@ const accesos = [
     ruta: '/profesor/calificaciones',
   },
   {
-    titulo: 'Datos personales',
-    descripcion: 'Revisa y actualiza la información de tu perfil.',
+    titulo: 'Horario docente',
+    descripcion: 'Consulta el horario de tus cursos asignados.',
     icono: '▤',
-    ruta: '/perfil',
+    ruta: '/profesor/horario',
   },
   {
-    titulo: 'Documentos',
-    descripcion: 'Consulta los documentos disponibles en tu espacio académico.',
+    titulo: 'Soporte administrativo',
+    descripcion: 'Envía consultas a los administradores y revisa sus respuestas.',
     icono: '▧',
-    ruta: '/documentos',
+    ruta: '/profesor/soporte',
   },
 ]
 
@@ -116,7 +116,7 @@ async function salir() {
         <section class="welcome">
           <p class="eyebrow">ESPACIO DOCENTE</p>
           <h1>Bienvenido, {{ auth.usuario?.nombre ?? 'profesor' }}</h1>
-          <p>Consulta tus cursos asignados y administra tu perfil.</p>
+          <p>Consulta tus cursos, sus estudiantes, registra notas y contacta a los administradores.</p>
         </section>
 
         <section class="courses-section" aria-labelledby="courses-title">
@@ -147,9 +147,8 @@ async function salir() {
               <h3>{{ curso.nombre }}</h3>
               <dl>
                 <div><dt>Horario</dt><dd>{{ curso.horario }}</dd></div>
-                <div><dt>Cupos disponibles</dt><dd>{{ curso.cuposDisponibles }} de {{ curso.cuposTotales }}</dd></div>
               </dl>
-              <RouterLink class="course-action" to="/profesor/calificaciones">Estudiantes y calificaciones <span aria-hidden="true">→</span></RouterLink>
+              <RouterLink class="course-action" to="/profesor/calificaciones">Consultar estudiantes y registrar notas <span aria-hidden="true">→</span></RouterLink>
             </article>
           </div>
         </section>
