@@ -1,6 +1,6 @@
 import { listarCursos } from "../repositorios/cursos.repository";
 import { buscarUsuarioPorId } from "../repositorios/auth.repository";
-import { asignarDocente as asignarDocenteRepositorio } from "../repositorios/cursos.repository";
+import { asignarDocente as asignarDocenteRepositorio, crearCurso as crearCursoRepositorio } from "../repositorios/cursos.repository";
 import { HttpError } from "../types/http-error";
 
 export function obtenerCursos() {
@@ -18,4 +18,27 @@ export async function asignarDocente(cursoId: number, profesorId: number) {
     throw new HttpError(404, "CURSO_NO_ENCONTRADO", "El curso seleccionado no existe");
   }
   return { cursoId, profesorId: profesor.id, docente: profesor.nombre };
+}
+
+export async function crearCursoYAsignarDocente(datos: {
+  codigoPensum: string;
+  profesorId: number;
+  horario: string;
+  cuposTotales: number;
+}) {
+  const profesor = await buscarUsuarioPorId(datos.profesorId);
+  if (!profesor || !profesor.activo || profesor.rol !== "profesor") {
+    throw new HttpError(404, "PROFESOR_NO_ENCONTRADO", "El profesor no existe o está inactivo");
+  }
+
+  const curso = await crearCursoRepositorio(
+    datos.codigoPensum,
+    profesor.id,
+    datos.horario,
+    datos.cuposTotales
+  );
+  if (!curso) {
+    throw new HttpError(400, "ASIGNATURA_SIN_CARRERA", "La asignatura debe pertenecer a una carrera y facultad del catálogo");
+  }
+  return curso;
 }
