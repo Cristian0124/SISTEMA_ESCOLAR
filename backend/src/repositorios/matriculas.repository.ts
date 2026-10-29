@@ -9,6 +9,17 @@ interface Matricula {
   fecha: Date;
 }
 
+export interface MatriculaAdministrativa {
+  id: number;
+  usuarioId: number;
+  nombreEstudiante: string;
+  correoEstudiante: string;
+  curso: Curso;
+  estado: string;
+  fecha: Date;
+  periodo: string;
+}
+
 export interface EstudianteMatriculado {
   id: number;
   nombre: string;
@@ -227,6 +238,40 @@ export async function listarPorEstudiante(
     [usuarioId]
   );
 
+  return resultado.rows;
+}
+
+export async function listarTodasDelPeriodo(): Promise<MatriculaAdministrativa[]> {
+  const resultado = await pool.query<MatriculaAdministrativa>(
+    `SELECT matricula.id,
+            usuario.id AS "usuarioId",
+            usuario.nombre AS "nombreEstudiante",
+            usuario.correo AS "correoEstudiante",
+            jsonb_build_object(
+              'id', curso.id,
+              'codigo', curso.codigo,
+              'codigoPensum', curso.codigo_pensum,
+              'nombre', materia.nombre,
+              'docente', docente.nombre,
+              'docenteId', docente.id,
+              'horario', curso.horario,
+              'cuposTotales', curso.cupos_totales,
+              'cuposDisponibles', curso.cupos_disponibles,
+              'semestre', materia.semestre,
+              'creditos', materia.creditos
+            ) AS curso,
+            matricula.estado,
+            matricula.fecha,
+            matricula.periodo
+     FROM matriculas AS matricula
+     JOIN usuarios AS usuario ON usuario.id = matricula.usuario_id
+     JOIN cursos AS curso ON curso.id = matricula.curso_id
+     JOIN materias_pensum AS materia ON materia.codigo = curso.codigo_pensum
+     LEFT JOIN usuarios AS docente ON docente.id = curso.docente_id
+     WHERE matricula.estado = 'Activa'
+       AND matricula.periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
+     ORDER BY usuario.nombre, curso.codigo, matricula.id`
+  );
   return resultado.rows;
 }
 

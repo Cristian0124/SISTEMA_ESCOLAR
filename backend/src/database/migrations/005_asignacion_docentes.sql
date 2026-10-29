@@ -17,10 +17,34 @@ BEGIN
 END
 $$;
 
+-- Preserve legacy instructor names and convert any exact match to a user FK.
+DO $$
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns
+    WHERE table_schema = 'public' AND table_name = 'cursos' AND column_name = 'docente'
+  ) THEN
+    ALTER TABLE cursos ADD COLUMN IF NOT EXISTS docente_legacy VARCHAR(150);
 
-UPDATE cursos SET docente_id = NULL;
+    EXECUTE $migrate$
+      UPDATE cursos AS curso
+      SET docente_id = usuario.id
+      FROM usuarios AS usuario
+      WHERE curso.docente_id IS NULL
+        AND usuario.rol = 'profesor'
+        AND usuario.activo = TRUE
+        AND LOWER(BTRIM(usuario.nombre)) = LOWER(BTRIM(curso.docente))
+    $migrate$;
 
-ALTER TABLE cursos
-  DROP COLUMN IF EXISTS docente;
+    EXECUTE $archive$
+      UPDATE cursos
+      SET docente_legacy = docente
+      WHERE docente_id IS NULL AND docente IS NOT NULL
+    $archive$;
+
+    ALTER TABLE cursos DROP COLUMN docente;
+  END IF;
+END
+$$;
 
 COMMIT;

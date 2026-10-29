@@ -3,6 +3,7 @@ import {
   crearMatricula,
   eliminarMatricula,
   listarMisMatriculas,
+  listarTodasMatriculasAdministrador,
   obtenerAvancePensum,
   listarMisCalificaciones,
   registrarCalificacion,
@@ -16,6 +17,7 @@ const router = Router();
 router.use(autenticar);
 router.post("/", crearMatricula);
 router.get("/mias", listarMisMatriculas);
+router.get("/admin/todas", autorizar("admin"), listarTodasMatriculasAdministrador);
 router.get("/avance", obtenerAvancePensum);
 router.get("/calificaciones/mias", listarMisCalificaciones);
 router.get("/docente/cursos", autorizar("profesor"), listarCursosDocente);

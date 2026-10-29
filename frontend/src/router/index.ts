@@ -37,6 +37,8 @@ const router = createRouter({
 router.beforeEach(async (to) => {
   const auth = useAuthStore()
 
+  if (!auth.usuario && to.path !== '/login') await auth.restaurarSesion()
+
   if (!auth.usuario) {
     return to.path === '/login' ? true : { path: '/login' }
   }

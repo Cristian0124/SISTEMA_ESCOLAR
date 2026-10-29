@@ -4,6 +4,7 @@ import { HttpError } from "../types/http-error";
 import {
   crearMatricula as crearMatriculaServicio,
   listarMisMatriculas as listarMisMatriculasServicio,
+  listarTodasMatriculasAdministrador as listarTodasMatriculasAdministradorServicio,
   eliminarMatricula as eliminarMatriculaServicio,
   obtenerAvancePensum as obtenerAvancePensumServicio,
   listarMisCalificaciones as listarMisCalificacionesServicio,
@@ -78,6 +79,15 @@ export const listarMisMatriculas: RequestHandler = async (
     const matriculas = await listarMisMatriculasServicio(usuarioId);
 
     // El frontend espera directamente un arreglo.
+    res.status(200).json(matriculas);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const listarTodasMatriculasAdministrador: RequestHandler = async (_req, res, next) => {
+  try {
+    const matriculas = await listarTodasMatriculasAdministradorServicio(obtenerUsuarioId(res));
     res.status(200).json(matriculas);
   } catch (error) {
     next(error);

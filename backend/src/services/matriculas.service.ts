@@ -208,6 +208,14 @@ export async function listarMisMatriculas(usuarioId: number) {
   return repositorio.listarPorEstudiante(usuarioId);
 }
 
+export async function listarTodasMatriculasAdministrador(administradorId: number) {
+  const administrador = await buscarUsuarioPorId(administradorId);
+  if (!administrador || !administrador.activo || administrador.rol !== "admin") {
+    throw new HttpError(403, "ACCESO_DENEGADO", "Solo los administradores pueden consultar todas las matrículas");
+  }
+  return repositorio.listarTodasDelPeriodo();
+}
+
 export async function eliminarMatricula(
   usuarioId: number,
   matriculaId: number
