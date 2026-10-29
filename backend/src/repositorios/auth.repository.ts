@@ -93,13 +93,6 @@ export async function crearAdministrador(
   return insertarUsuario(datos, passwordHash, "admin");
 }
 
-export async function existeAdministrador(): Promise<boolean> {
-  const resultado = await pool.query(
-    "SELECT 1 FROM usuarios WHERE rol = 'admin' LIMIT 1"
-  );
-  return resultado.rowCount !== 0;
-}
-
 async function insertarUsuario(
   datos: Omit<NuevoEstudiante, "password">,
   passwordHash: string,

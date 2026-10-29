@@ -23,9 +23,9 @@ El registro público está en `POST /api/auth/register`. Requiere nombre, correo
 
 El inicio de sesión ahora valida hashes bcrypt guardados en PostgreSQL. Las cuentas que ya existan en otra base deben tener `password_hash` con un hash bcrypt válido. En una base vacía también hay que provisionar una cuenta administrativa antes de usar las funciones reservadas al administrador.
 
-### Crear el primer administrador
+### Administrar cuentas de administrador
 
-Desde la carpeta `backend`, ejecuta `npm run admin:create`. El comando solicita los datos del perfil y la contraseña (que se escribe oculta), guarda el hash en PostgreSQL y no crea otro administrador si ya existe uno. Después inicia sesión en `/login` y usa **Registrar usuarios** desde el panel administrativo para elegir entre estudiante y profesor.
+Desde la carpeta `backend`, ejecuta `npm run control-admin` y elige si quieres crear un administrador, cambiar una contraseña o borrar una cuenta. Puedes crear varios administradores; cada uno debe tener correo y cédula únicos. El borrado pide confirmar el correo, no permite borrar al último administrador y se detiene si la cuenta tiene datos asociados.
 
 ### Prerrequisitos y calificaciones
 
