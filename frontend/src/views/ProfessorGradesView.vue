@@ -111,8 +111,8 @@ async function salir() {
       <RouterLink class="back-link" to="/profesor/home">← Volver al inicio docente</RouterLink>
       <header class="page-heading">
         <p class="eyebrow">ESPACIO DOCENTE</p>
-        <h1>Registrar calificaciones</h1>
-        <p>Elige uno de tus cursos para consultar sus estudiantes matriculados y registrar notas.</p>
+        <h1>Estudiantes y registro de notas</h1>
+        <p>Consulta la información básica de los estudiantes matriculados en tus cursos y registra sus calificaciones.</p>
       </header>
 
       <section class="grade-form" aria-label="Formulario de calificación">

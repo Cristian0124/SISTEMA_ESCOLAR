@@ -4,6 +4,7 @@ import cursosRoutes from "./cursos.routes";
 import matriculasRoutes from "./matriculas.routes";
 import creditosRoutes from "./creditos.routes";
 import telemetriaRoutes from "./telemetria.routes";
+import soporteRoutes from "./soporte.routes";
 
 const router = Router();
 
@@ -17,5 +18,6 @@ router.use("/cursos", cursosRoutes);
 router.use("/matriculas", matriculasRoutes);
 router.use("/creditos", creditosRoutes);
 router.use("/telemetria", telemetriaRoutes);
+router.use("/soporte", soporteRoutes);
 
 export default router;

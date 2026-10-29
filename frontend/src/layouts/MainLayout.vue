@@ -39,7 +39,7 @@ async function salir() {
   justify-content: space-between;
   align-items: center;
   padding: 12px 20px;
-  background: #20252b;
+  background: #173f7b;
 }
 
 .secciones {
@@ -52,12 +52,12 @@ async function salir() {
   color: white;
   text-decoration: none;
   font-weight: bold;
-  border-radius: 4px;
+  border-radius: 7px;
 }
 
 .secciones a:hover,
 .secciones a.router-link-active {
-  background: #454d56;
+  background: #2458a6;
 }
 
 .sesion {

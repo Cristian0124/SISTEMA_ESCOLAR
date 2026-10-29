@@ -29,4 +29,4 @@ Abre la dirección que Vite muestre en la terminal, normalmente `http://localhos
 - Si no existen dependencias instaladas, ejecuta `npm.cmd install` dentro de cada carpeta (`backend` y `frontend`).
 - Si PowerShell indica que no puede ejecutar `npm.ps1`, usa `npm.cmd` como en los comandos anteriores.
 
-Esta guía solo inicia la aplicación. No ejecutes archivos de `backend/src/database/migrations`, `npm run admin:create` ni otros scripts de inicialización: esos pasos cambian la base o insertan datos. El inicio del backend por sí solo no aplica migraciones ni crea usuarios. Las funciones que consultan datos sí necesitan que la base existente esté disponible y tenga el esquema que espera la aplicación.
+Esta guía solo inicia la aplicación. No ejecutes archivos de `backend/src/database/migrations`, `npm run control-admin` ni otros scripts de inicialización: esos pasos cambian la base o insertan datos. El inicio del backend por sí solo no aplica migraciones ni crea usuarios. Las funciones que consultan datos sí necesitan que la base existente esté disponible y tenga el esquema que espera la aplicación.
