@@ -27,6 +27,8 @@ El inicio de sesión ahora valida hashes bcrypt guardados en PostgreSQL. Las cue
 
 Desde la carpeta `backend`, ejecuta `npm run control-admin` y elige si quieres crear un administrador, cambiar una contraseña o borrar una cuenta. Puedes crear varios administradores; cada uno debe tener correo y cédula únicos. El borrado pide confirmar el correo, no permite borrar al último administrador y se detiene si la cuenta tiene datos asociados.
 
+El buzón de soporte docente requiere aplicar `src/database/migrations/006_soporte_docente.sql` a la base de datos existente.
+
 ### Prerrequisitos y calificaciones
 
 El avance del estudiante está en `GET /api/matriculas/avance`. Las materias se consideran aprobadas con nota igual o superior a `3.0`. Al matricular un curso que tenga prerrequisitos pendientes, `POST /api/matriculas` responde `409 PRERREQUISITOS_PENDIENTES`.

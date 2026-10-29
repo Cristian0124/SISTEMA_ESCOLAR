@@ -4,7 +4,8 @@ import { autenticar, autorizar } from "../middlewares/auth.middleware";
 
 const router = Router();
 
+router.use(autenticar);
 router.get("/", listarCursos);
-router.put("/:id/docente", autenticar, autorizar("admin"), asignarDocente);
+router.put("/:id/docente", autorizar("admin"), asignarDocente);
 
 export default router;

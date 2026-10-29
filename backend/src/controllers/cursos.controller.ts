@@ -1,9 +1,16 @@
 import type { RequestHandler } from "express";
+import type { UsuarioAutenticado } from "../middlewares/auth.middleware";
+import { listarCursosAsignadosProfesor } from "../services/matriculas.service";
 import { asignarDocente as asignarDocenteServicio, obtenerCursos } from "../services/cursos.service";
 import { HttpError } from "../types/http-error";
 
 export const listarCursos: RequestHandler = async (_req, res, next) => {
   try {
+    const usuario = res.locals.usuario as UsuarioAutenticado | undefined;
+    if (usuario?.rol === "profesor") {
+      res.status(200).json(await listarCursosAsignadosProfesor(usuario.id));
+      return;
+    }
     res.status(200).json(await obtenerCursos());
   } catch (error) {
     next(error);
