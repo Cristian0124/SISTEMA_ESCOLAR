@@ -68,17 +68,26 @@ export async function crearMatricula(
     // Serializa las matrículas del estudiante para que las solicitudes paralelas
     // no permitan superar su cupo de créditos.
     await cliente.query("SELECT id FROM usuarios WHERE id = $1 FOR UPDATE", [usuarioId]);
+    const pertenece = await cliente.query("SELECT materia_del_programa($1, $2) AS pertenece", [curso.codigoPensum, usuarioId]);
+    if (!pertenece.rows[0]?.pertenece) {
+      throw new HttpError(409, "CURSO_OTRA_CARRERA", "El curso no pertenece al pensum de tu carrera");
+    }
+    const plan = await cliente.query(`SELECT c.prerrequisitos_verificados FROM usuarios u
+      JOIN carreras c ON c.codigo = u.carrera_codigo WHERE u.id = $1`, [usuarioId]);
+    if (plan.rows[0] && !plan.rows[0].prerrequisitos_verificados) {
+      throw new HttpError(409, "PENSUM_PENDIENTE_VALIDACION", "Los prerrequisitos del programa requieren validación académica antes de matricular");
+    }
     const balance = await cliente.query<{ creditosPermitidos: number; creditosUsados: number }>(
       `WITH nivel AS (
          SELECT LEAST(COALESCE((
            SELECT MAX(materia.semestre)::integer + 1
            FROM calificaciones AS calificacion
            JOIN materias_pensum AS materia ON materia.codigo = calificacion.codigo_materia
-           WHERE calificacion.usuario_id = $1 AND calificacion.nota >= 3.0
-         ), 1), 10)::integer AS semestre
+           WHERE calificacion.usuario_id = $1 AND calificacion.nota >= 3.0 AND materia_del_programa(materia.codigo, $1)
+         ), 1), (SELECT COALESCE(MAX(semestre), 1) FROM materias_pensum WHERE materia_del_programa(codigo, $1)))::integer AS semestre
        ), base AS (
          SELECT COALESCE(SUM(creditos), 0)::integer AS creditos
-         FROM materias_pensum WHERE semestre = (SELECT semestre FROM nivel)
+         FROM materias_pensum WHERE semestre = (SELECT semestre FROM nivel) AND materia_del_programa(codigo, $1)
        ), extra AS (
          SELECT COALESCE(SUM(creditos), 0)::integer AS creditos
          FROM solicitudes_creditos

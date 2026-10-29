@@ -1,6 +1,7 @@
 import { pool } from "../config/database";
 
 export interface ResumenCreditos {
+  creditosPrograma: number;
   semestre: number;
   creditosBase: number;
   creditosMatriculados: number;
@@ -28,6 +29,7 @@ const periodoActual = `to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH 
 
 export async function obtenerResumenCreditos(usuarioId: number): Promise<ResumenCreditos> {
   const resultado = await pool.query<{
+    creditosPrograma: number;
     semestre: number;
     creditosBase: number;
     creditosMatriculados: number;
@@ -39,12 +41,12 @@ export async function obtenerResumenCreditos(usuarioId: number): Promise<Resumen
          SELECT MAX(materia.semestre)::integer + 1
          FROM calificaciones AS calificacion
          JOIN materias_pensum AS materia ON materia.codigo = calificacion.codigo_materia
-         WHERE calificacion.usuario_id = $1 AND calificacion.nota >= 3.0
-       ), 1), 10)::integer AS semestre
+         WHERE calificacion.usuario_id = $1 AND calificacion.nota >= 3.0 AND materia_del_programa(materia.codigo, $1)
+       ), 1), (SELECT COALESCE(MAX(semestre), 1) FROM materias_pensum WHERE materia_del_programa(codigo, $1)))::integer AS semestre
      ), base AS (
        SELECT COALESCE(SUM(creditos), 0)::integer AS creditos
        FROM materias_pensum
-       WHERE semestre = (SELECT semestre FROM nivel)
+       WHERE semestre = (SELECT semestre FROM nivel) AND materia_del_programa(codigo, $1)
      ), usados AS (
        SELECT COALESCE(SUM(materia.creditos), 0)::integer AS creditos
        FROM matriculas AS matricula
@@ -58,6 +60,7 @@ export async function obtenerResumenCreditos(usuarioId: number): Promise<Resumen
        WHERE usuario_id = $1 AND periodo = ${periodoActual} AND estado = 'Aprobada'
      )
      SELECT nivel.semestre,
+            (SELECT COALESCE(SUM(creditos), 0)::integer FROM materias_pensum WHERE materia_del_programa(codigo, $1)) AS "creditosPrograma",
             base.creditos AS "creditosBase",
             usados.creditos AS "creditosMatriculados",
             extras.creditos AS "creditosExtra",

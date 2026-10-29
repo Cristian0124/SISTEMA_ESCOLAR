@@ -6,6 +6,7 @@ export interface MateriaAvance {
   semestre: number
   creditos: number
   prerrequisitos: string[]
+  prerrequisitosVerificados: boolean
   aprobada: boolean
   bloqueada: boolean
   requisitosPendientes: string[]

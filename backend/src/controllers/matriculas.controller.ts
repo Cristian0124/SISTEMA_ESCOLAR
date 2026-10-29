@@ -120,7 +120,7 @@ export const registrarCalificacion: RequestHandler = async (req, res, next) => {
     const codigoMateria = req.params.codigoMateria;
     const cortes = { corte1: req.body?.corte1, corte2: req.body?.corte2, corte3: req.body?.corte3 };
 
-    if (!esIdValido(usuarioId) || typeof codigoMateria !== "string" || !/^[A-Z]{3}\d{2}$/.test(codigoMateria)) {
+    if (!esIdValido(usuarioId) || typeof codigoMateria !== "string" || !/^(?:[A-Z]{3}\d{2}|\d{5})$/.test(codigoMateria)) {
       throw new HttpError(400, "DATOS_INVALIDOS", "El estudiante o el código de materia no es válido");
     }
     if (Object.values(cortes).some((corte) => typeof corte !== "number")) {

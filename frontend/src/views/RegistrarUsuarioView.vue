@@ -1,12 +1,23 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { onMounted, reactive, ref } from 'vue'
+import { listarCarreras, type Carrera } from '@/api/academico.api'
 import axios from 'axios'
 import api from '@/api/axios'
 
 const formulario = reactive({
   nombre: '', correo: '', password: '', rol: 'estudiante', cedula: '', fechaNacimiento: '',
-  fechaIngreso: '', nacionalidad: '', genero: '',
+  fechaIngreso: '', nacionalidad: '', genero: '', carreraCodigo: '',
 })
+const carreras = ref<Carrera[]>([])
+const cargandoCarreras = ref(true)
+async function cargarCarreras() {
+ cargandoCarreras.value = true
+ error.value = ''
+ try { carreras.value = await listarCarreras() }
+ catch { error.value = 'No fue posible cargar las carreras.' }
+ finally { cargandoCarreras.value = false }
+}
+onMounted(cargarCarreras)
 const guardando = ref(false)
 const mensaje = ref('')
 const error = ref('')
@@ -16,9 +27,9 @@ async function registrar() {
   mensaje.value = ''
   error.value = ''
   try {
-    await api.post('/auth/usuarios', formulario)
+    await api.post('/auth/usuarios', { ...formulario, carreraCodigo: formulario.rol === 'estudiante' ? formulario.carreraCodigo : null })
     mensaje.value = 'Usuario registrado correctamente.'
-    Object.assign(formulario, { nombre: '', correo: '', password: '', rol: 'estudiante', cedula: '', fechaNacimiento: '', fechaIngreso: '', nacionalidad: '', genero: '' })
+    Object.assign(formulario, { nombre: '', correo: '', password: '', rol: 'estudiante', cedula: '', fechaNacimiento: '', fechaIngreso: '', nacionalidad: '', genero: '', carreraCodigo: '' })
   } catch (e) {
     if (axios.isAxiosError(e)) {
       error.value = e.response?.data?.mensaje ?? 'No fue posible registrar el usuario.'
@@ -61,6 +72,19 @@ async function registrar() {
         </label>
       </div>
 
+      <template v-if="formulario.rol === 'estudiante'">
+        <h2>Programa académico</h2>
+        <p v-if="cargandoCarreras" role="status">Cargando carreras...</p>
+        <p v-else-if="!carreras.length">No hay carreras disponibles. <button type="button" @click="cargarCarreras">Reintentar</button></p>
+        <div class="fields">
+          <label>Facultad<select required><option value="ING">Facultad de Ingeniería</option></select></label>
+          <label>Carrera<select v-model="formulario.carreraCodigo" required :disabled="cargandoCarreras">
+            <option disabled value="">Selecciona una carrera</option>
+            <option v-for="c in carreras" :key="c.codigo" :value="c.codigo">{{ c.nombre }} · {{ c.modalidad }}</option>
+          </select></label>
+        </div>
+        <RouterLink to="/oferta-academica">Consultar carreras y pénsum</RouterLink>
+      </template>
       <h2>Acceso al sistema</h2>
       <div class="fields">
         <label>Correo electrónico<input v-model.trim="formulario.correo" type="email" required autocomplete="email" /></label>
@@ -70,7 +94,7 @@ async function registrar() {
       <p v-if="error" class="notice failure" role="alert">{{ error }}</p>
       <div class="actions">
         <RouterLink class="cancel" to="/inicio">Cancelar</RouterLink>
-        <button type="submit" :disabled="guardando">{{ guardando ? 'Guardando…' : 'Registrar usuario' }}</button>
+        <button type="submit" :disabled="guardando || (formulario.rol === 'estudiante' && (cargandoCarreras || !carreras.length))">{{ guardando ? 'Guardando…' : 'Registrar usuario' }}</button>
       </div>
     </form>
   </section>

@@ -116,8 +116,9 @@ export async function obtenerMisCreditos(usuarioId: number) {
 
 export async function solicitarCreditosAdicionales(usuarioId: number, creditos: number, motivo: string) {
   await validarEstudiante(usuarioId);
-  if (!Number.isSafeInteger(creditos) || creditos < 1 || creditos > 154) {
-    throw new HttpError(400, "CREDITOS_INVALIDOS", "Solicita una cantidad entera de créditos entre 1 y 154");
+  const { creditosPrograma } = await creditosRepositorio.obtenerResumenCreditos(usuarioId);
+  if (!Number.isSafeInteger(creditos) || creditos < 1 || creditos > creditosPrograma) {
+    throw new HttpError(400, "CREDITOS_INVALIDOS", `Solicita una cantidad entera de créditos entre 1 y ${creditosPrograma}`);
   }
   const motivoNormalizado = motivo.trim();
   if (motivoNormalizado.length < 10 || motivoNormalizado.length > 1000) {
@@ -173,7 +174,7 @@ export async function registrarCalificacion(
   if (!usuario || usuario.rol !== "estudiante") {
     throw new HttpError(404, "ESTUDIANTE_NO_ENCONTRADO", "No se encontró el estudiante");
   }
-  if (!(await materiaExiste(codigoMateria))) {
+  if (!(await materiaExiste(codigoMateria, usuarioId))) {
     throw new HttpError(404, "MATERIA_NO_ENCONTRADA", "No se encontró la materia del pensum");
   }
   if (registrador.rol === "profesor") {

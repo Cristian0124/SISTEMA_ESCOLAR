@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
+import { listarCarreras } from '@/api/academico.api'
 import { useAuthStore } from '@/stores/auth'
 import { loadDraft, profileStorageKey, saveDraft } from '@/services/profileStorage'
 
@@ -36,9 +37,11 @@ const error = ref('')
 
 const storageKey = () => profileStorageKey('datos-personales', auth.usuario?.id ?? 'local')
 
-onMounted(() => {
+onMounted(async () => {
   try {
     Object.assign(datos, loadDraft(storageKey(), { ...datos }))
+    const carrera = (await listarCarreras()).find(c => c.codigo === auth.usuario?.carreraCodigo)
+    datos.estudio = carrera?.nombre ?? 'Carrera pendiente de asignación'
   } catch {
     error.value = 'No se pudieron leer los datos guardados. Puedes corregirlos y guardarlos nuevamente.'
   }
@@ -90,7 +93,7 @@ function guardar(): void {
       <section>
         <h2>Información académica</h2>
         <div class="fields">
-          <label>Estudio o programa<input v-model.trim="datos.estudio" placeholder="Ej. Ingeniería de Sistemas" /></label>
+          <label>Estudio o programa<input :value="datos.estudio" readonly placeholder="Ej. Ingeniería de Sistemas" /></label>
           <label>Semestre actual
             <select v-model="datos.semestre">
               <option value="">Selecciona un semestre</option>

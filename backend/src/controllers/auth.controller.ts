@@ -71,14 +71,17 @@ const camposRegistro = {
  fechaNacimiento: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(fechaValida),
  fechaIngreso: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(fechaValida),
  nacionalidad: z.string().trim().min(1).max(100),
- genero: z.string().trim().min(1).max(50)
+ genero: z.string().trim().min(1).max(50),
+ carreraCodigo: z.string().trim().min(1).max(10).nullable().optional()
 };
 
-const esquemaRegistro = z.object(camposRegistro).strict();
+const esquemaRegistro = z.object({ ...camposRegistro, carreraCodigo: z.string().trim().min(1).max(10) }).strict();
 const esquemaRegistroAdmin = z.object({
 	...camposRegistro,
 	rol: z.enum(["estudiante", "profesor"]).default("estudiante")
-}).strict();
+}).strict().superRefine((datos, ctx) => {
+ if (datos.rol === "estudiante" && !datos.carreraCodigo) ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["carreraCodigo"], message: "Selecciona una carrera" });
+});
 
 export async function registrarUsuario(req: Request, res: Response) {
 	const datos = esquemaRegistroAdmin.safeParse(req.body);

@@ -16,6 +16,7 @@ const iniciales = computed(() =>
 )
 
 const modulos = [
+  { titulo: 'Facultades y carreras', descripcion: 'Consulta los programas de Ingenieria USC y sus planes de estudio.', icono: '+', ruta: '/oferta-academica' },
   {
     titulo: 'Registrar usuarios',
     descripcion: 'Crea cuentas de estudiantes y profesores con sus datos personales y acceso al sistema.',

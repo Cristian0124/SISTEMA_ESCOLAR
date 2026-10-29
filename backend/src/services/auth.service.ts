@@ -13,10 +13,20 @@ import {
 	type UsuarioAuth
 } from "../repositorios/auth.repository";
 
+import { pool } from "../config/database";
+import { HttpError } from "../types/http-error";
+
+export async function validarCarrera(codigo: string | null | undefined) {
+ if (!codigo || !(await pool.query("SELECT 1 FROM carreras WHERE codigo = $1", [codigo])).rowCount) {
+  throw new HttpError(400, "CARRERA_INVALIDA", "Selecciona una carrera de Ingenieria");
+ }
+}
+
 export interface UsuarioPublico {
 	id: number;
 	nombre: string;
 	rol: RolUsuario;
+ carreraCodigo: string | null;
 }
 
 export interface Sesion {
@@ -34,7 +44,8 @@ async function emitirSesion(id: number): Promise<Sesion | null> {
 	const usuarioPublico: UsuarioPublico = {
 		id: usuario.id,
 		nombre: usuario.nombre,
-		rol: usuario.rol
+		rol: usuario.rol,
+  carreraCodigo: usuario.carreraCodigo
 	};
 	const accessToken = jwt.sign(usuarioPublico, JWT_ACCESS_SECRET, { expiresIn: "15m" });
 	const refreshToken = jwt.sign({ sub: String(usuario.id), jti: randomUUID() }, JWT_REFRESH_SECRET, {
@@ -53,6 +64,7 @@ export async function iniciarSesion(correo: string, password: string): Promise<S
 }
 
 export async function registrarEstudiante(datos: NuevoEstudiante): Promise<UsuarioAuth | null> {
+ await validarCarrera(datos.carreraCodigo);
  const { password, ...datosUsuario } = datos;
  const passwordHash = await bcrypt.hash(password, 12);
  return crearEstudiante(datosUsuario, passwordHash);
@@ -62,6 +74,7 @@ export async function registrarUsuarioAdmin(
 	datos: NuevoEstudiante,
 	rol: "estudiante" | "profesor"
 ): Promise<UsuarioAuth | null> {
+	if (rol === "estudiante") await validarCarrera(datos.carreraCodigo);
 	const { password, ...datosUsuario } = datos;
 	const passwordHash = await bcrypt.hash(password, 12);
 	return crearUsuarioAdministrado(datosUsuario, passwordHash, rol);

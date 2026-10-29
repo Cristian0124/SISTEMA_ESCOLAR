@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/auth'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
+    { path: '/oferta-academica', name: 'oferta-academica', component: () => import('../views/AcademicOfferView.vue') },
     { path: '/', redirect: '/inicio' },
     { path: '/home', name: 'home', component: () => import('../views/HomeView.vue') },
     { path: '/admin/home', name: 'admin-home', component: () => import('../views/AdminHomeView.vue') },

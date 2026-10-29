@@ -6,7 +6,10 @@ import creditosRoutes from "./creditos.routes";
 import telemetriaRoutes from "./telemetria.routes";
 import soporteRoutes from "./soporte.routes";
 
+import academicoRoutes from "./academico.routes";
+
 const router = Router();
+router.use("/academico", academicoRoutes);
 
 router.get("/salud", (_req, res) => res.status(200).json({ ok: true }));
 router.get("/health", (_req, res) => res.status(200).json({

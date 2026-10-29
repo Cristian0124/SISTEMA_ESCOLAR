@@ -3,6 +3,7 @@ import api from '@/api/axios'
 export type EstadoSolicitudCreditos = 'Pendiente' | 'Aprobada' | 'Rechazada'
 
 export interface ResumenCreditos {
+  creditosPrograma: number
   semestre: number
   creditosBase: number
   creditosMatriculados: number

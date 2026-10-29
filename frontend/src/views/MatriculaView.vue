@@ -40,7 +40,7 @@ function requisitosPendientes(curso: (typeof store.cursos)[number]) {
 
 function cursoBloqueado(curso: (typeof store.cursos)[number]) {
   const avance = avanceDeCurso(curso)
-  return avance?.bloqueada === true || avance?.aprobada === true
+  return avance?.bloqueada === true || avance?.aprobada === true || avance?.prerrequisitosVerificados === false
 }
 
 function puedeSeleccionarCurso(curso: (typeof store.cursos)[number]) {

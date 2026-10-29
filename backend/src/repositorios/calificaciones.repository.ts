@@ -7,6 +7,7 @@ export interface AvanceMateria {
   creditos: number;
   prerrequisitos: string[];
   nota: number | null;
+  prerrequisitosVerificados: boolean;
 }
 
 export interface CortesCalificacion {
@@ -35,6 +36,8 @@ export async function listarAvanceEstudiante(usuarioId: number): Promise<AvanceM
        materia.nombre,
        materia.semestre,
        materia.creditos,
+       COALESCE((SELECT carrera.prerrequisitos_verificados FROM carreras carrera
+         WHERE carrera.codigo = materia.carrera_codigo), TRUE) AS "prerrequisitosVerificados",
        COALESCE(
          ARRAY_AGG(prerrequisito.codigo_requisito ORDER BY prerrequisito.codigo_requisito)
            FILTER (WHERE prerrequisito.codigo_requisito IS NOT NULL),
@@ -47,6 +50,7 @@ export async function listarAvanceEstudiante(usuarioId: number): Promise<AvanceM
      LEFT JOIN calificaciones AS calificacion
        ON calificacion.codigo_materia = materia.codigo
        AND calificacion.usuario_id = $1
+     WHERE materia_del_programa(materia.codigo, $1)
      GROUP BY materia.codigo, calificacion.nota
      ORDER BY materia.semestre, materia.codigo`,
     [usuarioId]
@@ -66,10 +70,10 @@ export async function listarCodigosAprobados(usuarioId: number): Promise<string[
   return resultado.rows.map((fila) => fila.codigo_materia);
 }
 
-export async function materiaExiste(codigo: string): Promise<boolean> {
+export async function materiaExiste(codigo: string, usuarioId?: number): Promise<boolean> {
   const resultado = await pool.query(
-    "SELECT 1 FROM materias_pensum WHERE codigo = $1 LIMIT 1",
-    [codigo]
+    `SELECT 1 FROM materias_pensum WHERE codigo = $1 ${usuarioId ? "AND materia_del_programa(codigo, $2)" : ""} LIMIT 1`,
+    usuarioId ? [codigo, usuarioId] : [codigo]
   );
   return resultado.rowCount !== 0;
 }

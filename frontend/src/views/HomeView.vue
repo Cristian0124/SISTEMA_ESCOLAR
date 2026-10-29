@@ -9,6 +9,7 @@ const busqueda = ref('')
 const idioma = ref('Español')
 
 const gruposMenu = [
+  { titulo: 'Oferta academica', opciones: [{ texto: 'Facultades, carreras y pensum', icono: '+', ruta: '/oferta-academica' }] },
   {
     titulo: 'Proceso de Administración',
     opciones: [

@@ -4,6 +4,7 @@ export interface Usuario {
 	id: number
 	nombre: string
 	rol: RolUsuario
+ carreraCodigo?: string | null
 }
 
 export interface LoginRequest {

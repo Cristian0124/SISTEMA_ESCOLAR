@@ -1,0 +1,3291 @@
+[
+  {
+    "codigo": "TPI",
+    "nombre": "Tecnología en Gestión de Procesos Industriales",
+    "nivel": "Tecnología",
+    "modalidad": "Presencial",
+    "fuente": "https://www.usc.edu.co/tecnologia-en-gestion-de-procesos-industriales/",
+    "consultadoEn": "2026-10-28",
+    "prerrequisitosVerificados": false,
+    "materias": [
+      {
+        "codigo": "01001",
+        "nombre": "ALGORITMOS Y PROGRAMACIÓN",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "01002",
+        "nombre": "MATEMÁTICAS FUNDAMENTALES",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "01003",
+        "nombre": "RESPONSABILIDAD SOCIAL Y EMPRESARIAL",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "01004",
+        "nombre": "INTRODUCCIÓN A LA TECNOLOGÍA",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "01005",
+        "nombre": "PROCESOS DE LA CADENA DE ABASTECIMIENTO",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "01006",
+        "nombre": "INGLÉS I",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "01007",
+        "nombre": "PROBABILIDAD Y ESTADÍSTICA",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "01008",
+        "nombre": "ALGEBRA LINEAL",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "01009",
+        "nombre": "CÁLCULO",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "01010",
+        "nombre": "SEGURIDAD Y SALUD EN EL TRABAJO",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "01011",
+        "nombre": "INGLÉS II",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "01012",
+        "nombre": "FUNDAMENTOS DE FÍSICA",
+        "semestre": 3,
+        "creditos": 4
+      },
+      {
+        "codigo": "01013",
+        "nombre": "CONTABILIDAD Y COSTOS",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "01014",
+        "nombre": "MÉTODOS Y TIEMPOS",
+        "semestre": 3,
+        "creditos": 4
+      },
+      {
+        "codigo": "01015",
+        "nombre": "INVESTIGACIÓN DE OPERACIONES",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "01016",
+        "nombre": "INGLÉS III",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "01017",
+        "nombre": "PRESUPUESTO",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "01018",
+        "nombre": "HERRAMIENTAS PARA EL CONTROL DE CONTAMINACIÓN AMBIENTAL",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "01019",
+        "nombre": "GESTIÓN DE LA CADENA DE ABASTECIMIENTO I",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "01020",
+        "nombre": "TEORÍA ORGANIZACIONAL",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "01021",
+        "nombre": "INGLÉS IV",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "01022",
+        "nombre": "RAZONAMIENTO CUANTITATIVO",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "01023",
+        "nombre": "CONSTITUCIÓN POLÍTICA",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "01024",
+        "nombre": "GESTIÓN DE LA CADENA DE ABASTECIMIENTO II",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "01025",
+        "nombre": "CONTROL DE CALIDAD",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "01026",
+        "nombre": "ELECTIVA",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "01027",
+        "nombre": "PROYECTO DE GRADO",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "01028",
+        "nombre": "PRÁCTICA EMPRESARIAL",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "01029",
+        "nombre": "GESTIÓN AMBIENTAL",
+        "semestre": 6,
+        "creditos": 3
+      }
+    ]
+  },
+  {
+    "codigo": "TSW",
+    "nombre": "Tecnología en Desarrollo de Sistemas de Información y de Software",
+    "nivel": "Tecnología",
+    "modalidad": "Presencial",
+    "fuente": "https://www.usc.edu.co/tecnologia-en-desarrollo-de-sistemas-de-informacion-y-de-software/",
+    "consultadoEn": "2026-10-28",
+    "prerrequisitosVerificados": false,
+    "materias": [
+      {
+        "codigo": "02001",
+        "nombre": "MATEMÁTICAS FUNDAMENTALES",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "02002",
+        "nombre": "INTRODUCCIÓN A LA TECNOLOGÍA",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "02003",
+        "nombre": "PENSAMIENTO COMPUTACIONAL",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "02004",
+        "nombre": "ALGORITMOS Y PROGRAMACIÓN I",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "02005",
+        "nombre": "MANTENIMIENTO Y ENSAMBLE DE HARDWARE",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "02006",
+        "nombre": "CÁLCULO (PRE REQUISITO: MATEMÁTICAS FUNDAMENTALES)",
+        "semestre": 2,
+        "creditos": 4
+      },
+      {
+        "codigo": "02007",
+        "nombre": "ELECTIVA DE ÁREA",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "02008",
+        "nombre": "INGLÉS I",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "02009",
+        "nombre": "ALGORITMOS Y PROGRAMACIÓN II (PRE REQUISITO: ALGORITMOS Y PROGRAMACIÓN I)",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "02010",
+        "nombre": "PROBABILIDAD Y ESTADÍSTICA I (PRE REQUISITO: MATEMÁTICAS FUNDAMENTALES)",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "02011",
+        "nombre": "INGLÉS II (PRE REQUISITO: INGLÉS I )",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "02012",
+        "nombre": "FUNDAMENTOS DE FÍSICA (PRE REQUISITO: CÁLCULO)",
+        "semestre": 3,
+        "creditos": 4
+      },
+      {
+        "codigo": "02013",
+        "nombre": "CONSTRUCCION DE SOFTWARE I (PRE REQUISITO: ALGORITMOS Y PROGRAMACIÓN II)",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "02014",
+        "nombre": "ESTRUCTURA DE DATOS (PRE REQUISITO: ALGORITMOS Y PROGRAMACIÓN II)",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "02015",
+        "nombre": "LABORATORIO DE BASES DE DATOS (PRE REQUISITO: ALGORITMOS Y PROGRAMACIÓN II)",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "02016",
+        "nombre": "INGLÉS III (PRE REQUISITO: INGLÉS II)",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "02017",
+        "nombre": "REDES Y COMUNICACIONES (PRE REQUISITO: Mantenimiento y ensamble de hardware)",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "02018",
+        "nombre": "CONSTRUCCIÓN DE SOFTWARE II (PRE REQUISITO: CONSTRUCCIÓN DE SOFTWARE I)",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "02019",
+        "nombre": "PROGRAMACIÓN ORIENTADA A LA WEB (PRE REQUISITO: ESTRUCTURA DE DATOS)",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "02020",
+        "nombre": "ADMINISTRACIÓN DE INFORMACIÓN (PRE REQUISITO: LABORATORIO DE BASES DE DATOS )",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "02021",
+        "nombre": "INGLÉS IV (PRE REQUISITO: INGLÉS III)",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "02022",
+        "nombre": "RAZONAMIENTO CUANTITATIVO",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "02023",
+        "nombre": "CONSTITUCIÓN POLÍTICA",
+        "semestre": 5,
+        "creditos": 2
+      },
+      {
+        "codigo": "02024",
+        "nombre": "PROGRAMACIÓN DE DISPOSITIVOS MÓVILES (PRE REQUISITO: ESTRUCTURA DE DATOS)",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "02025",
+        "nombre": "ELECTIVA I (PRE REQUISITO: Redes y Comunicaciones; Construcción del software II)",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "02026",
+        "nombre": "ADMINISTRACIÓN DE SISTEMAS OPERATIVOS (PRE REQUISITO: REDES Y COMUNICACIONES)",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "02027",
+        "nombre": "PROYECTO DE GRADO (PRE REQUISITO: Introducción a la Tecnología, Pensamiento Computacional, Electiva I)",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "02028",
+        "nombre": "PRÁCTICA PROFESIONAL (PRE REQUISITO: Electiva I, Programación Orientada a la Web, Programación de Dispositivos Móviles)",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "02029",
+        "nombre": "SEGURIDAD INFORMÁTICA (PRE REQUISITO: ESTRUCTURA DE DATOS)",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "02030",
+        "nombre": "DISEÑO DE EXPERIENCIAS DE USUARIO (PRE REQUISITO: PROGRAMACIÓN ORIENTADA A LA WEB Y PROGRAMACIÓN DE DISPOSITIVOS MÓVILES)",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "02031",
+        "nombre": "ELECTIVA II (PRE REQUISITO: Redes y Comunicaciones; Construcción del Software II; Administración de la Información)",
+        "semestre": 6,
+        "creditos": 3
+      }
+    ]
+  },
+  {
+    "codigo": "BIO",
+    "nombre": "Bioingeniería",
+    "nivel": "Profesional",
+    "modalidad": "Presencial",
+    "fuente": "https://www.usc.edu.co/bioingenieria/",
+    "consultadoEn": "2026-10-28",
+    "prerrequisitosVerificados": false,
+    "materias": [
+      {
+        "codigo": "03001",
+        "nombre": "BIOLOGÍA",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "03002",
+        "nombre": "MATEMÁTICAS FUNDAMENTALES",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "03003",
+        "nombre": "INTRODUCCIÓN A LA INGENIERÍA",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "03004",
+        "nombre": "ALGORITMOS Y PROGRAMACIÓN",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "03005",
+        "nombre": "PENSAMIENTO SISTÉMICO",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "03006",
+        "nombre": "CÁLCULO I",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "03007",
+        "nombre": "FÍSICA Y LABORATORIO I",
+        "semestre": 2,
+        "creditos": 4
+      },
+      {
+        "codigo": "03008",
+        "nombre": "ÁLGEBRA LINEAL",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "03009",
+        "nombre": "QUÍMICA GENERAL",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "03010",
+        "nombre": "MORFO FISIOLOGÍA PARA BIOINGENIERÍA",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "03011",
+        "nombre": "INGLÉS I",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "03012",
+        "nombre": "CÁLCULO II",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "03013",
+        "nombre": "BIOQUÍMICA",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "03014",
+        "nombre": "FÍSICA Y LABORATORIO II",
+        "semestre": 3,
+        "creditos": 4
+      },
+      {
+        "codigo": "03015",
+        "nombre": "CIRCUITOS ELÉCTRICOS",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "03016",
+        "nombre": "INGLÉS II",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "03017",
+        "nombre": "ECUACIONES DIFERENCIALES",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "03018",
+        "nombre": "CONTAMINACIÓN HÍDRICA",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "03019",
+        "nombre": "ELECTRÓNICA MÉDICA I",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "03020",
+        "nombre": "FUNDAMENTO DE MATERIALES",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "03021",
+        "nombre": "ESTADÍSTICA Y PROBABILIDAD",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "03022",
+        "nombre": "INGLÉS III",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "03023",
+        "nombre": "MATEMÁTICAS ESPECIALES",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "03024",
+        "nombre": "PROYECTO INTEGRADOR BÁSICO",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "03025",
+        "nombre": "CONTAMINACIÓN ATMOSFÉRICA",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "03026",
+        "nombre": "ELECTRÓNICA MÉDICA II",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "03027",
+        "nombre": "CIRCUITOS DIGITALES",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "03028",
+        "nombre": "CONSTITUCIÓN POLÍTICA",
+        "semestre": 6,
+        "creditos": 2
+      },
+      {
+        "codigo": "03029",
+        "nombre": "RAZONAMIENTO CUANTITATIVO",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "03030",
+        "nombre": "INGLÉS IV",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "03031",
+        "nombre": "RESIDUOS SÓLIDOS",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "03032",
+        "nombre": "INSTRUMENTACIÓN BIOMÉDICA I",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "03033",
+        "nombre": "FENOMENOS DE TRANSPORTE EN BIOINGENIERÍA",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "03034",
+        "nombre": "SISTEMAS DE CONTROL PARA BIOINGENIERÍA",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "03035",
+        "nombre": "CONSTRUCCIONES HOSPITALARIAS SOSTENIBLES",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "03036",
+        "nombre": "INSTRUMENTACIÓN BIOMÉDICA II",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "03037",
+        "nombre": "GESTIÓN DE PROYECTOS",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "03038",
+        "nombre": "SISTEMAS MICROPROCESADOS",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "03039",
+        "nombre": "BIOMECÁNICA",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "03040",
+        "nombre": "ELECTIVA DE ÁREA",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "03041",
+        "nombre": "ELECTIVA DE PROFUNDIZACIÓN I",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "03042",
+        "nombre": "PROCESAMIENTO DE BIOSEÑALES",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "03043",
+        "nombre": "INGENIERÍA CLÍNICA",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "03044",
+        "nombre": "DISEÑO Y PROTOTIPADO DE SISTEMAS EN BIOINGENIERÍA",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "03045",
+        "nombre": "PROYECTO INTEGRADOR PROFESIONAL",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "03046",
+        "nombre": "ELECTIVA DE PROFUNDIZACIÓN II",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "03047",
+        "nombre": "ELECTIVA DE PROFUNDIZACIÓN III",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "03048",
+        "nombre": "ELECTIVA DE PROFUNDIZACIÓN IV",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "03049",
+        "nombre": "PROYECTO INTEGRADOR DE GRADO",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "03050",
+        "nombre": "ELECTIVA DE PROFUNDIZACIÓN V",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "03051",
+        "nombre": "ELECTIVA DE PROFUNDIZACIÓN VI",
+        "semestre": 10,
+        "creditos": 3
+      }
+    ]
+  },
+  {
+    "codigo": "CIV",
+    "nombre": "Ingeniería Civil",
+    "nivel": "Profesional",
+    "modalidad": "Presencial",
+    "fuente": "https://www.usc.edu.co/ingenieria-civil/",
+    "consultadoEn": "2026-10-28",
+    "prerrequisitosVerificados": false,
+    "materias": [
+      {
+        "codigo": "04001",
+        "nombre": "GEOLOGÍA",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "04002",
+        "nombre": "ÁLGEBRA LINEAL",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "04003",
+        "nombre": "INTRODUCCIÓN A LA INGENIERÍA",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "04004",
+        "nombre": "MATEMÁTICAS FUNDAMENTALES",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "04005",
+        "nombre": "DIBUJO TÉCNICO",
+        "semestre": 1,
+        "creditos": 4
+      },
+      {
+        "codigo": "04006",
+        "nombre": "FUNDAMENTOS DE QUÍMICA",
+        "semestre": 2,
+        "creditos": 2
+      },
+      {
+        "codigo": "04007",
+        "nombre": "ESTADÍSTICA Y PROBABILIDAD",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "04008",
+        "nombre": "ALGORITMOS Y PROGRAMACIÓN",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "04009",
+        "nombre": "CÁLCULO I",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "04010",
+        "nombre": "FÍSICA Y LABORATORIO 1",
+        "semestre": 2,
+        "creditos": 4
+      },
+      {
+        "codigo": "04011",
+        "nombre": "TOPOGRAFÍA",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "04012",
+        "nombre": "QUÍMICA AMBIENTAL",
+        "semestre": 3,
+        "creditos": 2
+      },
+      {
+        "codigo": "04013",
+        "nombre": "INGLÉS 1",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "04014",
+        "nombre": "HIDROLOGÍA",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "04015",
+        "nombre": "CÁLCULO II",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "04016",
+        "nombre": "FÍSICA Y LABORATORIO 2",
+        "semestre": 3,
+        "creditos": 4
+      },
+      {
+        "codigo": "04017",
+        "nombre": "MECÁNICA DE FLUIDOS",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "04018",
+        "nombre": "METODOLOGÍA DE LA INVESTIGACIÓN",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "04019",
+        "nombre": "INGLÉS II",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "04020",
+        "nombre": "CÁLCULO VECTORIAL",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "04021",
+        "nombre": "ESTÁTICA",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "04022",
+        "nombre": "ECUACIONES DIFERENCIALES",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "04023",
+        "nombre": "MATERIALES DE CONSTRUCCIÓN Y LABORATORIO",
+        "semestre": 4,
+        "creditos": 4
+      },
+      {
+        "codigo": "04024",
+        "nombre": "INGLÉS III",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "04025",
+        "nombre": "HIDRÁULICA",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "04026",
+        "nombre": "ANÁLISIS ESTRUCTURAL",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "04027",
+        "nombre": "VÍAS",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "04028",
+        "nombre": "SUELOS Y LABORATORIOS",
+        "semestre": 5,
+        "creditos": 4
+      },
+      {
+        "codigo": "04029",
+        "nombre": "MECÁNICA DE SÓLIDOS",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "04030",
+        "nombre": "RAZONAMIENTO CUANTITATIVO",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "04031",
+        "nombre": "INGLÉS IV",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "04032",
+        "nombre": "ESTRUCTURAS METÁLICAS",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "04033",
+        "nombre": "CONCRETO ARMADO",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "04034",
+        "nombre": "CONSTITUCIÓN POLÍTICA",
+        "semestre": 6,
+        "creditos": 2
+      },
+      {
+        "codigo": "04035",
+        "nombre": "CIMENTACIONES",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "04036",
+        "nombre": "ACUEDUCTOS",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "04037",
+        "nombre": "ALCANTARILLADOS",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "04038",
+        "nombre": "CONSTRUCCIÓN DE VIVIENDA Y EDIFICACIÓN",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "04039",
+        "nombre": "PAVIMENTOS",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "04040",
+        "nombre": "LEGISLACIÓN DE LA CONSTRUCCIÓN",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "04041",
+        "nombre": "INGENIERÍA DE TRÁNSITO Y TRANSPORTE",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "04042",
+        "nombre": "PUENTES",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "04043",
+        "nombre": "COSTOS Y PRESUPUESTOS",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "04044",
+        "nombre": "INSTALACIONES HIDRÁULICAS Y SANITARIAS",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "04045",
+        "nombre": "PROCESOS CONSTRUCTIVOS",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "04046",
+        "nombre": "CONTRATACIÓN DE OBRAS CIVILES",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "04047",
+        "nombre": "ESTRUCTURAS HIDRÁULICAS",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "04048",
+        "nombre": "ELECTIVAS PROFESIONAL I",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "04049",
+        "nombre": "PROYECTO DE GRADO I",
+        "semestre": 9,
+        "creditos": 5
+      },
+      {
+        "codigo": "04050",
+        "nombre": "PLANEACIÓN Y PROGRAMACIÓN DE OBRA",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "04051",
+        "nombre": "INTERVENTORÍA DE OBRAS",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "04052",
+        "nombre": "ELECTIVA PROFESIONAL II",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "04053",
+        "nombre": "ELECTIVA PROFESIONAL III",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "04054",
+        "nombre": "PROYECTO DE GRADO II",
+        "semestre": 10,
+        "creditos": 6
+      },
+      {
+        "codigo": "04055",
+        "nombre": "GESTIÓN DE PROYECTOS DE CONSTRUCCIÓN",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "04056",
+        "nombre": "OPTIMIZACIÓN DE PROYECTOS CONSTRUCTIVOS",
+        "semestre": 10,
+        "creditos": 4
+      }
+    ]
+  },
+  {
+    "codigo": "QUI",
+    "nombre": "Ingeniería Química",
+    "nivel": "Profesional",
+    "modalidad": "Presencial",
+    "fuente": "https://www.usc.edu.co/ingenieria-quimica/",
+    "consultadoEn": "2026-10-28",
+    "prerrequisitosVerificados": false,
+    "materias": [
+      {
+        "codigo": "05001",
+        "nombre": "INTRODUCCIÓN A LA INGENIERÍA",
+        "semestre": 1,
+        "creditos": 2
+      },
+      {
+        "codigo": "05002",
+        "nombre": "MATEMÁTICAS FUNDAMENTALES",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "05003",
+        "nombre": "BIOLOGÍA Y LABORATORIO",
+        "semestre": 1,
+        "creditos": 4
+      },
+      {
+        "codigo": "05004",
+        "nombre": "ALGORITMOS Y PROGRAMACIÓN",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "05005",
+        "nombre": "QUÍMICA I Y LABORATORIO",
+        "semestre": 1,
+        "creditos": 4
+      },
+      {
+        "codigo": "05006",
+        "nombre": "ALGEBRA LINEAL",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "05007",
+        "nombre": "CÁLCULO I",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "05008",
+        "nombre": "FÍSICA I Y LABORATORIO",
+        "semestre": 2,
+        "creditos": 4
+      },
+      {
+        "codigo": "05009",
+        "nombre": "FISICOQUÍMICA Y LABORATORIO",
+        "semestre": 2,
+        "creditos": 4
+      },
+      {
+        "codigo": "05010",
+        "nombre": "SISTEMAS DE CALIDAD PARA INGENIERÍA QUÍMICA",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "05011",
+        "nombre": "INGLÉS I",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "05012",
+        "nombre": "CÁLCULO II",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "05013",
+        "nombre": "FÍSICA II Y LABORATORIO",
+        "semestre": 3,
+        "creditos": 4
+      },
+      {
+        "codigo": "05014",
+        "nombre": "BALANCES DE MATERIA Y ENERGÍA",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "05015",
+        "nombre": "QUÍMICA ORGÁNICA Y LABORATORIO",
+        "semestre": 3,
+        "creditos": 4
+      },
+      {
+        "codigo": "05016",
+        "nombre": "INGLÉS II",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "05017",
+        "nombre": "ECUACIONES DIFERENCIALES",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "05018",
+        "nombre": "MÉTODOS NUMÉRICOS PARA INGENIERÍA",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "05019",
+        "nombre": "BIOQUÍMICA Y LABORATORIO",
+        "semestre": 4,
+        "creditos": 4
+      },
+      {
+        "codigo": "05020",
+        "nombre": "ESTADÍSTICA",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "05021",
+        "nombre": "INGLÉS III",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "05022",
+        "nombre": "METODOLOGÍA DE LA INVESTIGACIÓN",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "05023",
+        "nombre": "TERMODINÁMICA QUÍMICA",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "05024",
+        "nombre": "FENÓMENOS DE TRANSPORTE I",
+        "semestre": 5,
+        "creditos": 4
+      },
+      {
+        "codigo": "05025",
+        "nombre": "MICROBIOLOGÍA Y LABORATORIO",
+        "semestre": 5,
+        "creditos": 4
+      },
+      {
+        "codigo": "05026",
+        "nombre": "INGLÉS IV",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "05027",
+        "nombre": "RAZONAMIENTO CUANTITATIVO",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "05028",
+        "nombre": "CONSTITUCIÓN POLÍTICA",
+        "semestre": 6,
+        "creditos": 2
+      },
+      {
+        "codigo": "05029",
+        "nombre": "FENÓMENOS DE TRANSPORTE II",
+        "semestre": 6,
+        "creditos": 4
+      },
+      {
+        "codigo": "05030",
+        "nombre": "DISEÑO DE EXPERIMENTOS",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "05031",
+        "nombre": "PROCESOS INDUSTRIALES",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "05032",
+        "nombre": "OPERACIONES DE SEPARACIÓN",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "05033",
+        "nombre": "INGENIERÍA DE REACCIONES",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "05034",
+        "nombre": "QUÍMICA AMBIENTAL",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "05035",
+        "nombre": "MICROBIOLOGÍA",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "05036",
+        "nombre": "SIMULACIÓN Y OPTIMIZACIÓN DE PROCESOS",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "05037",
+        "nombre": "DISEÑO DE BIORREACTORES",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "05038",
+        "nombre": "AMBIENTE Y DESARROLLO SOSTENIBLE",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "05039",
+        "nombre": "ELECTIVA PROFESIONAL I",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "05040",
+        "nombre": "BIOPROCESOS Y LABORATORIO",
+        "semestre": 8,
+        "creditos": 4
+      },
+      {
+        "codigo": "05041",
+        "nombre": "PROYECTO DE GRADO I",
+        "semestre": 9,
+        "creditos": 5
+      },
+      {
+        "codigo": "05042",
+        "nombre": "DISEÑO DE PROCESOS",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "05043",
+        "nombre": "LABORATORIO DE PROCESOS",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "05044",
+        "nombre": "ELECTIVA PROFESIONAL II",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "05045",
+        "nombre": "PROYECTO DE GRADO II",
+        "semestre": 10,
+        "creditos": 6
+      },
+      {
+        "codigo": "05046",
+        "nombre": "DISEÑO DE PLANTAS",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "05047",
+        "nombre": "SEGURIDAD Y SALUD EN EL TRABAJO",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "05048",
+        "nombre": "ELECTIVA PROFESIONAL III",
+        "semestre": 10,
+        "creditos": 3
+      }
+    ]
+  },
+  {
+    "codigo": "IND",
+    "nombre": "Ingeniería Industrial",
+    "nivel": "Profesional",
+    "modalidad": "Presencial",
+    "fuente": "https://www.usc.edu.co/ingenieria-industrial/",
+    "consultadoEn": "2026-10-28",
+    "prerrequisitosVerificados": false,
+    "materias": [
+      {
+        "codigo": "06001",
+        "nombre": "RAZONAMIENTO CUANTITATIVO",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "06002",
+        "nombre": "CONSTITUCIÓN POLÍTICA",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "06003",
+        "nombre": "COMPRENSIÓN Y PRODUCCIÓN TEXTUAL I",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "06004",
+        "nombre": "INGLÉS I",
+        "semestre": 1,
+        "creditos": 2
+      },
+      {
+        "codigo": "06005",
+        "nombre": "FUNDAMENTOS DE TIC",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "06006",
+        "nombre": "INTRODUCCIÓN A LA INGENIERÍA",
+        "semestre": 1,
+        "creditos": 2
+      },
+      {
+        "codigo": "06007",
+        "nombre": "CURSO I CAMPO SOCIOPOLÍTICO, FILOSÓFICO Y HUMANÍSTICO",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "06008",
+        "nombre": "COMPRENSIÓN Y PRODUCCIÓN TEXTUAL II",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "06009",
+        "nombre": "INGLÉS II",
+        "semestre": 2,
+        "creditos": 2
+      },
+      {
+        "codigo": "06010",
+        "nombre": "MATEMÁTICA FUNDAMENTAL",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "06011",
+        "nombre": "QUÍMICA Y LABORATORIO",
+        "semestre": 2,
+        "creditos": 2
+      },
+      {
+        "codigo": "06012",
+        "nombre": "ENSAMIENTO SISTÉMICO",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "06013",
+        "nombre": "ALGORITMOS Y PROGRAMACIÓN",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "06014",
+        "nombre": "CURSO II CAMPO SOCIOPOLÍTICO, FILOSÓFICO Y HUMANÍSTICO",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "06015",
+        "nombre": "INGLÉS III",
+        "semestre": 3,
+        "creditos": 2
+      },
+      {
+        "codigo": "06016",
+        "nombre": "CÁLCULO I",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "06017",
+        "nombre": "FÍSICA Y LABORATORIO I",
+        "semestre": 3,
+        "creditos": 2
+      },
+      {
+        "codigo": "06018",
+        "nombre": "ÁLGEBRA LINEAL",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "06019",
+        "nombre": "TEORÍA ORGANIZACIONAL",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "06020",
+        "nombre": "CURSO II CAMPO CIENTÍFICO Y NATURAL",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "06021",
+        "nombre": "INGLÉS IV",
+        "semestre": 4,
+        "creditos": 2
+      },
+      {
+        "codigo": "06022",
+        "nombre": "CÁLCULO II",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "06023",
+        "nombre": "FÍSICA Y LABORATORIO II",
+        "semestre": 4,
+        "creditos": 2
+      },
+      {
+        "codigo": "06024",
+        "nombre": "RESISTENCIA DE MATERIALES",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "06025",
+        "nombre": "ECONOMÍA",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "06026",
+        "nombre": "ECUACIONES DIFERENCIALES",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "06027",
+        "nombre": "PROYECTO INTEGRADOR BÁSICO",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "06028",
+        "nombre": "ELECTIVA DE ÁREA I (ESTADÍSTICA II)",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "06029",
+        "nombre": "PROCESOS Y MATERIALES",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "06030",
+        "nombre": "MÉTODOS Y DISEÑO DEL TRABAJO",
+        "semestre": 5,
+        "creditos": 2
+      },
+      {
+        "codigo": "06031",
+        "nombre": "INGENIERÍA DE COSTOS",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "06032",
+        "nombre": "GERENCIA ESTRATÉGICA DE OPERACIONES",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "06033",
+        "nombre": "CURSO I CAMPO INVESTIGATIVO",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "06034",
+        "nombre": "GESTIÓN DE CALIDAD",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "06035",
+        "nombre": "LABORATORIO DE PROCESOS",
+        "semestre": 6,
+        "creditos": 1
+      },
+      {
+        "codigo": "06036",
+        "nombre": "INVESTIGACIÓN DE OPERACIONES I",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "06037",
+        "nombre": "INGENIERÍA ECONÓMICA",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "06038",
+        "nombre": "MERCADEO",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "06039",
+        "nombre": "PRODUCTIVIDAD HUMANA",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "06040",
+        "nombre": "CURSO III CAMPO CIENTÍFICO NATURAL",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "06041",
+        "nombre": "ELECTIVA DE ÁREA II (PROYECTOS DE INGENIERÍA)",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "06042",
+        "nombre": "INVESTIGACIÓN DE OPERACIONES II",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "06043",
+        "nombre": "OPERACIONES I",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "06044",
+        "nombre": "SEGURIDAD Y SALUD EN EL TRABAJO",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "06045",
+        "nombre": "GESTIÓN FINANCIERA",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "06046",
+        "nombre": "LOGÍSTICA",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "06047",
+        "nombre": "OPERACIONES II",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "06048",
+        "nombre": "GESTIÓN DE PROYECTOS DE INGENIERÍA",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "06049",
+        "nombre": "FUNDAMENTOS DE GESTIÓN DE TECNOLOGÍA",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "06050",
+        "nombre": "ElECTIVA PROFUNDIZACIÓN I",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "06051",
+        "nombre": "ELECTIVA PROFUNDIZACIÓN II",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "06052",
+        "nombre": "PROYECTO INTEGRADOR PROFESIONAL",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "06053",
+        "nombre": "PRÁCTICA PROFESIONAL",
+        "semestre": 9,
+        "creditos": 1
+      },
+      {
+        "codigo": "06054",
+        "nombre": "DISTRIBUCIÓN DE PLANTA",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "06055",
+        "nombre": "SIMULACIÓN DISCRETA",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "06056",
+        "nombre": "ElECTIVA PROFUNDIZACIÓN III",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "06057",
+        "nombre": "CURSO I CAMPO DE GESTIÓN",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "06058",
+        "nombre": "PROYECTO INTEGRADOR DE GRADO",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "06059",
+        "nombre": "ELECTIVA PROFUNDIZACIÓN IV",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "06060",
+        "nombre": "ELECTIVA DE PROFUNDIZACIÓN V",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "06061",
+        "nombre": "ELECTIVA DE PROFUNDIZACIÓN VI",
+        "semestre": 10,
+        "creditos": 3
+      }
+    ]
+  },
+  {
+    "codigo": "ELE",
+    "nombre": "Ingeniería Electrónica",
+    "nivel": "Profesional",
+    "modalidad": "Presencial",
+    "fuente": "https://www.usc.edu.co/ingenieria-electronica/",
+    "consultadoEn": "2026-10-28",
+    "prerrequisitosVerificados": false,
+    "materias": [
+      {
+        "codigo": "07001",
+        "nombre": "Introducción a la Ingeniería",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "07002",
+        "nombre": "Pensamiento Sistémico",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "07003",
+        "nombre": "Introducción a la Electricidad y la Electrónica",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "07004",
+        "nombre": "Algoritmos y Programación",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "07005",
+        "nombre": "Matemáticas Fundamentales",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "07006",
+        "nombre": "Cálculo I",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "07007",
+        "nombre": "Álgebra Lineal",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "07008",
+        "nombre": "Probabilidad y Estadística",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "07009",
+        "nombre": "Física y Laboratorio 1",
+        "semestre": 2,
+        "creditos": 4
+      },
+      {
+        "codigo": "07010",
+        "nombre": "Matemática Computacional",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "07011",
+        "nombre": "Inglés I",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "07012",
+        "nombre": "Cálculo 2",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "07013",
+        "nombre": "Física y Laboratorio 2",
+        "semestre": 3,
+        "creditos": 4
+      },
+      {
+        "codigo": "07014",
+        "nombre": "Fundamentos de Informática Electrónica",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "07015",
+        "nombre": "Circuitos Eléctricos I",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "07016",
+        "nombre": "Inglés II",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "07017",
+        "nombre": "Ecuaciones Diferenciales",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "07018",
+        "nombre": "Circuitos Electrónicos I",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "07019",
+        "nombre": "Circuitos Eléctricos II",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "07020",
+        "nombre": "Sistemas Digitales I",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "07021",
+        "nombre": "Proyecto Integrador Básico",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "07022",
+        "nombre": "Inglés III",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "07023",
+        "nombre": "Cálculo Vectorial",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "07024",
+        "nombre": "Circuitos Electrónicos II",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "07025",
+        "nombre": "Sistemas Digitales II",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "07026",
+        "nombre": "Matemáticas Especiales Para Ingenieros",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "07027",
+        "nombre": "Electiva de Área",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "07028",
+        "nombre": "Inglés IV",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "07029",
+        "nombre": "Razonamiento Cuantitativo",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "07030",
+        "nombre": "Constitución Política",
+        "semestre": 6,
+        "creditos": 2
+      },
+      {
+        "codigo": "07031",
+        "nombre": "Sistemas Dinámicos",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "07032",
+        "nombre": "Campos Electromagnéticos",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "07033",
+        "nombre": "Microprocesadores Y Microcontroladores",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "07034",
+        "nombre": "Electrónica de Potencia",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "07035",
+        "nombre": "Teoría de la Información y la Comunicación",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "07036",
+        "nombre": "Instrumentación Electrónica",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "07037",
+        "nombre": "Procesamiento Digital de Señales",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "07038",
+        "nombre": "Gestión de proyectos",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "07039",
+        "nombre": "Sistemas Automáticos de Control",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "07040",
+        "nombre": "Fundamentos de Robótica",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "07041",
+        "nombre": "Aprendizaje de Máquina",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "07042",
+        "nombre": "Accionamientos Eléctricos",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "07043",
+        "nombre": "Sistemas de Telecomunicaciones",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "07044",
+        "nombre": "Proyecto Integrador Profesional",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "07045",
+        "nombre": "Herramientas para el Desarrollo de Tecnología en Electrónica",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "07046",
+        "nombre": "Internet de las Cosas",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "07047",
+        "nombre": "Electiva Profesional I",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "07048",
+        "nombre": "Proyecto Integrador de Grado",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "07049",
+        "nombre": "Electiva Profesional II",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "07050",
+        "nombre": "Electiva Profesional III",
+        "semestre": 10,
+        "creditos": 3
+      }
+    ]
+  },
+  {
+    "codigo": "ENE",
+    "nombre": "Ingeniería en Energías",
+    "nivel": "Profesional",
+    "modalidad": "Presencial",
+    "fuente": "https://www.usc.edu.co/ingenieria-en-energias/",
+    "consultadoEn": "2026-10-28",
+    "prerrequisitosVerificados": false,
+    "materias": [
+      {
+        "codigo": "08001",
+        "nombre": "ENERGÍA, AMBIENTE Y SOSTENIBILIDAD",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "08002",
+        "nombre": "QUÍMICA GENERAL",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "08003",
+        "nombre": "MATEMÁTICAS FUNDAMENTALES",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "08004",
+        "nombre": "ALGORITMOS Y PROGRAMACIÓN",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "08005",
+        "nombre": "ECOLOGÍA Y CAMBIO CLIMÁTICO",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "08006",
+        "nombre": "ÁLGEBRA LINEAL",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "08007",
+        "nombre": "QUÍMICA AMBIENTAL",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "08008",
+        "nombre": "CALCULO I",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "08009",
+        "nombre": "PROBABILIDAD Y ESTADÍSTICA",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "08010",
+        "nombre": "FUENTES NO CONVENCIONALES Y CONVENCIONALES DE ENERGÍA",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "08011",
+        "nombre": "INGLÉS I",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "08012",
+        "nombre": "ELECTIVA DE ÁREA I",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "08013",
+        "nombre": "FÍSICA Y LABORATORIO I",
+        "semestre": 3,
+        "creditos": 4
+      },
+      {
+        "codigo": "08014",
+        "nombre": "CÁLCULO II",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "08015",
+        "nombre": "CIRCUITOS ELÉCTRICOS I",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "08016",
+        "nombre": "INGLÉS II",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "08017",
+        "nombre": "TERMOFLUIDOS I",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "08018",
+        "nombre": "FÍSICA Y LABORATORIO II",
+        "semestre": 4,
+        "creditos": 4
+      },
+      {
+        "codigo": "08019",
+        "nombre": "ECUACIONES DIFERENCIALES",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "08020",
+        "nombre": "MÉTODOS NUMÉRICOS",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "08021",
+        "nombre": "CIRCUITOS ELÉCTRICOS II",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "08022",
+        "nombre": "INGLÉS III",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "08023",
+        "nombre": "TERMOFLUIDOS II",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "08024",
+        "nombre": "PROCESAMIENTO DE SEÑALES",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "08025",
+        "nombre": "CÁLCULO VECTORIAL",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "08026",
+        "nombre": "BIG DATA",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "08027",
+        "nombre": "SISTEMAS DE TRANSMISIÓN Y DISTRIBUCIÓN",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "08028",
+        "nombre": "INGLÉS IV",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "08029",
+        "nombre": "RAZONAMIENTO CUANTITATIVO",
+        "semestre": 6,
+        "creditos": 2
+      },
+      {
+        "codigo": "08030",
+        "nombre": "CONSTITUCIÓN POLÍTICA",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "08031",
+        "nombre": "BALANCES DE MATERIA Y ENERGÍA",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "08032",
+        "nombre": "APRENDIZAJE AUTOMÁTICO",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "08033",
+        "nombre": "MÁQUINAS ELÉCTRICAS Y TÉRMICAS",
+        "semestre": 6,
+        "creditos": 4
+      },
+      {
+        "codigo": "08034",
+        "nombre": "ENERGÍA SOLAR",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "08035",
+        "nombre": "USO RACIONAL Y EFICIENTE DE LA ENERGÍA",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "08036",
+        "nombre": "SISTEMAS AUTOMÁTICOS DE CONTROL",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "08037",
+        "nombre": "PROYECTO INTEGRADOR BÁSICO",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "08038",
+        "nombre": "SISTEMAS DE INFORMACIÓN GEOGRÁFICA",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "08039",
+        "nombre": "EMPRENDIMIENTO E INNOVACIÓN EN EL SECTOR ENERGÉTICO",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "08040",
+        "nombre": "ELECTIVA PROFESIONAL I",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "08041",
+        "nombre": "BIOENERGÍA",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "08042",
+        "nombre": "ENERGÍA HIDRÁULICA Y EÓLICA",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "08043",
+        "nombre": "REGULACIÓN DEL SECTOR ENERGÉTICO",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "08044",
+        "nombre": "GERENCIA DE PROYECTOS ENERGÉTICOS",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "08045",
+        "nombre": "ELECTIVA PROFESIONAL II",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "08046",
+        "nombre": "PROYECTO INTEGRADOR PROFESIONAL",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "08047",
+        "nombre": "LEGISLACIÓN ENERGÉTICA APLICADA",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "08048",
+        "nombre": "PRÁCTICA PROFESIONAL",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "08049",
+        "nombre": "ELECTIVA PROFESIONAL III",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "08050",
+        "nombre": "PROYECTO INTEGRADOR DE GRADO",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "08051",
+        "nombre": "ACCESO A LA ENERGÍA Y PLANEACIÓN ENERGÉTICA",
+        "semestre": 10,
+        "creditos": 3
+      }
+    ]
+  },
+  {
+    "codigo": "SIS",
+    "nombre": "Ingeniería de Sistemas",
+    "nivel": "Profesional",
+    "modalidad": "Presencial",
+    "fuente": "https://www.usc.edu.co/ingenieria-de-sistemas/",
+    "consultadoEn": "2026-10-28",
+    "prerrequisitosVerificados": false,
+    "materias": [
+      {
+        "codigo": "09001",
+        "nombre": "MATEMÁTICAS FUNDAMENTALES",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "09002",
+        "nombre": "INTRODUCCIÓN A LA INGENIERÍA",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "09003",
+        "nombre": "PENSAMIENTO SISTÉMICO",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "09004",
+        "nombre": "MATEMÁTICAS DISCRETAS",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "09005",
+        "nombre": "ALGORITMOS Y PROGRAMACIÓN I",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "09006",
+        "nombre": "CÁLCULO I",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "09007",
+        "nombre": "FÍSICA Y LABORATORIO I",
+        "semestre": 2,
+        "creditos": 4
+      },
+      {
+        "codigo": "09008",
+        "nombre": "ALGORITMOS Y PROGRAMACIÓN I",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "09009",
+        "nombre": "ALGEBRA LINEAL",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "09010",
+        "nombre": "ESTADÍSTICA Y PROBABILIDAD",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "09011",
+        "nombre": "INGLÉS I",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "09012",
+        "nombre": "CÁLCULO II",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "09013",
+        "nombre": "FÍSICA Y LABORATORIO II",
+        "semestre": 3,
+        "creditos": 4
+      },
+      {
+        "codigo": "09014",
+        "nombre": "FUNDAMENTOS DE SISTEMAS DE INFORMACIÓN",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "09015",
+        "nombre": "ESTRUCTURA DE DATOS",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "09016",
+        "nombre": "INGLÉS II",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "09017",
+        "nombre": "ECUACIONES DIFERENCIALES",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "09018",
+        "nombre": "PROYECTO INTEGRADOR BÁSICO",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "09019",
+        "nombre": "BASES DE DATOS",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "09020",
+        "nombre": "ANÁLISIS DE ALGORITMOS",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "09021",
+        "nombre": "INGLÉS III",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "09022",
+        "nombre": "ELECTIVA DE ÁREA I",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "09023",
+        "nombre": "AUTÓMATAS Y LENGUAJES FORMALES",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "09024",
+        "nombre": "INGENIERÍA DE SOFTWARE I",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "09025",
+        "nombre": "ARQUITECTURA DE TECNOLOGÍA INFORMÁTICA",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "09026",
+        "nombre": "INGLÉS IV",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "09027",
+        "nombre": "RAZONAMIENTO CUANTITATIVO",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "09028",
+        "nombre": "CONSTITUCIÓN POLÍTICA",
+        "semestre": 6,
+        "creditos": 2
+      },
+      {
+        "codigo": "09029",
+        "nombre": "REDES Y COMUNICACIONES",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "09030",
+        "nombre": "INGENIERÍA DE SOFTWARE II",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "09031",
+        "nombre": "ARQUITECTURA DE COMPUTADORES",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "09032",
+        "nombre": "LENGUAJES DE PROGRAMACIÓN",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "09033",
+        "nombre": "SISTEMAS OPERATIVOS",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "09034",
+        "nombre": "INTELIGENCIA ARTIFICIAL",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "09035",
+        "nombre": "REDES INALÁMBRICAS",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "09036",
+        "nombre": "ARQUITECTURA DE SOFTWARE",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "09037",
+        "nombre": "GESTIÓN DE PROYECTOS DE TI",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "09038",
+        "nombre": "PROYECTO INTEGRADOR PROFESIONAL",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "09039",
+        "nombre": "INVESTIGACIÓN DE OPERACIONES",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "09040",
+        "nombre": "COMPUTACIÓN MÓVIL",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "09041",
+        "nombre": "PROGRAMACIÓN ORIENTADA A LA WEB",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "09042",
+        "nombre": "GOBIERNO Y SERVICIOS DE TI",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "09043",
+        "nombre": "ELECTIVA DE PROFUNDIZACIÓN I",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "09044",
+        "nombre": "ELECTIVA DE PROFUNDIZACIÓN II",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "09045",
+        "nombre": "SEGURIDAD EN REDES",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "09046",
+        "nombre": "ELECTIVA DE PROFUNDIZACIÓN III",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "09047",
+        "nombre": "ARQUITECTURA EMPRESARIAL",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "09048",
+        "nombre": "ELECTIVA DE PROFUNDIZACIÓN IV",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "09049",
+        "nombre": "ElECTIVA DE PROFUNDIZACIÓN V",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "09050",
+        "nombre": "ELECTIVA DE PROFUNDIZACIÓN VI",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "09051",
+        "nombre": "PROYECTO INTEGRADOR DE GRADO",
+        "semestre": 10,
+        "creditos": 3
+      }
+    ]
+  },
+  {
+    "codigo": "SIV",
+    "nombre": "Ingeniería de Sistemas – Virtual",
+    "nivel": "Profesional",
+    "modalidad": "Virtual",
+    "fuente": "https://www.usc.edu.co/ingenieria-de-sistemas-virtual/",
+    "consultadoEn": "2026-10-28",
+    "prerrequisitosVerificados": false,
+    "materias": [
+      {
+        "codigo": "10001",
+        "nombre": "INTRODUCCIÓN A LA INGENIERÍA",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "10002",
+        "nombre": "MATEMÁTICAS FUNDAMENTALES",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "10003",
+        "nombre": "MATEMÁTICAS DISCRETAS",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "10004",
+        "nombre": "TÉCNICAS PARA EL APRENDIZAJE EN LA MODALIDAD VIRTUAL",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "10005",
+        "nombre": "ALGORITMOS Y PROGRAMACIÓN I",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "10006",
+        "nombre": "PROGRAMACIÓN DE COMPUTADORES I",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "10007",
+        "nombre": "ÁLGEBRA LINEAL",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "10008",
+        "nombre": "CÁLCULO I",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "10009",
+        "nombre": "FÍSICA Y LABORATORIO I",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "10010",
+        "nombre": "INTRODUCCIÓN A LOS SISTEMAS INFORMÁTICOS",
+        "semestre": 2,
+        "creditos": 2
+      },
+      {
+        "codigo": "10011",
+        "nombre": "ALGORITMOS Y PROGRAMACIÓN II",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "10012",
+        "nombre": "PROGRAMACIÓN DE COMPUTADORES II",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "10013",
+        "nombre": "INGLÉS I",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "10014",
+        "nombre": "CÁLCULO II",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "10015",
+        "nombre": "FÍSICA Y LABORATORIO II",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "10016",
+        "nombre": "ANÁLISIS DE ALGORITMOS",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "10017",
+        "nombre": "ESTRUCTURA DE DATOS",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "10018",
+        "nombre": "INGLÉS II",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "10019",
+        "nombre": "ECUACIONES DIFERENCIALES",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "10020",
+        "nombre": "PROYECTO INTEGRADOR BÁSICO",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "10021",
+        "nombre": "ESTADÍSTICA Y PROBABILIDAD",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "10022",
+        "nombre": "ANÁLISIS Y ESPECIFICACIÓN DE REQUISITOS",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "10023",
+        "nombre": "INGLÉS III",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "10024",
+        "nombre": "TEORÍA DE GRAFOS",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "10025",
+        "nombre": "INVESTIGACIÓN DE OPERACIONES",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "10026",
+        "nombre": "BASES DE DATOS",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "10027",
+        "nombre": "MODELADO Y ANÁLISIS DE SOFTWARE",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "10028",
+        "nombre": "INGLÉS IV",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "10029",
+        "nombre": "GESTIÓN DE LA CONFIGURACIÓN",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "10030",
+        "nombre": "ADMINISTRACIÓN DE BASES DE DATOS",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "10031",
+        "nombre": "ARQUITECTURA DE SOFTWARE",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "10032",
+        "nombre": "DESARROLLO DE SOFTWARE",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "10033",
+        "nombre": "CONSTITUCIÓN POLÍTICA",
+        "semestre": 7,
+        "creditos": 2
+      },
+      {
+        "codigo": "10034",
+        "nombre": "RAZONAMIENTO CUANTITATIVO",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "10035",
+        "nombre": "SISTEMAS OPERATIVOS",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "10036",
+        "nombre": "METODOLOGÍAS DEL SOFTWARE",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "10037",
+        "nombre": "DESARROLLO DE APLICACIONES EN LA WEB",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "10038",
+        "nombre": "ELECTIVA I",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "10039",
+        "nombre": "PROYECTO INTEGRADOR PROFESIONAL",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "10040",
+        "nombre": "ARQUITECTURA DE COMPUTADORES",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "10041",
+        "nombre": "VERIFICACIÓN Y VALIDACIÓN DE SOFTWARE",
+        "semestre": 8,
+        "creditos": 2
+      },
+      {
+        "codigo": "10042",
+        "nombre": "PATRONES DE DISEÑO DE SOFTWARE",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "10043",
+        "nombre": "ELECTIVA II",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "10044",
+        "nombre": "MÉTODOS FORMALES EN ESPECIFICACIÓN Y DISEÑO",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "10045",
+        "nombre": "PROTOCOLOS DE REDES",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "10046",
+        "nombre": "CALIDAD Y PRUEBAS DE SOFTWARE",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "10047",
+        "nombre": "PROGRAMACIÓN DE DISPOSITIVOS MÓVILES",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "10048",
+        "nombre": "PROYECTO INTEGRADOR DE GRADO",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "10049",
+        "nombre": "BUENAS PRÁCTICAS PROFESIONALES EN INGENIERÍA",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "10050",
+        "nombre": "SEGURIDAD DE SOFTWARE",
+        "semestre": 10,
+        "creditos": 3
+      },
+      {
+        "codigo": "10051",
+        "nombre": "GESTIÓN DE PROYECTOS DE INGENIERÍA",
+        "semestre": 10,
+        "creditos": 3
+      }
+    ]
+  },
+  {
+    "codigo": "VID",
+    "nombre": "Ingeniería en Desarrollo de Videojuegos",
+    "nivel": "Profesional",
+    "modalidad": "Presencial",
+    "fuente": "https://www.usc.edu.co/ingenieria-desarrollo-videojuegos/",
+    "consultadoEn": "2026-10-28",
+    "prerrequisitosVerificados": false,
+    "materias": [
+      {
+        "codigo": "11001",
+        "nombre": "Introducción a la Ingeniería",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "11002",
+        "nombre": "Pensamiento Sistémico",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "11003",
+        "nombre": "Algoritmos y Programación",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "11004",
+        "nombre": "Geometría",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "11005",
+        "nombre": "Matemáticas Fundamentales",
+        "semestre": 1,
+        "creditos": 3
+      },
+      {
+        "codigo": "11006",
+        "nombre": "Pensamiento Creativo y Expresión Visual",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "11007",
+        "nombre": "Fundamentos de Animación",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "11008",
+        "nombre": "Algoritmos y Programación II",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "11009",
+        "nombre": "Álgebra Lineal",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "11010",
+        "nombre": "Cálculo I",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "11011",
+        "nombre": "Estadística y Probabilidad",
+        "semestre": 2,
+        "creditos": 3
+      },
+      {
+        "codigo": "11012",
+        "nombre": "Inglés I",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "11013",
+        "nombre": "Estructura de Datos",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "11014",
+        "nombre": "Matemáticas Discretas",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "11015",
+        "nombre": "Narrativa, Guion y Gamificación",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "11016",
+        "nombre": "Cálculo II",
+        "semestre": 3,
+        "creditos": 3
+      },
+      {
+        "codigo": "11017",
+        "nombre": "Física y Laboratorio I",
+        "semestre": 3,
+        "creditos": 4
+      },
+      {
+        "codigo": "11018",
+        "nombre": "Inglés II",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "11019",
+        "nombre": "Ingeniería de Software",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "11020",
+        "nombre": "Computación Gráfica",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "11021",
+        "nombre": "Ondas y Fluidos",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "11022",
+        "nombre": "Análisis y Diseño de Juegos 2D y 3D",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "11023",
+        "nombre": "Fundamentos de Música y Audio Digital",
+        "semestre": 4,
+        "creditos": 3
+      },
+      {
+        "codigo": "11024",
+        "nombre": "Inglés III",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "11025",
+        "nombre": "Motores de Videojuegos I",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "11026",
+        "nombre": "Base de Datos",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "11027",
+        "nombre": "Inteligencia Artificial",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "11028",
+        "nombre": "Animación y Modelado 2D",
+        "semestre": 5,
+        "creditos": 2
+      },
+      {
+        "codigo": "11029",
+        "nombre": "Proyecto Integrador Básico",
+        "semestre": 5,
+        "creditos": 3
+      },
+      {
+        "codigo": "11030",
+        "nombre": "Inglés IV",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "11031",
+        "nombre": "Razonamiento Cuantitativo",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "11032",
+        "nombre": "Constitución Política",
+        "semestre": 6,
+        "creditos": 2
+      },
+      {
+        "codigo": "11033",
+        "nombre": "Motores de Videojuegos II",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "11034",
+        "nombre": "Servicios y Protocolos de Red",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "11035",
+        "nombre": "Animación y Modelado 3D",
+        "semestre": 6,
+        "creditos": 3
+      },
+      {
+        "codigo": "11036",
+        "nombre": "Motores de Videojuegos III",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "11037",
+        "nombre": "Producción de Videojuegos",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "11038",
+        "nombre": "Computación en la Nube",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "11039",
+        "nombre": "Realidad Mixta",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "11040",
+        "nombre": "Electiva I",
+        "semestre": 7,
+        "creditos": 3
+      },
+      {
+        "codigo": "11041",
+        "nombre": "Proyecto Integrador Profesional",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "11042",
+        "nombre": "Gestión de Proyectos de TI",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "11043",
+        "nombre": "Ciberseguridad",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "11044",
+        "nombre": "Innovación y Emprendimiento en Industria Videojuegos",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "11045",
+        "nombre": "Electiva II",
+        "semestre": 8,
+        "creditos": 3
+      },
+      {
+        "codigo": "11046",
+        "nombre": "Proyecto Integrador de Grado",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "11047",
+        "nombre": "Calidad, Jugabilidad y Testeo",
+        "semestre": 9,
+        "creditos": 1
+      },
+      {
+        "codigo": "11048",
+        "nombre": "Programación en Tiempo Real",
+        "semestre": 9,
+        "creditos": 3
+      },
+      {
+        "codigo": "11049",
+        "nombre": "Monetización y Marketing Digital",
+        "semestre": 9,
+        "creditos": 3
+      }
+    ]
+  }
+]

@@ -44,10 +44,12 @@ onMounted(() => void cargar())
           <h2>{{ materia.nombre }}</h2>
         </div>
         <div>
-          <p v-if="materia.prerrequisitos.length">Requiere aprobar: {{ materia.prerrequisitos.join(', ') }}</p>
+          <p v-if="!materia.prerrequisitosVerificados">Prerrequisitos pendientes de verificación académica.</p>
+          <p v-else-if="materia.prerrequisitos.length">Requiere aprobar: {{ materia.prerrequisitos.join(', ') }}</p>
           <p v-else>Sin prerrequisitos.</p>
           <strong v-if="materia.aprobada" class="state-passed">Aprobada</strong>
           <strong v-else-if="materia.bloqueada" class="state-locked">Bloqueada · pendientes: {{ materia.requisitosPendientes.join(', ') }}</strong>
+          <strong v-else-if="!materia.prerrequisitosVerificados" class="state-locked">Pendiente de validación</strong>
           <strong v-else class="state-available">Disponible</strong>
         </div>
       </article>

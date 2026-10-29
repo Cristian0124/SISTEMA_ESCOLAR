@@ -8,6 +8,7 @@ export interface UsuarioAuth {
   password_hash: string;
   rol: RolUsuario;
   activo: boolean;
+  carreraCodigo: string | null;
 }
 
 export type RolUsuario = "estudiante" | "profesor" | "admin";
@@ -27,11 +28,12 @@ export interface NuevoEstudiante {
   fechaIngreso: string;
   nacionalidad: string;
   genero: string;
+  carreraCodigo?: string | null;
 }
 
 const columnasUsuario = `
   id, nombre, correo, password_hash, rol, activo,
-  cedula, fecha_nacimiento, fecha_ingreso, nacionalidad, genero
+  cedula, fecha_nacimiento, fecha_ingreso, nacionalidad, genero, carrera_codigo AS "carreraCodigo"
 `;
 
 export async function buscarUsuarioPorCorreo(
@@ -102,8 +104,8 @@ async function insertarUsuario(
     const resultado = await pool.query<UsuarioAuth>(
       `INSERT INTO usuarios (
         nombre, correo, password_hash, rol, activo, cedula,
-        fecha_nacimiento, fecha_ingreso, nacionalidad, genero
-      ) VALUES ($1, $2, $3, $4, TRUE, $5, $6, $7, $8, $9)
+        fecha_nacimiento, fecha_ingreso, nacionalidad, genero, carrera_codigo
+      ) VALUES ($1, $2, $3, $4, TRUE, $5, $6, $7, $8, $9, $10)
       RETURNING ${columnasUsuario}`,
       [
         datos.nombre,
@@ -114,7 +116,8 @@ async function insertarUsuario(
         datos.fechaNacimiento,
         datos.fechaIngreso,
         datos.nacionalidad,
-        datos.genero
+        datos.genero,
+        rol === "estudiante" ? datos.carreraCodigo ?? null : null
       ]
     );
 

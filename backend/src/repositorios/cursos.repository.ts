@@ -38,9 +38,10 @@ const consultaCursos = `
     AND matricula.periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
 `;
 
-export async function listarCursos(): Promise<Curso[]> {
+export async function listarCursos(usuarioId?: number): Promise<Curso[]> {
   const resultado = await pool.query<Curso>(
-    `${consultaCursos} GROUP BY curso.id, materia.codigo, docente.id ORDER BY curso.id`
+    `${consultaCursos} ${usuarioId ? "WHERE materia_del_programa(materia.codigo, $1)" : ""} GROUP BY curso.id, materia.codigo, docente.id ORDER BY curso.id`,
+    usuarioId ? [usuarioId] : []
   );
   return resultado.rows;
 }

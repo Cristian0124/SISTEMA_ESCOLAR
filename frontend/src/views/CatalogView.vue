@@ -5,8 +5,15 @@ import CourseFilters, { type CourseFilters as CourseFiltersState } from '@/compo
 import { consultarAvancePensum, type MateriaAvance } from '@/api/pensum.api'
 import { useCoursesStore } from '@/stores/courses.store'
 import { useCourseAutoRefresh } from '@/composables/useCourseAutoRefresh'
+import { listarCarreras, type Carrera } from '@/api/academico.api'
+import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
 
 const store = useCoursesStore()
+const auth = useAuthStore()
+const router = useRouter()
+const carrera = ref<Carrera>()
+const totalCreditos = computed(() => materiasPensum.value.reduce((total, m) => total + m.creditos, 0))
 const busqueda = ref('')
 const filtrosCursos = ref<CourseFiltersState>({ busqueda: '', semestre: '', disponibilidad: 'todos' })
 const vista = ref<'pensum' | 'oferta'>('pensum')
@@ -50,7 +57,11 @@ async function mostrarOferta() {
   if (!store.cargando) await store.cargarCursos()
 }
 
-onMounted(() => void cargarPensum())
+onMounted(async () => {
+  if (auth.usuario?.rol === 'admin') { await router.replace('/oferta-academica'); return }
+  try { carrera.value = (await listarCarreras()).find(c => c.codigo === auth.usuario?.carreraCodigo) } catch { /* El avance muestra su propio error. */ }
+  await cargarPensum()
+})
 </script>
 
 <template>
@@ -59,18 +70,18 @@ onMounted(() => void cargarPensum())
     <header class="page-heading">
       <div>
         <p class="eyebrow">Catálogo académico</p>
-        <h1>Ingeniería de Sistemas</h1>
+        <h1>{{ carrera?.nombre ?? 'Mi plan de estudios' }}</h1>
         <p class="intro">Consulta las materias por semestre y revisa la oferta académica del periodo.</p>
       </div>
-      <div class="program-total" aria-label="Programa de 10 semestres y 154 créditos">
-        <strong>154</strong>
+      <div class="program-total" :aria-label="`${totalCreditos} créditos en el plan`">
+        <strong>{{ totalCreditos }}</strong>
         <span>créditos</span>
       </div>
     </header>
 
     <section class="program-facts" aria-label="Datos del programa">
-      <div><span>Duración</span><strong>10 semestres</strong></div>
-      <div><span>Modalidad</span><strong>Presencial</strong></div>
+      <div><span>Duración</span><strong>{{ semestres.length }} semestres</strong></div>
+      <div><span>Modalidad</span><strong>{{ carrera?.modalidad ?? 'Plan anterior' }}</strong></div>
     </section>
 
     <nav class="catalog-tabs" aria-label="Vistas del catálogo">
@@ -88,7 +99,8 @@ onMounted(() => void cargarPensum())
       >Oferta vigente</button>
     </nav>
 
-    <section v-if="vista === 'pensum'" class="curriculum" aria-label="Plan de estudios de Ingeniería de Sistemas">
+    <section v-if="vista === 'pensum'" class="curriculum" aria-label="Plan de estudios de mi carrera">
+      <p v-if="carrera && !carrera.prerrequisitosVerificados" role="status">Prerrequisitos pendientes de verificación académica. <RouterLink to="/oferta-academica">Consultar fuente oficial</RouterLink></p>
       <div v-if="cargandoPensum" class="empty-state" role="status">
         <span class="loader" aria-hidden="true"></span>
         <strong>Consultando prerrequisitos</strong>
@@ -148,7 +160,7 @@ onMounted(() => void cargarPensum())
             <span
               class="subject-status"
               :class="materia.aprobada ? 'status-passed' : materia.bloqueada ? 'status-locked' : 'status-available'"
-            >{{ materia.aprobada ? 'Aprobada' : materia.bloqueada ? 'Bloqueada' : 'Disponible' }}</span>
+            >{{ materia.aprobada ? 'Aprobada' : !materia.prerrequisitosVerificados ? 'Pendiente de validación' : materia.bloqueada ? 'Bloqueada' : 'Disponible' }}</span>
             <small v-if="materia.bloqueada" class="prerequisite-message">
               Requisitos pendientes: {{ materia.requisitosPendientes.join(', ') }}
             </small>

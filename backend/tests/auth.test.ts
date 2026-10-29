@@ -1,3 +1,4 @@
+import { crearBaseAislada } from './database.fixture';
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import type { Server } from "node:http";
@@ -27,7 +28,8 @@ const datosRegistro = {
   fechaNacimiento: "2005-01-10",
   fechaIngreso: new Date().toISOString().slice(0, 10),
   nacionalidad: "Prueba",
-  genero: "Prefiero no indicar"
+  genero: "Prefiero no indicar",
+  carreraCodigo: "SIS"
 };
 
 let servidor: Server;
@@ -41,7 +43,9 @@ function tokenPara(id: number, rol: "admin" | "estudiante" | "profesor") {
   return jwt.sign({ id, nombre: "Usuario de prueba", rol }, JWT_ACCESS_SECRET);
 }
 
+let limpiarBase: (() => Promise<void>) | undefined;
 before(async () => {
+  limpiarBase = await crearBaseAislada();
   const administrador = await crearAdministrador({
     nombre: "Admin de pruebas",
     correo: correoAdmin,
@@ -65,6 +69,7 @@ before(async () => {
   }, await bcrypt.hash("ProfesorPrueba123!", 4), "profesor");
   assert.ok(profesor);
   profesorId = profesor.id;
+  await pool.query('UPDATE cursos SET docente_id = $1 WHERE id = 2', [profesorId]);
 
   const profesorSinAsignacion = await crearUsuarioAdministrado({
     nombre: "Profesor sin cursos",
@@ -91,12 +96,7 @@ before(async () => {
 
 after(async () => {
   try {
-    const correosPrueba = [correo, correoAdmin, correoProfesor, correoProfesorSinAsignacion];
-    await pool.query(
-      "DELETE FROM matriculas WHERE usuario_id IN (SELECT id FROM usuarios WHERE correo = ANY($1::text[]))",
-      [correosPrueba]
-    );
-    await pool.query("DELETE FROM usuarios WHERE correo = ANY($1::text[])", [correosPrueba]);
+    if (limpiarBase) await limpiarBase();
   } finally {
     if (servidor?.listening) {
       await new Promise<void>((resolve, reject) => {
@@ -120,6 +120,8 @@ test("registro y autenticación", async (contexto) => {
     assert.equal(cuerpo.usuario.rol, "estudiante");
     assert.equal("password_hash" in cuerpo.usuario, false);
     estudianteId = cuerpo.usuario.id;
+    // Las pruebas siguientes verifican la compatibilidad con estudiantes del plan anterior.
+    await pool.query("UPDATE usuarios SET carrera_codigo = NULL WHERE id = $1", [estudianteId]);
 
     const resultado = await pool.query<{ password_hash: string }>(
       "SELECT password_hash FROM usuarios WHERE correo = $1",
@@ -197,9 +199,9 @@ test("registro y autenticación", async (contexto) => {
     const calificacion = await fetch(`${baseUrl}/api/matriculas/calificaciones/${estudianteId}/ISI05`, {
       method: "PUT",
       headers: { authorization: tokenProfesor, "content-type": "application/json" },
-      body: JSON.stringify({ nota: 4.1 })
+      body: JSON.stringify({ corte1: 4.1, corte2: 4.1, corte3: 4.1 })
     });
-    assert.equal(calificacion.status, 204);
+    assert.equal(calificacion.status, 200);
 
     const resultado = await pool.query<{ registrada_por: number }>(
       "SELECT registrada_por FROM calificaciones WHERE usuario_id = $1 AND codigo_materia = 'ISI05'",
@@ -231,12 +233,12 @@ test("registro y autenticación", async (contexto) => {
       {
         method: "PUT",
         headers: { authorization: autorizacion, "content-type": "application/json" },
-        body: JSON.stringify({ nota })
+        body: JSON.stringify({ corte1: nota, corte2: nota, corte3: nota })
       }
     );
 
     const noAprobada = await registrarNota(2.9);
-    assert.equal(noAprobada.status, 204);
+    assert.equal(noAprobada.status, 200);
 
     const respuestaBloqueada = await fetch(`${baseUrl}/api/matriculas/avance`, {
       headers: { authorization: `Bearer ${tokenPara(estudianteId, "estudiante")}` }
@@ -245,7 +247,7 @@ test("registro y autenticación", async (contexto) => {
     assert.equal(avanceBloqueado.find((materia) => materia.codigo === "ISI06")?.bloqueada, true);
 
     const aprobada = await registrarNota(3.0);
-    assert.equal(aprobada.status, 204);
+    assert.equal(aprobada.status, 200);
 
     const respuestaDisponible = await fetch(`${baseUrl}/api/matriculas/avance`, {
       headers: { authorization: `Bearer ${tokenPara(estudianteId, "estudiante")}` }

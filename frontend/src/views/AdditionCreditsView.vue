@@ -58,7 +58,7 @@ onMounted(() => void cargar())
       <form class="form" @submit.prevent="enviar">
         <h2>Solicitar créditos adicionales</h2>
         <p>La solicitud debe explicar por qué necesitas ampliar tu carga. Los créditos solo se suman al cupo después de la aprobación administrativa.</p>
-        <label>Cantidad de créditos<input v-model.number="cantidad" type="number" min="1" max="154" step="1" required /></label>
+        <label>Cantidad de créditos<input v-model.number="cantidad" type="number" min="1" :max="resumen.creditosPrograma" step="1" required /></label>
         <label>Motivo<textarea v-model.trim="motivo" minlength="10" maxlength="1000" rows="4" required placeholder="Explica para qué materias necesitas estos créditos"></textarea></label>
         <p v-if="error" class="error" role="alert">{{ error }}</p><p v-if="mensaje" class="success" role="status">{{ mensaje }}</p>
         <button type="submit" :disabled="enviando || tieneSolicitudPendiente(resumen) || !cantidad || motivo.trim().length < 10">{{ enviando ? 'Enviando…' : tieneSolicitudPendiente(resumen) ? 'Solicitud pendiente de revisión' : 'Enviar solicitud' }}</button>

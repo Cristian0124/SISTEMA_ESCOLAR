@@ -2,6 +2,7 @@ import type { RequestHandler } from "express";
 import type { UsuarioAutenticado } from "../middlewares/auth.middleware";
 import { listarCursosAsignadosProfesor } from "../services/matriculas.service";
 import { asignarDocente as asignarDocenteServicio, obtenerCursos } from "../services/cursos.service";
+import { listarCursos as listarCursosEstudiante } from "../repositorios/cursos.repository";
 import { HttpError } from "../types/http-error";
 
 export const listarCursos: RequestHandler = async (_req, res, next) => {
@@ -11,7 +12,7 @@ export const listarCursos: RequestHandler = async (_req, res, next) => {
       res.status(200).json(await listarCursosAsignadosProfesor(usuario.id));
       return;
     }
-    res.status(200).json(await obtenerCursos());
+    res.status(200).json(usuario?.rol === "estudiante" ? await listarCursosEstudiante(usuario.id) : await obtenerCursos());
   } catch (error) {
     next(error);
   }

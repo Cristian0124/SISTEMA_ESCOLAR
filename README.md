@@ -1,5 +1,7 @@
 # Sistema Escolar
 
+La ampliación de facultades, carreras y pénsum de Ingeniería USC se documenta en [Oferta académica](docs/oferta-academica.md), incluyendo migración, fuentes y validaciones pendientes para habilitar matrícula en los planes nuevos.
+
 ## Ejecutar en Windows sin modificar la base de datos
 
 El proyecto tiene dos procesos: el backend y la interfaz web. Abre dos terminales de PowerShell en la carpeta del proyecto y ejecuta lo siguiente.
