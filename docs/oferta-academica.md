@@ -28,14 +28,14 @@ Algunos totales difieren del resumen anunciado por USC: por ejemplo, Gestión de
 
 - El registro público y administrativo exige una carrera válida para estudiantes. Profesores y administradores no se inscriben en una carrera.
 - La sesión devuelve `carreraCodigo`. El perfil muestra el programa registrado como dato de solo lectura; los borradores locales no cambian la carrera.
-- «Facultades y carreras» permite consultar todos los planes y sus fuentes. Se accede desde los paneles de estudiante y administrador.
+- «Facultades y carreras» permite consultar todos los planes y se accede desde el menú del administrador. El menú del estudiante ofrece «Mi pénsum» para consultar el plan de su carrera.
 - El catálogo, el avance y los créditos base corresponden al programa del estudiante. La duración, modalidad y total de créditos ya no están fijados a Sistemas.
 - La matrícula rechaza cursos de otras carreras dentro de su transacción. El registro de notas también valida la pertenencia al programa.
 - El límite para solicitar créditos adicionales corresponde al total de créditos del programa, en lugar del valor fijo 154.
 
 ## Datos anteriores y activación académica
 
-La migración agrega tablas y columnas sin borrar ni reasignar usuarios, asignaturas, notas, cursos o matrículas anteriores. Los estudiantes sin carrera conservan acceso al pénsum anterior. El administrador puede asignar explícitamente su carrera desde la pantalla de oferta académica. La asignación inicial solo se permite una vez; un traslado posterior requiere un proceso académico específico. Las notas y matrículas previas se conservan, pero no se homologan automáticamente al nuevo plan.
+La migración agrega tablas y columnas sin borrar ni reasignar usuarios, asignaturas, notas, cursos o matrículas anteriores. Los estudiantes sin carrera conservan acceso al pénsum anterior. La carrera de los nuevos estudiantes se asigna al registrarlos. La pantalla de oferta académica se dedica a consultar carreras y pénsum; no muestra asignación de estudiantes anteriores. El endpoint administrativo de asignación inicial sigue disponible y solo permite asignar una carrera una vez; un traslado posterior requiere un proceso académico específico. Las notas y matrículas previas se conservan, pero no se homologan automáticamente al nuevo plan.
 
 Las tablas públicas consultadas no incluyen prerrequisitos. Los nuevos planes quedan con `prerrequisitos_verificados = FALSE`; la consulta está habilitada, pero la matrícula de esos planes devuelve `PENSUM_PENDIENTE_VALIDACION`. Para habilitarla se necesita revisar los prerrequisitos con información académica oficial, cargar `prerrequisitos_materia` y marcar el plan como verificado. No se crean horarios, cupos ni asignaciones docentes ficticias: también se deben abrir grupos reales en `cursos`, usando los identificadores del nuevo plan.
 

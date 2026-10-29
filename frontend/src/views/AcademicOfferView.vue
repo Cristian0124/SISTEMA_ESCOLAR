@@ -2,31 +2,12 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { listarCarreras, consultarPensum, type Carrera, type Asignatura } from '@/api/academico.api'
 import { useAuthStore } from '@/stores/auth'
-import api from '@/api/axios'
-import axios from 'axios'
 const auth = useAuthStore()
 const carreras = ref<Carrera[]>([])
 const seleccion = ref('')
 const materias = ref<Asignatura[]>([])
 const cargando = ref(false)
 const error = ref('')
-const estudiantes = ref<{ id: number; nombre: string; cedula: string }[]>([])
-const estudianteId = ref('')
-const asignando = ref(false)
-const mensaje = ref('')
-async function asignarCarrera() {
-  if (!estudianteId.value || !seleccion.value) return
-  asignando.value = true
-  mensaje.value = ''
-  error.value = ''
-  try {
-    await api.patch(`/academico/estudiantes/${estudianteId.value}/carrera`, { carreraCodigo: seleccion.value })
-    estudiantes.value = estudiantes.value.filter(e => e.id !== Number(estudianteId.value))
-    estudianteId.value = ''
-    mensaje.value = 'Carrera asignada. El estudiante debe iniciar sesión nuevamente para actualizar su perfil.'
-  } catch (e) { error.value = axios.isAxiosError(e) ? e.response?.data?.mensaje ?? 'No fue posible asignar la carrera.' : 'No fue posible asignar la carrera.' }
-  finally { asignando.value = false }
-}
 const carrera = computed(() => carreras.value.find(c => c.codigo === seleccion.value))
 const semestres = computed(() => [...new Set(materias.value.map(m => m.semestre))])
 let solicitud = 0
@@ -47,7 +28,6 @@ async function cargar() {
   error.value = ''
   try {
     carreras.value = await listarCarreras()
-    if (auth.usuario?.rol === 'admin') estudiantes.value = (await api.get('/academico/estudiantes/sin-carrera')).data
     seleccion.value = auth.usuario?.carreraCodigo ?? carreras.value[0]?.codigo ?? ''
     if (seleccion.value) await cargarPensum()
   } catch { error.value = 'No fue posible cargar las carreras. Intenta nuevamente.' }
@@ -59,30 +39,19 @@ onMounted(cargar)
   <main class="academic-page">
     <RouterLink to="/inicio">← Volver al inicio</RouterLink>
     <h1>Facultades, carreras y pénsum</h1>
-    <p>Universidad Santiago de Cali · Facultad de Ingeniería</p>
+    <p>Facultad de Ingeniería</p>
     <label>Carrera
       <select v-model="seleccion">
         <option disabled value="">Selecciona una carrera</option>
         <option v-for="c in carreras" :key="c.codigo" :value="c.codigo">{{ c.nombre }} · {{ c.nivel }} · {{ c.modalidad }}</option>
       </select>
     </label>
-    <form v-if="auth.usuario?.rol === 'admin' && estudiantes.length" @submit.prevent="asignarCarrera">
-      <h2>Asignar carrera a estudiantes anteriores</h2>
-      <p>Se asignará la carrera seleccionada arriba. Las notas y matrículas anteriores se conservan; las homologaciones requieren revisión académica.</p>
-      <label>Estudiante<select v-model="estudianteId" required>
-        <option disabled value="">Selecciona un estudiante</option>
-        <option v-for="e in estudiantes" :key="e.id" :value="String(e.id)">{{ e.nombre }} · {{ e.cedula }}</option>
-      </select></label>
-      <button type="submit" :disabled="asignando || !seleccion || !estudianteId">{{ asignando ? 'Asignando…' : 'Asignar carrera seleccionada' }}</button>
-    </form>
-    <p v-if="mensaje" role="status">{{ mensaje }}</p>
     <p v-if="error" role="alert">{{ error }} <button @click="cargar">Reintentar</button></p>
     <p v-if="cargando" role="status">Consultando pénsum…</p>
     <template v-else-if="carrera">
       <h2>{{ carrera.nombre }}</h2>
-      <p>{{ carrera.asignaturas }} asignaturas · {{ carrera.creditos }} créditos según las tablas publicadas.</p>
-      <p><a :href="carrera.fuente" target="_blank" rel="noopener noreferrer">Consultar plan oficial USC ↗</a> · Consultado el 28 de octubre de 2026.</p>
-      <p class="notice">Los prerrequisitos están pendientes de verificación académica. Los códigos son identificadores internos del sistema. Los totales de las tablas pueden diferir del resumen publicado por la universidad.</p>
+      <p>{{ carrera.asignaturas }} asignaturas · {{ carrera.creditos }} créditos.</p>
+      <p class="notice">Los prerrequisitos están pendientes de verificación académica.</p>
       <section v-for="semestre in semestres" :key="semestre">
         <h3>Semestre {{ semestre }}</h3>
         <table><thead><tr><th scope="col">Asignatura</th><th scope="col">Créditos</th></tr></thead>

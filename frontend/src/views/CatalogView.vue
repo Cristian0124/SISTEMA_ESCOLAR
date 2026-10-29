@@ -100,7 +100,7 @@ onMounted(async () => {
     </nav>
 
     <section v-if="vista === 'pensum'" class="curriculum" aria-label="Plan de estudios de mi carrera">
-      <p v-if="carrera && !carrera.prerrequisitosVerificados" role="status">Prerrequisitos pendientes de verificación académica. <RouterLink to="/oferta-academica">Consultar fuente oficial</RouterLink></p>
+      <p v-if="carrera && !carrera.prerrequisitosVerificados" role="status">Prerrequisitos pendientes de verificación académica. <RouterLink to="/oferta-academica">Consultar pénsum</RouterLink></p>
       <div v-if="cargandoPensum" class="empty-state" role="status">
         <span class="loader" aria-hidden="true"></span>
         <strong>Consultando prerrequisitos</strong>
