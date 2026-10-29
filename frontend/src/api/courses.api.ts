@@ -12,6 +12,10 @@ export interface Curso {
   codigoPensum: string
   semestre?: number
   creditos?: number
+  carreraCodigo?: string | null
+  carreraNombre?: string | null
+  facultadCodigo?: string | null
+  facultadNombre?: string | null
 }
 
 export interface ProfesorDisponible {
@@ -32,4 +36,16 @@ export async function listarProfesores(): Promise<ProfesorDisponible[]> {
 
 export async function asignarProfesor(cursoId: number, profesorId: number): Promise<void> {
   await api.put(`/cursos/${cursoId}/docente`, { profesorId })
+}
+
+export interface NuevoCurso {
+  codigoPensum: string
+  profesorId: number
+  horario: string
+  cuposTotales: number
+}
+
+export async function crearCurso(datos: NuevoCurso): Promise<Curso> {
+  const { data } = await api.post<Curso>('/cursos', datos)
+  return data
 }

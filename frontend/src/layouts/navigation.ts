@@ -36,10 +36,10 @@ export const modulosAdmin: Acceso[] = [
     ruta: '/admin/usuarios/nuevo',
   },
   {
-    titulo: 'Asignar profesores a cursos',
-    descripcion: 'Vincula profesores registrados con los cursos que tienen a cargo.',
+    titulo: 'Administración académica',
+    descripcion: 'Crea grupos desde los pensums por facultad y carrera y asígnalos a profesores activos.',
     icono: '✓',
-    ruta: '/admin/cursos/profesores',
+    ruta: '/admin/academico',
   },
   {
     titulo: 'Solicitudes de créditos',
