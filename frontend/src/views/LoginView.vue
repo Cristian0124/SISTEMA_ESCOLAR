@@ -2,6 +2,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { inicioPorRol } from '@/router/inicio'
 
 const auth = useAuthStore()
 const router = useRouter()
@@ -16,11 +17,7 @@ async function iniciarSesion() {
 
   if (inicioCorrecto) {
     password.value = ''
-    const destino = auth.usuario?.rol === 'admin'
-      ? 'admin-home'
-      : auth.usuario?.rol === 'profesor'
-        ? 'profesor-home'
-        : 'home'
+    const destino = inicioPorRol(auth.usuario?.rol ?? 'estudiante')
     await router.push({ name: destino })
   }
 }
