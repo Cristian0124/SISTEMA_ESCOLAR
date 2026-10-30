@@ -25,12 +25,43 @@ async function abrir(rol: RolUsuario | null, ruta: string) {
   const router = createAppRouter(createMemoryHistory())
   await router.push(ruta)
   await router.isReady()
-  wrapper = mount(App, { global: { plugins: [pinia, router] } })
+  wrapper = mount(App, { attachTo: document.body, global: { plugins: [pinia, router] } })
   await flushPromises()
   return { router, auth, vista: wrapper }
 }
 
 describe('layout y navegación por rol', () => {
+  it.each([
+    ['estudiante', '/home'],
+    ['profesor', '/profesor/home'],
+    ['admin', '/admin/home'],
+    [null, '/login'],
+  ] as const)('muestra la 404 para %s y permite regresar a %s', async (rol, destino) => {
+    const { router, vista } = await abrir(rol, '/una-url-desconocida')
+    expect(router.currentRoute.value.name).toBe('not-found')
+    const titulo = vista.get('h1')
+    expect(titulo.text()).toBe('Página no encontrada')
+    expect(vista.get('main').attributes('aria-labelledby')).toBe(titulo.attributes('id'))
+    expect(document.activeElement).toBe(titulo.element)
+    expect(vista.find('.app-shell').exists()).toBe(false)
+    const enlace = vista.get('a.return-link')
+    expect(enlace.attributes('href')).toBe(destino)
+    expect(enlace.text()).toBe(rol ? 'Volver al inicio' : 'Ir al login')
+    ;(enlace.element as HTMLAnchorElement).focus()
+    expect(document.activeElement).toBe(enlace.element)
+    for (const ruta of ['/admin/no-existe', '/profesor/no-existe', '/no/existe?consulta=1']) {
+      await router.push(ruta)
+      await flushPromises()
+      expect(router.currentRoute.value.name).toBe('not-found')
+      expect(vista.get('h1').text()).toBe('Página no encontrada')
+    }
+    await vista.get('a.return-link').trigger('click')
+    await vi.waitFor(() => expect(router.currentRoute.value.path).toBe(destino))
+    await flushPromises()
+    expect(router.currentRoute.value.path).toBe(destino)
+    expect(vista.find('.not-found-page').exists()).toBe(false)
+  })
+
   it.each([
     ['estudiante', '/home', '/documentos', 'Matrícula individual', 'Registrar usuarios'],
     ['admin', '/admin/home', '/oferta-academica', 'Registrar usuarios', 'Hoja de vida'],

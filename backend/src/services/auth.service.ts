@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { createHash, randomUUID } from "node:crypto";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_ACCESS_SECRET, JWT_REFRESH_SECRET } from "../config/env";
@@ -15,6 +15,7 @@ import {
 
 import { pool } from "../config/database";
 import { HttpError } from "../types/http-error";
+import { crearSesion, rotarSesion, revocarSesion } from "../repositorios/sesiones.repository";
 
 export async function validarCarrera(codigo: string | null | undefined) {
  if (!codigo || !(await pool.query("SELECT 1 FROM carreras WHERE codigo = $1", [codigo])).rowCount) {
@@ -35,11 +36,26 @@ export interface Sesion {
 	usuario: UsuarioPublico;
 }
 
-const refreshTokensValidos = new Set<string>();
+function hashToken(token: string): string {
+ return createHash("sha256").update(token).digest("hex");
+}
+
+function crearRefreshToken(id: number) {
+ const vencimiento = Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60;
+ const token = jwt.sign({ sub: String(id), jti: randomUUID(), exp: vencimiento }, JWT_REFRESH_SECRET);
+ return { token, vencimiento: new Date(vencimiento * 1000) };
+}
 
 async function emitirSesion(id: number): Promise<Sesion | null> {
  const usuario = await buscarUsuarioPorId(id);
-	if (!usuario) return null;
+ if (!usuario || !usuario.activo) return null;
+
+ const refresh = crearRefreshToken(usuario.id);
+ if (!(await crearSesion(usuario.id, hashToken(refresh.token), refresh.vencimiento))) return null;
+ return construirSesion(usuario, refresh.token);
+}
+
+function construirSesion(usuario: UsuarioAuth, refreshToken: string): Sesion {
 
 	const usuarioPublico: UsuarioPublico = {
 		id: usuario.id,
@@ -48,10 +64,6 @@ async function emitirSesion(id: number): Promise<Sesion | null> {
   carreraCodigo: usuario.carreraCodigo
 	};
 	const accessToken = jwt.sign(usuarioPublico, JWT_ACCESS_SECRET, { expiresIn: "15m" });
-	const refreshToken = jwt.sign({ sub: String(usuario.id), jti: randomUUID() }, JWT_REFRESH_SECRET, {
-		expiresIn: "7d"
-	});
-	refreshTokensValidos.add(refreshToken);
 
 	return { accessToken, refreshToken, usuario: usuarioPublico };
 }
@@ -85,21 +97,21 @@ export function listarProfesoresActivos() {
 }
 
 export async function renovarSesion(refreshToken: unknown): Promise<Sesion | null> {
-	if (typeof refreshToken !== "string" || !refreshTokensValidos.has(refreshToken)) return null;
-
-	try {
-		const contenido = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
-		if (typeof contenido === "string" || typeof contenido.sub !== "string") return null;
-
-		const sesion = await emitirSesion(Number(contenido.sub));
-		if (sesion) refreshTokensValidos.delete(refreshToken);
-		return sesion;
-	} catch {
-		refreshTokensValidos.delete(refreshToken);
-		return null;
-	}
+ if (typeof refreshToken !== "string") return null;
+ let contenido: jwt.JwtPayload | string;
+ try {
+  contenido = jwt.verify(refreshToken, JWT_REFRESH_SECRET, { algorithms: ["HS256"] });
+ } catch { return null; }
+ if (typeof contenido === "string" || typeof contenido.sub !== "string"
+   || !/^[1-9]\d*$/.test(contenido.sub) || typeof contenido.exp !== "number"
+   || typeof contenido.jti !== "string") return null;
+ const usuarioId = Number(contenido.sub);
+ if (!Number.isSafeInteger(usuarioId) || usuarioId > 2147483647) return null;
+ const nuevo = crearRefreshToken(usuarioId);
+ const usuario = await rotarSesion(usuarioId, hashToken(refreshToken), hashToken(nuevo.token), nuevo.vencimiento);
+ return usuario ? construirSesion(usuario, nuevo.token) : null;
 }
 
-export function cerrarSesion(refreshToken: unknown): void {
-	if (typeof refreshToken === "string") refreshTokensValidos.delete(refreshToken);
+export async function cerrarSesion(refreshToken: unknown): Promise<void> {
+ if (typeof refreshToken === "string") await revocarSesion(hashToken(refreshToken));
 }

@@ -52,8 +52,8 @@ export async function refresh(req: Request, res: Response) {
 	return responderConSesion(res, sesion);
 }
 
-export function logout(req: Request, res: Response) {
-	cerrarSesion(req.cookies?.refreshToken);
+export async function logout(req: Request, res: Response) {
+	await cerrarSesion(req.cookies?.refreshToken);
 	res.clearCookie("refreshToken", opcionesCookie);
 	return res.status(204).end();
 }

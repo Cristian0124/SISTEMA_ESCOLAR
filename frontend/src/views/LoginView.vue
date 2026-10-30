@@ -2,11 +2,13 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { inicioPorRol } from '@/router/inicio'
 
 const auth = useAuthStore()
 const router = useRouter()
 const correo = ref('')
 const password = ref('')
+const mostrarPassword = ref(false)
 
 async function iniciarSesion() {
   const inicioCorrecto = await auth.iniciarSesion({
@@ -16,11 +18,7 @@ async function iniciarSesion() {
 
   if (inicioCorrecto) {
     password.value = ''
-    const destino = auth.usuario?.rol === 'admin'
-      ? 'admin-home'
-      : auth.usuario?.rol === 'profesor'
-        ? 'profesor-home'
-        : 'home'
+    const destino = inicioPorRol(auth.usuario?.rol ?? 'estudiante')
     await router.push({ name: destino })
   }
 }
@@ -71,15 +69,24 @@ async function iniciarSesion() {
             <div class="password-label-row">
               <label for="password">Contraseña</label>
             </div>
+            <div class="password-field">
             <input
               id="password"
               v-model="password"
               name="password"
-              type="password"
+              :type="mostrarPassword ? 'text' : 'password'"
               autocomplete="current-password"
               placeholder="Ingresa tu contraseña"
               required
             />
+            <button
+              class="password-toggle"
+              type="button"
+              :aria-label="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+              aria-controls="password"
+              @click="mostrarPassword = !mostrarPassword"
+            >{{ mostrarPassword ? 'Ocultar' : 'Mostrar' }}</button>
+            </div>
 
             <p v-if="auth.error" class="form-error" role="alert">{{ auth.error }}</p>
 
@@ -284,6 +291,11 @@ async function iniciarSesion() {
 .password-label-row label {
   margin-bottom: 9px;
 }
+
+.password-field { position: relative; margin-bottom: 18px; }
+.login-form .password-field input { margin-bottom: 0; padding-right: 82px; }
+.password-toggle { position: absolute; top: 0; right: 0; height: 100%; padding: 0 12px; border: 0; border-radius: 0 7px 7px 0; color: var(--accent); background: transparent; font: inherit; font-size: 13px; cursor: pointer; }
+.password-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .submit-button {
   display: flex;

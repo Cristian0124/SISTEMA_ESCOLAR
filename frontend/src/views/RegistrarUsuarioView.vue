@@ -19,6 +19,7 @@ async function cargarCarreras() {
 }
 onMounted(cargarCarreras)
 const guardando = ref(false)
+const mostrarPassword = ref(false)
 const mensaje = ref('')
 const error = ref('')
 
@@ -88,7 +89,13 @@ async function registrar() {
       <h2>Acceso al sistema</h2>
       <div class="fields">
         <label>Correo electrónico<input v-model.trim="formulario.correo" type="email" required autocomplete="email" /></label>
-        <label>Contraseña<input v-model="formulario.password" type="password" required minlength="8" autocomplete="new-password" /></label>
+        <div class="password-group">
+          <label for="registro-password">Contraseña</label>
+          <div class="password-field">
+            <input id="registro-password" v-model="formulario.password" :type="mostrarPassword ? 'text' : 'password'" required minlength="8" autocomplete="new-password" />
+            <button class="password-toggle" type="button" :aria-label="mostrarPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'" aria-controls="registro-password" @click="mostrarPassword = !mostrarPassword">{{ mostrarPassword ? 'Ocultar' : 'Mostrar' }}</button>
+          </div>
+        </div>
       </div>
       <p v-if="mensaje" class="notice success" role="status">{{ mensaje }}</p>
       <p v-if="error" class="notice failure" role="alert">{{ error }}</p>
@@ -117,6 +124,11 @@ input:focus, select:focus { outline: 2px solid #1685a244; border-color: #1685a2;
 .actions a { color: #52696c; text-decoration: none; font-size: 14px; }
 button { min-height: 40px; padding: 0 18px; border: 0; border-radius: 4px; color: white; background: #176d85; font: inherit; font-weight: 700; cursor: pointer; }
 button:disabled { opacity: .65; cursor: wait; }
+.password-group { display: grid; gap: 7px; }
+.password-field { position: relative; }
+.password-field input { padding-right: 82px; }
+.password-toggle { position: absolute; top: 0; right: 0; height: 100%; min-height: 0; padding: 0 12px; color: #176d85; background: transparent; font-size: 13px; font-weight: 600; }
+.password-toggle:focus-visible { outline: 2px solid #1685a2; outline-offset: 2px; }
 .notice { margin: 18px 0 0; font-size: 14px; }
 .success { color: #22754f; }.failure { color: #a43f39; }
 @media (max-width: 560px) { .registration-form { padding: 19px; }.fields { grid-template-columns: 1fr; gap: 13px; } }
