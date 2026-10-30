@@ -1,5 +1,33 @@
 # Backend del Sistema Escolar
 
+### Validación de cruces de horario
+
+Antes de desplegar esta versión, aplica `src/database/migrations/008_horarios_cursos.sql`
+después de las migraciones existentes. Conserva `cursos.horario` y añade
+`curso_horarios` con día ISO (lunes=1), hora de inicio y hora de fin; admite varias
+sesiones por curso. El catálogo expone estas sesiones en `sesiones`.
+
+La conversión automática solo acepta un día completo y un intervalo de 24 horas,
+por ejemplo `Lunes 08:00 - 10:00`. Textos incompletos, varios días o intervalos
+inválidos se conservan sin inventar sesiones. Para revisarlos:
+
+```sql
+SELECT id, codigo, horario FROM cursos c
+WHERE NOT EXISTS (SELECT 1 FROM curso_horarios h WHERE h.curso_id = c.id);
+```
+
+Corrige el texto a un intervalo explícito, o registra las sesiones verificadas
+en `curso_horarios` para horarios de varios días. Un cambio posterior del texto
+reemplaza las sesiones mediante el trigger; al editar varios días, actualiza
+texto y sesiones en la misma transacción. Mientras falten sesiones en el curso
+solicitado o en una matrícula activa del periodo, se devuelve 409
+`HORARIO_PENDIENTE_REVISION`. Los cruces devuelven 409 `CRUCE_HORARIO` con el
+código, nombre y franja del curso en conflicto. Las clases consecutivas se permiten.
+
+Las pruebas de `tests/horarios.test.ts` requieren `DATABASE_URL` y permisos para
+crear y eliminar esquemas de prueba; cubren conversión, horarios ambiguos,
+superposición, consecutivos, otro periodo y dos solicitudes simultáneas.
+
 ## PostgreSQL y registro
 
 1. Copia `.env.example` como `.env` y configura `DATABASE_URL` con la URL de tu instancia PostgreSQL. No subas `.env` a GitHub. Para una base con SSL, configura `DB_SSL=true`.

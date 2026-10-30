@@ -7,6 +7,7 @@ export interface Curso {
   docente: string | null;
   docenteId: number | null;
   horario: string;
+  sesiones?: { dia: number; horaInicio: string; horaFin: string }[];
   cuposTotales: number;
   cuposDisponibles: number;
   semestre: number;
@@ -26,6 +27,9 @@ const consultaCursos = `
     docente.id AS "docenteId",
     docente.nombre AS docente,
     curso.horario,
+    COALESCE((SELECT jsonb_agg(jsonb_build_object(
+      'dia', h.dia, 'horaInicio', h.hora_inicio, 'horaFin', h.hora_fin)
+      ORDER BY h.dia, h.hora_inicio) FROM curso_horarios h WHERE h.curso_id = curso.id), '[]'::jsonb) AS sesiones,
     curso.cupos_totales AS "cuposTotales",
     GREATEST(
       curso.cupos_disponibles - COUNT(matricula.id)::integer,

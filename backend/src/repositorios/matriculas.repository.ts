@@ -169,6 +169,40 @@ export async function crearMatricula(
       );
     }
 
+    // La fila del estudiante permanece bloqueada hasta COMMIT. Se consulta el
+    // horario actual en BD, nunca el JSON histórico ni datos del navegador.
+    const sinHorario = await cliente.query<{ codigo: string; horario: string }>(
+      `SELECT c.codigo, c.horario FROM cursos c
+       WHERE (c.id = $2 OR c.id IN (
+         SELECT curso_id FROM matriculas WHERE usuario_id = $1 AND estado = 'Activa'
+           AND periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
+       )) AND NOT EXISTS (SELECT 1 FROM curso_horarios h WHERE h.curso_id = c.id)
+       ORDER BY c.id LIMIT 1`, [usuarioId, curso.id]
+    );
+    if (sinHorario.rows[0]) {
+      const pendiente = sinHorario.rows[0];
+      throw new HttpError(409, "HORARIO_PENDIENTE_REVISION",
+        `El horario de ${pendiente.codigo} (${pendiente.horario}) requiere revisión académica antes de matricular.`);
+    }
+    const conflictos = await cliente.query<{ codigo: string; nombre: string; dia: number; inicio: string; fin: string }>(
+      `SELECT c.codigo, materia.nombre, h.dia,
+              to_char(h.hora_inicio, 'HH24:MI') AS inicio, to_char(h.hora_fin, 'HH24:MI') AS fin
+       FROM matriculas m JOIN cursos c ON c.id = m.curso_id
+       JOIN materias_pensum materia ON materia.codigo = c.codigo_pensum
+       JOIN curso_horarios h ON h.curso_id = c.id
+       JOIN curso_horarios nuevo ON nuevo.curso_id = $2 AND nuevo.dia = h.dia
+         AND nuevo.hora_inicio < h.hora_fin AND h.hora_inicio < nuevo.hora_fin
+       WHERE m.usuario_id = $1 AND m.estado = 'Activa'
+         AND m.periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
+       ORDER BY c.id, h.dia, h.hora_inicio LIMIT 1`, [usuarioId, curso.id]
+    );
+    if (conflictos.rows[0]) {
+      const conflicto = conflictos.rows[0];
+      const dias = ['', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+      throw new HttpError(409, "CRUCE_HORARIO",
+        `Cruce con ${conflicto.codigo} — ${conflicto.nombre}: ${dias[conflicto.dia]} ${conflicto.inicio} - ${conflicto.fin}.`);
+    }
+
     const resultado = await cliente.query<Matricula>(
       `INSERT INTO matriculas (
          usuario_id,

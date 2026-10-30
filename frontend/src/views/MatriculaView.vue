@@ -133,7 +133,7 @@ async function matricular() {
           ? 'Inicia sesión para confirmar la matrícula. Tu selección se conserva.'
           : respuesta.status === 501
             ? 'El servidor todavía no permite registrar matrículas. Tu selección se conserva.'
-            : mensaje
+            : `${curso.nombre}: ${mensaje}`
         break
       }
       exitos.value.push(curso.nombre)
