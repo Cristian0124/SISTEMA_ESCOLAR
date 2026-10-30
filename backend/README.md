@@ -1,5 +1,29 @@
 # Backend del Sistema Escolar
 
+### Sesiones persistentes y despliegue
+
+Aplica `src/database/migrations/009_sesiones_auth.sql` antes de iniciar esta
+versión. Las sesiones anteriores estaban en memoria y **se invalidan al desplegar**:
+todos los usuarios deberán iniciar sesión otra vez. No se importan tokens viejos.
+Detén todas las instancias antiguas antes de habilitar las nuevas para evitar
+que sigan aceptando sesiones en memoria durante un despliegue mixto.
+
+`sesiones_auth` guarda el usuario, SHA-256 del refresh token, vencimiento y fecha
+de revocación. Nunca guarda el token completo. Cada renovación reemplaza
+atómicamente el hash y el vencimiento; el token anterior deja de ser válido.
+Se verifica la firma y expiración del JWT y el vencimiento persistido, y se
+comprueba que el usuario siga activo dentro de la transacción. Logout espera
+la revocación persistida antes de responder 204 y borrar la cookie.
+
+El cuerpo de login/refresh y las cookies conservan su contrato. Mantén
+`JWT_REFRESH_SECRET` estable y compartido entre instancias y reinicios para
+conservar las sesiones; cambiarlo exige volver a iniciar sesión. Los access
+tokens ya emitidos mantienen su vencimiento de 15 minutos.
+
+`tests/sesiones.test.ts` verifica renovación desde otro proceso, vencimiento,
+usuario inactivo, logout y rotación concurrente. Usa una base de pruebas con
+`DATABASE_URL` y permiso para crear esquemas aislados.
+
 ### Validación de cruces de horario
 
 Antes de desplegar esta versión, aplica `src/database/migrations/008_horarios_cursos.sql`
