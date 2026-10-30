@@ -1,4 +1,3 @@
-
 {
   "name": "sistema_escolar_backend",
   "version": "1.0.0",
@@ -20,6 +19,7 @@
     "express": "^5.1.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
+    "pdfkit": "^0.20.2",
     "pg": "^8.16.3",
     "zod": "^3.24.2"
   },
@@ -30,9 +30,10 @@
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.9",
     "@types/node": "^22.15.30",
+    "@types/pdfkit": "^0.17.7",
     "@types/pg": "^8.15.4",
+    "pdfjs-dist": "^6.4.299",
     "tsx": "^4.19.4",
     "typescript": "^5.8.3"
   }
 }
-

@@ -1,5 +1,24 @@
 # Backend del Sistema Escolar
 
+### Resumen informativo de matrícula
+
+`GET /api/documentos/resumen-matricula` consulta el resumen del estudiante
+autenticado; `GET /api/documentos/resumen-matricula.pdf` descarga el PDF.
+Ambas rutas requieren un access token Bearer de estudiante y comprueban que
+la cuenta siga activa. Usan exclusivamente la identidad autenticada, aunque se
+envíe otro ID en la URL. No ofrecen consulta de documentos de otros estudiantes.
+
+El servidor consulta nombre, identificación, carrera, periodo vigente, cursos
+activos, horarios y créditos directamente en PostgreSQL. La respuesta JSON
+incluye una lista vacía cuando no hay matrículas; la descarga responde 409
+`SIN_MATRICULAS`. Los documentos llevan `Cache-Control: no-store` y se generan
+en memoria con PDFKit, sin capturas de pantalla ni archivos públicos temporales.
+El PDF es un resumen informativo del sistema, sin certificación oficial.
+
+Las pruebas verifican autorización, aislamiento entre estudiantes, exclusión
+de otros periodos, cabeceras PDF, texto extraído, tildes y documentos de varias
+páginas. Instala las dependencias actualizadas con `npm ci` antes de desplegar.
+
 ### Sesiones persistentes y despliegue
 
 Aplica `src/database/migrations/009_sesiones_auth.sql` antes de iniciar esta
