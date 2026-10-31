@@ -281,11 +281,13 @@ export async function listarPorEstudiante(
   usuarioId: number
 ): Promise<Matricula[]> {
   const resultado = await pool.query<Matricula>(
-    `SELECT id, curso, estado, fecha
-     FROM matriculas
-     WHERE usuario_id = $1
-       AND periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
-     ORDER BY fecha DESC, id DESC`,
+    `SELECT m.id, m.estado, m.fecha, m.curso || jsonb_build_object('horario', c.horario,
+       'sesiones', COALESCE((SELECT jsonb_agg(jsonb_build_object('dia',h.dia,'horaInicio',h.hora_inicio,'horaFin',h.hora_fin)
+         ORDER BY h.dia,h.hora_inicio) FROM curso_horarios h WHERE h.curso_id=c.id),'[]'::jsonb)) AS curso
+     FROM matriculas m JOIN cursos c ON c.id=m.curso_id
+     WHERE m.usuario_id = $1
+       AND m.periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
+     ORDER BY m.fecha DESC, m.id DESC`,
     [usuarioId]
   );
 

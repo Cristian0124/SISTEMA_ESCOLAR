@@ -13,6 +13,7 @@ export const migraciones = [
   { archivo: '007_facultades_carreras.sql', tabla: 'carreras', columnas: [], tablas: ['facultades'], extras: [['usuarios', 'carrera_codigo'], ['materias_pensum', 'carrera_codigo']] },
   { archivo: '008_horarios_cursos.sql', tabla: 'curso_horarios', columnas: [] },
   { archivo: '009_sesiones_auth.sql', tabla: 'sesiones_auth', columnas: [] },
+  { archivo: '010_horarios_multisesion.sql', tabla: 'cursos', columnas: ['horario'] },
 ] as const;
 
 export async function migracionesPendientes(cliente: Pick<PoolClient, 'query'> = pool): Promise<string[]> {
@@ -32,6 +33,9 @@ export async function migracionesPendientes(cliente: Pick<PoolClient, 'query'> =
     EXISTS (SELECT 1 FROM pg_trigger WHERE tgrelid = to_regclass('cursos') AND tgname = 'cursos_sincronizar_horario' AND NOT tgisinternal) AS horario`);
   if (!funciones.rows[0].programa && !pendientes.includes('007_facultades_carreras.sql')) pendientes.push('007_facultades_carreras.sql');
   if (!funciones.rows[0].horario && !pendientes.includes('008_horarios_cursos.sql')) pendientes.push('008_horarios_cursos.sql');
+  const capacidad = await cliente.query(`SELECT character_maximum_length FROM information_schema.columns
+    WHERE table_schema=current_schema() AND table_name='cursos' AND column_name='horario'`);
+  if (capacidad.rows[0]?.character_maximum_length < 1000 && !pendientes.includes('010_horarios_multisesion.sql')) pendientes.push('010_horarios_multisesion.sql');
   return pendientes;
 }
 

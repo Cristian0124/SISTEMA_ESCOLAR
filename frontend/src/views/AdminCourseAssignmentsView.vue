@@ -10,7 +10,9 @@ const facultades = ref<Facultad[]>([])
 const carreras = ref<Carrera[]>([])
 const asignaturas = ref<Asignatura[]>([])
 const seleccionados = reactive<Record<number, number | ''>>({})
-const formulario = reactive({ facultadCodigo: '', carreraCodigo: '', codigoPensum: '', profesorId: 0, horario: '', cuposTotales: 30 })
+const formulario = reactive({ facultadCodigo: '', carreraCodigo: '', codigoPensum: '', profesorId: 0, cuposTotales: 30 })
+const sesiones = ref([{ dia: 1, horaInicio: '', horaFin: '' }])
+const dias = ['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo']
 const cargando = ref(true)
 const cargandoPensum = ref(false)
 const creando = ref(false)
@@ -72,13 +74,13 @@ async function crear(): Promise<void> {
     const curso = await crearCurso({
       codigoPensum: formulario.codigoPensum,
       profesorId: formulario.profesorId,
-      horario: formulario.horario.trim(),
+      sesiones: sesiones.value,
       cuposTotales: formulario.cuposTotales
     })
     cursos.value.unshift(curso)
     seleccionados[curso.id] = curso.docenteId ?? ''
     mensaje.value = `Se creó el grupo ${curso.codigo} para ${curso.carreraNombre}, asignado a ${curso.docente}.`
-    formulario.horario = ''
+    sesiones.value = [{ dia: 1, horaInicio: '', horaFin: '' }]
   } catch (fallo) {
     error.value = mensajeDeError(fallo, 'No fue posible crear el grupo y asignarlo al profesor.')
   } finally {
@@ -163,9 +165,16 @@ onMounted(() => void cargar())
               <option v-for="profesor in profesores" :key="profesor.id" :value="profesor.id">{{ profesor.nombre }} · {{ profesor.correo }}</option>
             </select>
           </label>
-          <label>Horario
-            <input v-model="formulario.horario" maxlength="100" placeholder="Ej. Lunes y miércoles, 8:00–10:00" required>
-          </label>
+          <fieldset class="sessions">
+            <legend>Sesiones semanales</legend>
+            <div v-for="(sesion, indice) in sesiones" :key="indice" class="session-fields">
+              <label>Día<select v-model.number="sesion.dia" required><option v-for="(dia,i) in dias" :key="dia" :value="i+1">{{ dia }}</option></select></label>
+              <label>Hora inicial<input v-model="sesion.horaInicio" type="time" required></label>
+              <label>Hora final<input v-model="sesion.horaFin" type="time" :min="sesion.horaInicio" required></label>
+              <button v-if="sesiones.length > 1" type="button" :aria-label="`Quitar sesión ${indice+1}`" @click="sesiones.splice(indice,1)">Quitar</button>
+            </div>
+            <button type="button" :disabled="sesiones.length >= 21" @click="sesiones.push({dia:1,horaInicio:'',horaFin:''})">Agregar sesión</button>
+          </fieldset>
           <label>Cupos
             <input v-model.number="formulario.cuposTotales" type="number" min="1" max="5000" required>
           </label>
@@ -232,6 +241,9 @@ h1 { margin: 0; font-size: clamp(24px, 4vw, 32px); }
 .section-heading > p:last-child { margin-bottom: 0; font-size: 13px; }
 .course-form { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: end; }
 .course-form label { display: grid; gap: 6px; color: #506467; font-size: 12px; font-weight: 700; }
+.sessions { grid-column: 1 / -1; margin: 0; padding: 14px; border: 1px solid #cbd7d8; }
+.session-fields { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-bottom: 12px; }
+.session-fields label { flex: 1 1 120px; }
 select, input { width: 100%; min-height: 39px; padding: 8px 10px; border: 1px solid #cbd7d8; border-radius: 4px; background: #fff; color: #243a3c; font: inherit; font-size: 12px; }
 select:disabled { background: #f3f6f6; color: #879496; }
 button { min-height: 36px; padding: 0 13px; border: 0; border-radius: 4px; color: white; background: #176d85; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }

@@ -36,6 +36,14 @@ function normalizar(valor: string): string {
 }
 
 function crearBloques(curso: Curso, matriculaId: number): BloqueHorario[] {
+  if (curso.sesiones?.length) {
+    return curso.sesiones.map((s,i) => {
+      const [h,m] = s.horaInicio.split(':').map(Number)
+      const [hf,mf] = s.horaFin.split(':').map(Number)
+      return { id: `${matriculaId}-${i}`, dia:s.dia-1, fila:h+2,
+        duracion:Math.ceil(hf+mf/60)-Math.floor(h+m/60), curso, inicio:s.horaInicio.slice(0,5), fin:s.horaFin.slice(0,5) }
+    })
+  }
   const horario = normalizar(curso.horario)
   const intervalo = /(\d{1,2}):([0-5]\d)\s*(?:-|–|—|a)\s*(\d{1,2}):([0-5]\d)/i.exec(horario)
   if (!intervalo) return []

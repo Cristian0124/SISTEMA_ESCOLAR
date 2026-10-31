@@ -2,6 +2,7 @@ import { listarCursos } from "../repositorios/cursos.repository";
 import { buscarUsuarioPorId } from "../repositorios/auth.repository";
 import { asignarDocente as asignarDocenteRepositorio, crearCurso as crearCursoRepositorio } from "../repositorios/cursos.repository";
 import { HttpError } from "../types/http-error";
+import { normalizarSesiones, describirHorario, type SesionCurso } from './horarios.service';
 
 export function obtenerCursos() {
   return listarCursos();
@@ -23,7 +24,8 @@ export async function asignarDocente(cursoId: number, profesorId: number) {
 export async function crearCursoYAsignarDocente(datos: {
   codigoPensum: string;
   profesorId: number;
-  horario: string;
+  horario?: string;
+  sesiones?: SesionCurso[];
   cuposTotales: number;
 }) {
   const profesor = await buscarUsuarioPorId(datos.profesorId);
@@ -31,11 +33,13 @@ export async function crearCursoYAsignarDocente(datos: {
     throw new HttpError(404, "PROFESOR_NO_ENCONTRADO", "El profesor no existe o está inactivo");
   }
 
+  const sesiones = normalizarSesiones(datos.sesiones, datos.horario);
   const curso = await crearCursoRepositorio(
     datos.codigoPensum,
     profesor.id,
-    datos.horario,
-    datos.cuposTotales
+    describirHorario(sesiones),
+    datos.cuposTotales,
+    sesiones
   );
   if (!curso) {
     throw new HttpError(400, "ASIGNATURA_SIN_CARRERA", "La asignatura debe pertenecer a una carrera y facultad del catálogo");

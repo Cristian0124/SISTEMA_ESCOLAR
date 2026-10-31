@@ -7,6 +7,7 @@ export interface Curso {
   docente: string | null
   docenteId: number | null
   horario: string
+  sesiones?: { dia: number; horaInicio: string; horaFin: string }[]
   cuposTotales: number
   cuposDisponibles: number
   codigoPensum: string
@@ -41,7 +42,7 @@ export async function asignarProfesor(cursoId: number, profesorId: number): Prom
 export interface NuevoCurso {
   codigoPensum: string
   profesorId: number
-  horario: string
+  sesiones: { dia: number; horaInicio: string; horaFin: string }[]
   cuposTotales: number
 }
 

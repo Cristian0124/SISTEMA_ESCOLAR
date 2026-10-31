@@ -5,6 +5,7 @@ import { asignarDocente as asignarDocenteServicio, crearCursoYAsignarDocente, ob
 import { listarCursos as listarCursosEstudiante } from "../repositorios/cursos.repository";
 import { HttpError } from "../types/http-error";
 import { z } from "zod";
+import { esquemaSesiones } from '../services/horarios.service';
 
 export const listarCursos: RequestHandler = async (_req, res, next) => {
   try {
@@ -39,7 +40,8 @@ export const crearCurso: RequestHandler = async (req, res, next) => {
     const datos = z.object({
       codigoPensum: z.string().regex(/^[A-Z0-9]{5}$/),
       profesorId: z.number().int().positive(),
-      horario: z.string().trim().min(1).max(100),
+      horario: z.string().trim().min(1).max(1000).optional(),
+      sesiones: esquemaSesiones.optional(),
       cuposTotales: z.number().int().min(1).max(5000)
     }).strict().safeParse(req.body);
     if (!datos.success) {

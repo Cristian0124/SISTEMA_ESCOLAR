@@ -1,4 +1,5 @@
 import { pool } from "../config/database";
+import type { SesionCurso } from '../services/horarios.service';
 
 export interface Curso {
   id: number;
@@ -80,7 +81,8 @@ export async function crearCurso(
   codigoPensum: string,
   profesorId: number,
   horario: string,
-  cuposTotales: number
+  cuposTotales: number,
+  sesiones?: SesionCurso[]
 ): Promise<Curso | null> {
   const cliente = await pool.connect();
   try {
@@ -118,6 +120,11 @@ export async function crearCurso(
       [codigoCurso, codigoPensum, profesorId, horario, cuposTotales]
     );
     const cursoId = insertado.rows[0].id;
+    if (sesiones) {
+      await cliente.query('DELETE FROM curso_horarios WHERE curso_id=$1',[cursoId]);
+      for (const s of sesiones) await cliente.query(`INSERT INTO curso_horarios(curso_id,dia,hora_inicio,hora_fin)
+        VALUES($1,$2,$3,$4)`,[cursoId,s.dia,s.horaInicio,s.horaFin]);
+    }
     const curso = await cliente.query<Curso>(
       `${consultaCursos} WHERE curso.id = $1
        GROUP BY curso.id, materia.codigo, docente.id, carrera.codigo, facultad.codigo`,
