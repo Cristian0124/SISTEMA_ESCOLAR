@@ -5,6 +5,8 @@
   "description": "Backend del Sistema Escolar de Matricula Masiva de Alto Rendimiento",
   "main": "dist/server.js",
   "scripts": {
+    "db:check": "tsx src/scripts/migraciones.ts --check",
+    "db:migrate": "tsx src/scripts/migraciones.ts",
     "dev": "node scripts/dev.cjs",
     "build": "tsc",
     "start": "node dist/server.js",
