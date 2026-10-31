@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import * as authService from '@/services/authService'
+import { isAxiosError } from 'axios'
 import type { LoginRequest, LoginResponse, Usuario } from '@/types'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -21,8 +22,15 @@ export const useAuthStore = defineStore('auth', () => {
       const { data } = await authService.login(datos)
       establecerSesion(data)
       return true
-    } catch {
-      error.value = 'Credenciales inválidas o servidor no disponible'
+    } catch (fallo) {
+      if (isAxiosError(fallo)) {
+        const estado = fallo.response?.status
+        error.value = !fallo.response ? 'No se pudo conectar con el servidor. Revisa tu conexión e intenta nuevamente.'
+          : estado === 401 ? 'Correo o contraseña incorrectos.'
+          : estado === 503 ? 'El servicio no está disponible temporalmente. Intenta nuevamente más tarde.'
+          : estado && estado >= 500 ? 'Ocurrió un error en el servidor. Intenta nuevamente o contacta a soporte.'
+          : 'No fue posible iniciar sesión. Revisa los datos e intenta nuevamente.'
+      } else error.value = 'No fue posible iniciar sesión. Intenta nuevamente.'
       return false
     } finally {
       cargando.value = false

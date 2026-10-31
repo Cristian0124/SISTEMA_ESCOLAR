@@ -61,7 +61,7 @@ test('documentos: autorización, propietario, datos reales y descarga PDF', asyn
     assert.ok(!texto.includes('SIS201'));
     assert.ok(!texto.includes('Dato del token'));
     await pool.query('UPDATE usuarios SET activo = FALSE WHERE id = $1', [propio.id]);
-    assert.equal((await fetch(`${base}/resumen-matricula.pdf`, { headers: auth(propio.id) })).status, 403);
+    assert.equal((await fetch(`${base}/resumen-matricula.pdf`, { headers: auth(propio.id) })).status, 401);
   } finally {
     await new Promise<void>((resolve, reject) => servidor.close(e => e ? reject(e) : resolve()));
     await limpiar();

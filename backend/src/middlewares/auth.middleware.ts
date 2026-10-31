@@ -2,6 +2,7 @@ import type { RequestHandler } from "express";
 import jwt from "jsonwebtoken";
 import { JWT_ACCESS_SECRET } from "../config/env";
 import type { RolUsuario } from "../repositorios/auth.repository";
+import { buscarUsuarioPorId } from "../repositorios/auth.repository";
 
 export interface UsuarioAutenticado {
   id: number;
@@ -13,23 +14,34 @@ function rechazar(res: Parameters<RequestHandler>[1], codigo: string, mensaje: s
   return res.status(401).json({ codigo, mensaje });
 }
 
-export const autenticar: RequestHandler = (req, res, next) => {
+export const autenticar: RequestHandler = async (req, res, next) => {
   const cabecera = req.header("authorization");
   const coincidencia = cabecera?.match(/^Bearer\s+(.+)$/i);
   if (!coincidencia) return rechazar(res, "TOKEN_REQUERIDO", "Se requiere un token Bearer valido");
 
+  let contenido: jwt.JwtPayload | string;
   try {
-    const contenido = jwt.verify(coincidencia[1], JWT_ACCESS_SECRET);
+    contenido = jwt.verify(coincidencia[1], JWT_ACCESS_SECRET, { algorithms: ['HS256'] });
+  } catch {
+    return rechazar(res, "TOKEN_INVALIDO", "El token no es valido o ha expirado");
+  }
+  try {
     if (typeof contenido === "string") return rechazar(res, "TOKEN_INVALIDO", "El token no es valido");
 
     const { id, nombre, rol } = contenido;
-    if (typeof id !== "number" || typeof nombre !== "string" || (rol !== "admin" && rol !== "estudiante" && rol !== "profesor")) {
+    if (typeof id !== "number" || !Number.isSafeInteger(id) || id < 1 || id > 2147483647 || typeof nombre !== "string" || (rol !== "admin" && rol !== "estudiante" && rol !== "profesor")) {
       return rechazar(res, "TOKEN_INVALIDO", "El token no es valido");
     }
-    res.locals.usuario = { id, nombre, rol } satisfies UsuarioAutenticado;
+    const actual = await buscarUsuarioPorId(id);
+    if (!actual || !actual.activo) return rechazar(res, 'USUARIO_INACTIVO', 'La cuenta no existe o está desactivada');
+    if (actual.rol !== rol) {
+      res.status(403).json({codigo:'ROL_MODIFICADO',mensaje:'Los permisos de tu cuenta cambiaron. Inicia sesión nuevamente'});
+      return;
+    }
+    res.locals.usuario = { id, nombre: actual.nombre, rol: actual.rol } satisfies UsuarioAutenticado;
     return next();
-  } catch {
-    return rechazar(res, "TOKEN_INVALIDO", "El token no es valido o ha expirado");
+  } catch (error) {
+    next(error);
   }
 };
 
