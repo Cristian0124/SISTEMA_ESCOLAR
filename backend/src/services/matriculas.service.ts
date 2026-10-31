@@ -179,13 +179,14 @@ export async function registrarCalificacion(
   }
   if (registrador.rol === "profesor") {
     const cursos = await listarCursos();
-    const curso = cursos.find((item) =>
+    const grupos = cursos.filter((item) =>
       item.codigoPensum === codigoMateria && item.docenteId === registrador.id,
     );
-    if (!curso) {
+    if (!grupos.length) {
       throw new HttpError(403, "CURSO_NO_ASIGNADO", "No tienes asignada esta materia");
     }
-    if (!(await repositorio.estaMatriculadoEnCurso(usuarioId, curso.id))) {
+    const matriculas = await Promise.all(grupos.map(curso => repositorio.estaMatriculadoEnCurso(usuarioId, curso.id)));
+    if (!matriculas.some(Boolean)) {
       throw new HttpError(409, "ESTUDIANTE_NO_MATRICULADO", "El estudiante no está matriculado en tu curso");
     }
   }

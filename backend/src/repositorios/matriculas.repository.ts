@@ -68,6 +68,14 @@ export async function crearMatricula(
     // Serializa las matrículas del estudiante para que las solicitudes paralelas
     // no permitan superar su cupo de créditos.
     await cliente.query("SELECT id FROM usuarios WHERE id = $1 FOR UPDATE", [usuarioId]);
+    const mismaMateria = await cliente.query(`SELECT 1 FROM matriculas m
+      JOIN cursos c ON c.id = m.curso_id
+      WHERE m.usuario_id = $1 AND c.codigo_pensum = $2 AND m.estado = 'Activa'
+        AND m.periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
+      LIMIT 1`, [usuarioId, curso.codigoPensum]);
+    if (mismaMateria.rowCount) {
+      throw new HttpError(409, "ASIGNATURA_YA_MATRICULADA", "Ya tienes matriculado otro grupo de esta asignatura en el periodo vigente");
+    }
     const pertenece = await cliente.query("SELECT materia_del_programa($1, $2) AS pertenece", [curso.codigoPensum, usuarioId]);
     if (!pertenece.rows[0]?.pertenece) {
       throw new HttpError(409, "CURSO_OTRA_CARRERA", "El curso no pertenece al pensum de tu carrera");
