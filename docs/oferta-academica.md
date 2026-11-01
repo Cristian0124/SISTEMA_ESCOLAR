@@ -45,12 +45,13 @@ Con el esquema anterior instalado y la conexión de `backend/.env` configurada:
 
 ```powershell
 cd backend
-node scripts/migrate-academic.cjs
+npm.cmd run db:check
+npm.cmd run db:migrate
 npm.cmd run build
 npm.cmd test
 ```
 
-El comando aplica únicamente `007_facultades_carreras.sql`, en una transacción, y no vuelve a ejecutar seeds anteriores. Puede volver a invocarse: detecta si la tabla de carreras ya existe. Reinicia el backend después de actualizar el código.
+`db:check` informa las migraciones faltantes; `db:migrate` aplica las pendientes en orden, cada una dentro de una transacción. Conserva el esquema ya instalado y no vuelve a ejecutar seeds anteriores cuando sus tablas y columnas están presentes. Reinicia el backend después de actualizar el código. El script antiguo `migrate-academic.cjs` solo cubre la migración 007 y no sustituye la comprobación completa.
 
 Las pruebas usan esquemas temporales separados del esquema de la aplicación. Cubren el registro obligatorio, carrera inexistente, persistencia en la sesión, catálogo y avance por carrera, créditos, rechazo de matrícula cruzada y pendiente de validación, y compatibilidad de notas/prerrequisitos del plan anterior.
 

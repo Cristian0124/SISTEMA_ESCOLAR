@@ -1,5 +1,19 @@
 # Backend del Sistema Escolar
 
+### Instalar cambios y verificar el esquema
+
+Después de actualizar el código, instala las dependencias y ejecuta `npm.cmd run db:check` desde `backend`. Si faltan tablas o columnas, usa `npm.cmd run db:migrate` para aplicar las migraciones pendientes en orden. El servidor también comprueba el esquema antes de escuchar conexiones, evitando anunciar un arranque correcto cuando falta una tabla.
+
+La migración 006 habilita el envío y respuesta de soporte. Las migraciones 010 y 011 agregan capacidad para horarios de varias sesiones y perfiles persistentes, respectivamente. Los tests usan esquemas temporales y verifican soporte, permisos, matrícula por asignatura, horarios, perfiles, documentos y sesiones.
+
+### Horarios y perfiles
+
+La creación de grupos recibe `sesiones: [{ dia: 1, horaInicio: "08:00", horaFin: "10:00" }]`. Admite varias sesiones, valida días ISO y rechaza intervalos invertidos o superpuestos dentro del grupo. Se almacenan dentro de la misma transacción que crea el curso. Por compatibilidad, la API acepta un texto de un solo día e intervalo explícito; los textos ambiguos se rechazan. El horario del estudiante usa las sesiones actuales de PostgreSQL.
+
+`GET/PUT /api/perfil/datos` y `GET/PUT /api/perfil/hoja-de-vida` guardan los datos del estudiante autenticado. No aceptan identificadores ajenos ni permiten modificar carrera, semestre o edad. Los datos personales actualizan nombre, correo y nacionalidad de la cuenta y conservan la unicidad del correo. La hoja de vida admite hasta 20 estudios y foto PNG/JPEG/WebP de hasta 1 MB. Las respuestas llevan `Cache-Control: no-store`; el almacenamiento local solo conserva borradores que se recuperan explícitamente.
+
+Todas las rutas protegidas consultan que la cuenta siga activa y que el rol del token coincida con el rol vigente. Los errores inesperados registran una referencia, ruta y código técnico sin registrar cuerpos, contraseñas, tokens ni mensajes del driver. El usuario recibe un mensaje seguro; los fallos de conexión se distinguen con HTTP 503.
+
 ### Resumen informativo de matrícula
 
 `GET /api/documentos/resumen-matricula` consulta el resumen del estudiante

@@ -57,19 +57,7 @@ export const modulosAdmin: Acceso[] = [
     titulo: 'Matrículas',
     descripcion: 'Revisa los procesos y registros de matrícula.',
     icono: '▤',
-    ruta: '/my-enrollments',
-  },
-  {
-    titulo: 'Sala de espera',
-    descripcion: 'Consulta el acceso de usuarios durante la matrícula.',
-    icono: '◷',
-    ruta: '/waiting-room',
-  },
-  {
-    titulo: 'Telemetría',
-    descripcion: 'Abre la vista de actividad y rendimiento del sistema.',
-    icono: '⌁',
-    ruta: '/admin/telemetry',
+    ruta: '/mis-matriculas',
   },
 ]
 

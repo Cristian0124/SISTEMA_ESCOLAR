@@ -31,6 +31,16 @@ async function abrir(rol: RolUsuario | null, ruta: string) {
 }
 
 describe('layout y navegación por rol', () => {
+  it('retira opciones provisionales y conserva la dirección antigua de matrículas', async () => {
+    const { router, vista } = await abrir('admin', '/admin/home')
+    expect(vista.get('aside').text()).not.toContain('Sala de espera')
+    expect(vista.get('aside').text()).not.toContain('Telemetría')
+    await router.push('/my-enrollments')
+    await flushPromises()
+    expect(router.currentRoute.value.path).toBe('/mis-matriculas')
+    expect(vista.find('a[href="/matricula"]').exists()).toBe(false)
+    expect(vista.find('a[href="/catalog"]').exists()).toBe(false)
+  })
   it.each([
     ['estudiante', '/home'],
     ['profesor', '/profesor/home'],

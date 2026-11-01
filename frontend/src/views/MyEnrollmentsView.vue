@@ -51,8 +51,8 @@ onMounted(() => void cargar())
   <main class="academic-page">
     <nav aria-label="Navegación académica">
       <RouterLink :to="esAdmin ? '/admin/home' : '/inicio'">Inicio</RouterLink>
-      <RouterLink to="/catalog">Catálogo</RouterLink>
-      <RouterLink to="/matricula">Seleccionar cursos</RouterLink>
+      <RouterLink v-if="!esAdmin" to="/catalog">Mi pénsum</RouterLink>
+      <RouterLink v-if="!esAdmin" to="/matricula">Seleccionar cursos</RouterLink>
     </nav>
     <h1>{{ esAdmin ? 'Matrículas del periodo' : 'Mis matrículas' }}</h1>
     <p class="intro">{{ esAdmin ? 'Consulta los cursos matriculados por los estudiantes durante el periodo vigente.' : 'Consulta los cursos registrados para tu usuario en el periodo vigente.' }}</p>
