@@ -1,22 +1,9 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { listarCarreras } from '@/api/academico.api'
+import { consultarDatos, guardarDatos, type DatosPersonales } from '@/api/profile.api'
+import axios from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import { loadDraft, profileStorageKey, saveDraft } from '@/services/profileStorage'
-
-interface DatosPersonales {
-  nombre: string
-  correo: string
-  ciudad: string
-  estudio: string
-  semestre: string
-  edad: string
-  direccion: string
-  telefono: string
-  celular: string
-  tipoSangre: string
-  nacionalidad: string
-}
 
 const auth = useAuthStore()
 const datos = reactive<DatosPersonales>({
@@ -34,28 +21,51 @@ const datos = reactive<DatosPersonales>({
 })
 const guardado = ref(false)
 const error = ref('')
+const cargando = ref(true)
+const cargado = ref(false)
+const guardando = ref(false)
+const hayBorrador = ref(false)
 
 const storageKey = () => profileStorageKey('datos-personales', auth.usuario?.id ?? 'local')
 
-onMounted(async () => {
+async function cargar() {
+  cargando.value = true
+  error.value = ''
   try {
-    Object.assign(datos, loadDraft(storageKey(), { ...datos }))
-    const carrera = (await listarCarreras()).find(c => c.codigo === auth.usuario?.carreraCodigo)
-    datos.estudio = carrera?.nombre ?? 'Carrera pendiente de asignación'
+    Object.assign(datos, await consultarDatos())
+    cargado.value = true
   } catch {
-    error.value = 'No se pudieron leer los datos guardados. Puedes corregirlos y guardarlos nuevamente.'
-  }
+    error.value = 'No fue posible cargar tus datos. Intenta nuevamente.'
+  } finally { cargando.value = false }
+}
+onMounted(async () => {
+  try { hayBorrador.value = localStorage.getItem(storageKey()) !== null } catch { /* El servidor no depende del almacenamiento local. */ }
+  await cargar()
 })
+function recuperarBorrador() {
+  try {
+    const borrador = loadDraft(storageKey(), { ...datos })
+    for (const campo of ['nombre','correo','ciudad','direccion','telefono','celular','tipoSangre','nacionalidad'] as const) {
+      if (typeof borrador[campo] === 'string') datos[campo] = borrador[campo]
+    }
+    guardado.value = false
+  } catch { error.value = 'No fue posible recuperar el borrador local.' }
+}
 
-function guardar(): void {
+async function guardar() {
+  if (!cargado.value || guardando.value) return
+  guardando.value = true
   error.value = ''
   guardado.value = false
   try {
-    saveDraft(storageKey(), datos)
+    await guardarDatos(datos)
+    if (auth.usuario) auth.usuario.nombre = datos.nombre
     guardado.value = true
-  } catch {
-    error.value = 'No se pudieron guardar los cambios en este dispositivo.'
-  }
+    try { localStorage.removeItem(storageKey()); hayBorrador.value = false } catch { /* Guardado en servidor completado. */ }
+  } catch (e) {
+    error.value = axios.isAxiosError(e) ? e.response?.data?.mensaje ?? 'No fue posible guardar tus datos en el servidor.' : 'No fue posible guardar tus datos.'
+    try { saveDraft(storageKey(), datos); hayBorrador.value = true } catch { /* El error principal se muestra arriba. */ }
+  } finally { guardando.value = false }
 }
 </script>
 
@@ -68,13 +78,16 @@ function guardar(): void {
       <p>Completa y mantén actualizada tu información de contacto y académica.</p>
     </header>
 
-    <form class="profile-form" @submit.prevent="guardar">
+    <p v-if="cargando" role="status">Cargando tus datos…</p>
+    <form v-else class="profile-form" @submit.prevent="guardar">
+      <button v-if="!cargado" type="button" @click="cargar">Reintentar carga</button>
+      <button v-if="hayBorrador && cargado" type="button" @click="recuperarBorrador">Recuperar borrador de este navegador</button>
       <section>
         <h2>Información personal</h2>
         <div class="fields">
           <label>Nombre completo<input v-model.trim="datos.nombre" autocomplete="name" required /></label>
           <label>Correo electrónico<input v-model.trim="datos.correo" type="email" autocomplete="email" /></label>
-          <label>Edad<input v-model="datos.edad" type="number" min="0" max="120" inputmode="numeric" /></label>
+          <label>Edad<input :value="datos.edad" readonly /></label>
           <label>Ciudad<input v-model.trim="datos.ciudad" autocomplete="address-level2" /></label>
           <label>Dirección<input v-model.trim="datos.direccion" autocomplete="street-address" /></label>
           <label>Tipo de sangre
@@ -95,21 +108,18 @@ function guardar(): void {
         <div class="fields">
           <label>Estudio o programa<input :value="datos.estudio" readonly placeholder="Ej. Ingeniería de Sistemas" /></label>
           <label>Semestre actual
-            <select v-model="datos.semestre">
-              <option value="">Selecciona un semestre</option>
-              <option v-for="semestre in 10" :key="semestre" :value="String(semestre)">{{ semestre }}° semestre</option>
-            </select>
+            <input :value="datos.semestre" readonly />
           </label>
         </div>
       </section>
 
       <p v-if="error" class="message error" role="alert">{{ error }}</p>
-      <p v-if="guardado" class="message success" role="status">Tus datos se guardaron en este dispositivo.</p>
+      <p v-if="guardado" class="message success" role="status">Tus datos se guardaron correctamente en el servidor.</p>
       <div class="actions">
         <RouterLink to="/inicio">Cancelar</RouterLink>
-        <button type="submit">Guardar cambios</button>
+        <button type="submit" :disabled="guardando || !cargado">{{ guardando ? 'Guardando…' : 'Guardar cambios' }}</button>
       </div>
-      <p class="storage-note">Esta información se guarda localmente en este navegador y no se envía al servidor.</p>
+      <p class="storage-note">Los datos guardados estarán disponibles al iniciar sesión desde otro dispositivo.</p>
     </form>
   </main>
 </template>

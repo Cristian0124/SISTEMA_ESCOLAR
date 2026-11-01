@@ -14,6 +14,7 @@ export const migraciones = [
   { archivo: '008_horarios_cursos.sql', tabla: 'curso_horarios', columnas: [] },
   { archivo: '009_sesiones_auth.sql', tabla: 'sesiones_auth', columnas: [] },
   { archivo: '010_horarios_multisesion.sql', tabla: 'cursos', columnas: ['horario'] },
+  { archivo: '011_perfiles_usuarios.sql', tabla: 'perfiles_usuarios', columnas: ['datos_contacto','hoja_vida'] },
 ] as const;
 
 export async function migracionesPendientes(cliente: Pick<PoolClient, 'query'> = pool): Promise<string[]> {

@@ -22,7 +22,7 @@ app.use(cors({
   credentials: true
 }));
 app.use(cookieParser());
-app.use(express.json());
+app.use(express.json({limit:'2mb'}));
 app.use("/api", apiRoutes);
 app.use(rutaNoEncontrada);
 app.use(manejarError);

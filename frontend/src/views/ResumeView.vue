@@ -2,34 +2,39 @@
 import { onMounted, reactive, ref } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import { loadDraft, profileStorageKey, saveDraft } from '@/services/profileStorage'
-
-interface Estudio {
-  titulo: string
-  institucion: string
-  estado: string
-  periodo: string
-}
-
-interface HojaDeVida {
-  descripcion: string
-  foto: string
-  estudios: Estudio[]
-}
+import { consultarHoja, guardarHoja, type HojaDeVida } from '@/api/profile.api'
+import axios from 'axios'
 
 const auth = useAuthStore()
 const hoja = reactive<HojaDeVida>({ descripcion: '', foto: '', estudios: [] })
 const guardado = ref(false)
 const error = ref('')
+const cargando = ref(true)
+const cargado = ref(false)
+const guardando = ref(false)
+const hayBorrador = ref(false)
+const leyendoFoto = ref(false)
 const storageKey = () => profileStorageKey('hoja-de-vida', auth.usuario?.id ?? 'local')
 const maxPhotoBytes = 1024 * 1024
 
-onMounted(() => {
+async function cargar() {
+  cargando.value = true
+  error.value = ''
   try {
-    Object.assign(hoja, loadDraft(storageKey(), { ...hoja }))
+    Object.assign(hoja, await consultarHoja())
+    cargado.value = true
   } catch {
-    error.value = 'No se pudo leer la hoja de vida guardada. Puedes corregirla y guardarla nuevamente.'
-  }
+    error.value = 'No fue posible cargar tu hoja de vida. Intenta nuevamente.'
+  } finally { cargando.value = false }
+}
+onMounted(async () => {
+  try { hayBorrador.value = localStorage.getItem(storageKey()) !== null } catch { /* Sin borrador local. */ }
+  await cargar()
 })
+function recuperarBorrador() {
+  try { Object.assign(hoja, loadDraft(storageKey(), { ...hoja })); guardado.value = false }
+  catch { error.value = 'No fue posible recuperar el borrador local.' }
+}
 
 function agregarEstudio(): void {
   hoja.estudios.push({ titulo: '', institucion: '', estado: '', periodo: '' })
@@ -47,8 +52,8 @@ function seleccionarFoto(evento: Event): void {
 
   guardado.value = false
   error.value = ''
-  if (!archivo.type.startsWith('image/')) {
-    error.value = 'Selecciona un archivo de imagen.'
+  if (!['image/png','image/jpeg','image/webp'].includes(archivo.type)) {
+    error.value = 'Selecciona una imagen PNG, JPEG o WebP.'
     input.value = ''
     return
   }
@@ -59,6 +64,8 @@ function seleccionarFoto(evento: Event): void {
   }
 
   const lector = new FileReader()
+  leyendoFoto.value = true
+  lector.addEventListener('loadend', () => { leyendoFoto.value = false })
   lector.addEventListener('load', () => {
     if (typeof lector.result === 'string') hoja.foto = lector.result
   })
@@ -68,15 +75,19 @@ function seleccionarFoto(evento: Event): void {
   lector.readAsDataURL(archivo)
 }
 
-function guardar(): void {
+async function guardar() {
+  if (!cargado.value || guardando.value || leyendoFoto.value) return
+  guardando.value = true
   error.value = ''
   guardado.value = false
   try {
-    saveDraft(storageKey(), hoja)
+    await guardarHoja(hoja)
     guardado.value = true
-  } catch {
-    error.value = 'No se pudo guardar la hoja de vida en este dispositivo. Prueba con una foto más pequeña.'
-  }
+    try { localStorage.removeItem(storageKey()); hayBorrador.value = false } catch { /* Guardado en servidor completado. */ }
+  } catch (e) {
+    error.value = axios.isAxiosError(e) ? e.response?.data?.mensaje ?? 'No fue posible guardar la hoja de vida en el servidor.' : 'No fue posible guardar la hoja de vida.'
+    try { saveDraft(storageKey(), hoja); hayBorrador.value = true } catch { /* El error principal se muestra arriba. */ }
+  } finally { guardando.value = false }
 }
 </script>
 
@@ -89,7 +100,10 @@ function guardar(): void {
       <p>Presenta tu perfil y tu trayectoria académica.</p>
     </header>
 
-    <form class="resume-form" @submit.prevent="guardar">
+    <p v-if="cargando" role="status">Cargando tu hoja de vida…</p>
+    <form v-else class="resume-form" @submit.prevent="guardar">
+      <button v-if="!cargado" type="button" @click="cargar">Reintentar carga</button>
+      <button v-if="hayBorrador && cargado" type="button" @click="recuperarBorrador">Recuperar borrador de este navegador</button>
       <section class="intro-section">
         <div>
           <h2>Sobre mí</h2>
@@ -101,10 +115,10 @@ function guardar(): void {
             <span v-else aria-hidden="true">+</span>
           </div>
           <label class="photo-button">Subir foto
-            <input class="file-input" type="file" accept="image/*" @change="seleccionarFoto" />
+            <input class="file-input" type="file" accept="image/png,image/jpeg,image/webp" @change="seleccionarFoto" />
           </label>
           <button v-if="hoja.foto" class="remove-photo" type="button" @click="hoja.foto = ''; guardado = false">Quitar foto</button>
-          <small>Imagen de hasta 1 MB, guardada en este navegador.</small>
+          <small>PNG, JPEG o WebP de hasta 1 MB.</small>
         </div>
       </section>
 
@@ -119,7 +133,7 @@ function guardar(): void {
             <h2>Estudios y formación</h2>
             <p>Agrega tu formación académica y su estado actual.</p>
           </div>
-          <button class="secondary-button" type="button" @click="agregarEstudio">+ Agregar estudio</button>
+          <button class="secondary-button" type="button" :disabled="hoja.estudios.length >= 20" @click="agregarEstudio">+ Agregar estudio</button>
         </div>
 
         <div v-if="hoja.estudios.length" class="study-list">
@@ -143,12 +157,12 @@ function guardar(): void {
       </section>
 
       <p v-if="error" class="message error" role="alert">{{ error }}</p>
-      <p v-if="guardado" class="message success" role="status">Tu hoja de vida se guardó en este dispositivo.</p>
+      <p v-if="guardado" class="message success" role="status">Tu hoja de vida se guardó correctamente en el servidor.</p>
       <div class="actions">
         <RouterLink to="/inicio">Cancelar</RouterLink>
-        <button class="primary-button" type="submit">Guardar hoja de vida</button>
+        <button class="primary-button" type="submit" :disabled="guardando || !cargado || leyendoFoto">{{ guardando ? 'Guardando…' : 'Guardar hoja de vida' }}</button>
       </div>
-      <p class="storage-note">La información y la foto se guardan localmente en este navegador y no se envían al servidor.</p>
+      <p class="storage-note">La información y la foto guardadas estarán disponibles al iniciar sesión desde otro dispositivo.</p>
     </form>
   </main>
 </template>

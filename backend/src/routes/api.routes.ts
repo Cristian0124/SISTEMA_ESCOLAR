@@ -8,8 +8,10 @@ import soporteRoutes from "./soporte.routes";
 import documentosRoutes from "./documentos.routes";
 
 import academicoRoutes from "./academico.routes";
+import perfilRoutes from './perfil.routes';
 
 const router = Router();
+router.use('/perfil',perfilRoutes);
 router.use("/academico", academicoRoutes);
 
 router.get("/salud", (_req, res) => res.status(200).json({ ok: true }));
