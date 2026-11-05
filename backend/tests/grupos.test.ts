@@ -4,7 +4,7 @@ import { pool } from '../src/config/database';
 import { crearBaseAislada } from './database.fixture';
 import { buscarCursoPorId } from '../src/repositorios/cursos.repository';
 import { crearMatricula } from '../src/repositorios/matriculas.repository';
-import { registrarCalificacion } from '../src/services/matriculas.service';
+import { registrarCalificacion } from '../src/services/calificaciones.service';
 import { HttpError } from '../src/types/http-error';
 
 test('varios grupos: calificación correcta y matrícula única por asignatura', async () => {

@@ -1,8 +1,8 @@
 import { beforeEach, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { flushPromises, mount } from '@vue/test-utils'
-import PersonalDataView from '@/views/PersonalDataView.vue'
-import ResumeView from '@/views/ResumeView.vue'
+import PersonalDataView from '@/views/perfil/PersonalDataView.vue'
+import ResumeView from '@/views/perfil/ResumeView.vue'
 import { useAuthStore } from '@/stores/auth'
 import * as api from '@/api/profile.api'
 

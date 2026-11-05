@@ -1,5 +1,7 @@
 # Sistema Escolar
 
+La distribución del código y las convenciones se describen en [Organización del proyecto](docs/estructura.md).
+
 La ampliación de facultades, carreras y pénsum de Ingeniería USC se documenta en [Oferta académica](docs/oferta-academica.md), incluyendo migración, fuentes y validaciones pendientes para habilitar matrícula en los planes nuevos.
 
 ## Ejecutar en Windows sin modificar la base de datos

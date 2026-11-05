@@ -51,7 +51,7 @@ npm.cmd run build
 npm.cmd test
 ```
 
-`db:check` informa las migraciones faltantes; `db:migrate` aplica las pendientes en orden, cada una dentro de una transacción. Conserva el esquema ya instalado y no vuelve a ejecutar seeds anteriores cuando sus tablas y columnas están presentes. Reinicia el backend después de actualizar el código. El script antiguo `migrate-academic.cjs` solo cubre la migración 007 y no sustituye la comprobación completa.
+`db:check` informa las migraciones faltantes; `db:migrate` aplica las pendientes en orden, cada una dentro de una transacción. Conserva el esquema ya instalado y no vuelve a ejecutar seeds anteriores cuando sus tablas y columnas están presentes. Reinicia el backend después de actualizar el código. El script antiguo `migrate-academic.cjs` fue retirado; todas las instalaciones usan el ejecutor general y su catálogo compartido.
 
 Las pruebas usan esquemas temporales separados del esquema de la aplicación. Cubren el registro obligatorio, carrera inexistente, persistencia en la sesión, catálogo y avance por carrera, créditos, rechazo de matrícula cruzada y pendiente de validación, y compatibilidad de notas/prerrequisitos del plan anterior.
 

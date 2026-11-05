@@ -17,12 +17,12 @@ npm run dev
 
 - `layouts/MainLayout.vue` — encabezado, menú persistente por rol, búsqueda, menú plegable en celular y cierre de sesión. Contiene el `RouterView` de las rutas privadas.
 - `layouts/navigation.ts` — opciones de navegación por rol; también alimenta los accesos de los inicios administrativo y docente.
-- `views/` — contenido de las pantallas. Los inicios ya no repiten encabezado, menú ni pie de página. El login queda fuera del layout.
+- `views/` — pantallas agrupadas por funcionalidad: auth, academico, matriculas, perfil, calificaciones, horarios, soporte, inicio y documentos. Los inicios ya no repiten encabezado, menú ni pie de página. El login queda fuera del layout.
 - `stores/auth.ts` — sesión (access token solo en memoria)
-- `services/` — una función axios por endpoint
+- `api/` — funciones HTTP y tipos por funcionalidad; las vistas consumen estas funciones en lugar de implementar fetch o renovación de tokens. `services/` conserva el acceso de autenticación y las utilidades de borradores.
 - `api/axios.ts` — instancia con interceptores (token + refresh automático)
 - `router/index.ts` — rutas anidadas bajo el layout + guard de acceso
-- `types/index.ts` — contrato con el backend
+- `types/index.ts` — tipos comunes de autenticación; los contratos de cada funcionalidad están junto a su API.
 - `assets/base.css` — estilos globales cargados desde `main.ts`.
 
 ## Contrato supuesto con el backend

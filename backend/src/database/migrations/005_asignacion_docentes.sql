@@ -22,7 +22,7 @@ DO $$
 BEGIN
   IF EXISTS (
     SELECT 1 FROM information_schema.columns
-    WHERE table_schema = 'public' AND table_name = 'cursos' AND column_name = 'docente'
+    WHERE table_schema = current_schema() AND table_name = 'cursos' AND column_name = 'docente'
   ) THEN
     ALTER TABLE cursos ADD COLUMN IF NOT EXISTS docente_legacy VARCHAR(150);
 

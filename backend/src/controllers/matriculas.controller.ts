@@ -6,12 +6,14 @@ import {
   listarMisMatriculas as listarMisMatriculasServicio,
   listarTodasMatriculasAdministrador as listarTodasMatriculasAdministradorServicio,
   eliminarMatricula as eliminarMatriculaServicio,
-  obtenerAvancePensum as obtenerAvancePensumServicio,
-  listarMisCalificaciones as listarMisCalificacionesServicio,
-  registrarCalificacion as registrarCalificacionServicio,
   listarCursosAsignadosProfesor as listarCursosAsignadosProfesorServicio,
   listarEstudiantesDeCursoProfesor as listarEstudiantesDeCursoProfesorServicio
 } from "../services/matriculas.service";
+import {
+  obtenerAvancePensum as obtenerAvancePensumServicio,
+  listarMisCalificaciones as listarMisCalificacionesServicio,
+  registrarCalificacion as registrarCalificacionServicio
+} from '../services/calificaciones.service';
 
 function obtenerUsuarioId(res: Response): number {
   const usuario = res.locals.usuario as

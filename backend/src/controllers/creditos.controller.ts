@@ -6,7 +6,7 @@ import {
   solicitarCreditosAdicionales as solicitarCreditosAdicionalesServicio,
   listarSolicitudesCreditosAdministrador,
   revisarSolicitudCreditosAdministrador
-} from "../services/matriculas.service";
+} from "../services/creditos.service";
 
 function usuarioId(res: Response): number {
   const usuario = res.locals.usuario as UsuarioAutenticado | undefined;

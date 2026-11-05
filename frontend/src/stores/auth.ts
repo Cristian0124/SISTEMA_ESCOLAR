@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import * as authService from '@/services/authService'
 import { isAxiosError } from 'axios'
 import type { LoginRequest, LoginResponse, Usuario } from '@/types'
@@ -12,8 +12,6 @@ export const useAuthStore = defineStore('auth', () => {
   const error = ref<string | null>(null)
   const sesionRestaurada = ref(false)
   let restauracionEnCurso: Promise<void> | null = null
-
-  const autenticado = computed(() => accessToken.value !== null)
 
   async function iniciarSesion(datos: LoginRequest): Promise<boolean> {
     cargando.value = true
@@ -74,7 +72,6 @@ export const useAuthStore = defineStore('auth', () => {
     usuario,
     cargando,
     error,
-    autenticado,
     sesionRestaurada,
     establecerSesion,
     iniciarSesion,

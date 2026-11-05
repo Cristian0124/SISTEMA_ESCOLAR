@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { listarCursos, type Curso } from '@/api/courses.api'
 
@@ -7,7 +7,6 @@ export const useCoursesStore = defineStore('courses', () => {
   const cargando = ref(false)
   const cargado = ref(false)
   const error = ref<string | null>(null)
-  const hayCursos = computed(() => cursos.value.length > 0)
 
   async function cargarCursos() {
     cargando.value = true
@@ -22,5 +21,5 @@ export const useCoursesStore = defineStore('courses', () => {
     }
   }
 
-  return { cursos, cargando, cargado, error, hayCursos, cargarCursos }
+  return { cursos, cargando, cargado, error, cargarCursos }
 })

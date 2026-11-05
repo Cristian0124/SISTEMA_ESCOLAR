@@ -1,0 +1,15 @@
+export const migraciones = [
+  { archivo: '001_usuarios.sql', tabla: 'usuarios', columnas: ['cedula', 'fecha_nacimiento', 'fecha_ingreso', 'nacionalidad', 'genero'] },
+  { archivo: '002_matriculas.sql', tabla: 'matriculas', columnas: [] },
+  { archivo: '002_prerrequisitos_calificaciones.sql', tabla: 'materias_pensum', columnas: [], tablas: ['calificaciones', 'prerrequisitos_materia'] },
+  { archivo: '003_cursos.sql', tabla: 'cursos', columnas: [] },
+  { archivo: '004_cortes_calificaciones.sql', tabla: 'calificaciones', columnas: ['corte_1', 'corte_2', 'corte_3'] },
+  { archivo: '005_asignacion_docentes.sql', tabla: 'cursos', columnas: ['docente_id'] },
+  { archivo: '005_solicitudes_creditos.sql', tabla: 'solicitudes_creditos', columnas: [], tablas: ['matriculas'], extras: [['matriculas', 'periodo']] },
+  { archivo: '006_soporte_docente.sql', tabla: 'solicitudes_soporte', columnas: [] },
+  { archivo: '007_facultades_carreras.sql', tabla: 'carreras', columnas: [], tablas: ['facultades'], extras: [['usuarios', 'carrera_codigo'], ['materias_pensum', 'carrera_codigo']] },
+  { archivo: '008_horarios_cursos.sql', tabla: 'curso_horarios', columnas: [] },
+  { archivo: '009_sesiones_auth.sql', tabla: 'sesiones_auth', columnas: [] },
+  { archivo: '010_horarios_multisesion.sql', tabla: 'cursos', columnas: ['horario'] },
+  { archivo: '011_perfiles_usuarios.sql', tabla: 'perfiles_usuarios', columnas: ['datos_contacto','hoja_vida'] },
+] as const;

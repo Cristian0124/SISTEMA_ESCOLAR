@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
-import DocumentsView from '@/views/DocumentsView.vue'
+import DocumentsView from '@/views/documentos/DocumentsView.vue'
 import { consultarResumenMatricula, descargarResumenMatricula, type ResumenMatricula } from '@/api/documents.api'
 
 vi.mock('@/api/documents.api', () => ({ consultarResumenMatricula: vi.fn(), descargarResumenMatricula: vi.fn() }))

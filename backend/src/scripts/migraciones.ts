@@ -1,7 +1,8 @@
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { pool } from '../config/database';
-import { migraciones, migracionesPendientes, verificarEsquema } from '../config/schema';
+import { migracionesPendientes, verificarEsquema } from '../config/schema';
+import { migraciones } from '../database/migraciones';
 
 async function ejecutar() {
   if (process.argv.includes('--check')) {

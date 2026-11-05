@@ -87,22 +87,11 @@ superposición, consecutivos, otro periodo y dos solicitudes simultáneas.
 
 ## PostgreSQL y registro
 
-1. Copia `.env.example` como `.env` y configura `DATABASE_URL` con la URL de tu instancia PostgreSQL. No subas `.env` a GitHub. Para una base con SSL, configura `DB_SSL=true`.
-2. Desde esta carpeta, establece la URL en la terminal PowerShell y aplica el esquema:
+1. Copia `.env.example` como `.env` y configura `DATABASE_URL` con tu instancia PostgreSQL. Para una base con SSL, configura `DB_SSL=true`.
+2. Desde `backend`, usa `npm.cmd run db:check` para consultar faltantes y `npm.cmd run db:migrate` para aplicar las migraciones pendientes.
+3. Inicia el backend con `npm.cmd run dev`.
 
-	```powershell
-	$env:DATABASE_URL = "postgresql://usuario:contrasena@host:5432/base"
-	psql $env:DATABASE_URL -f src/database/migrations/001_usuarios.sql
-	psql $env:DATABASE_URL -f src/database/migrations/002_matriculas.sql
-	$env:PGCLIENTENCODING = "UTF8"
-	psql $env:DATABASE_URL -f src/database/migrations/002_prerrequisitos_calificaciones.sql
-	psql $env:DATABASE_URL -f src/database/migrations/003_cursos.sql
-	```
-
-	Sustituye la URL de ejemplo por la misma URL configurada en `.env`.
-	La migración `003_cursos.sql` crea el catálogo y conserva los IDs usados por las matrículas. Su reversión está en `003_cursos.down.sql`; úsala solo si quieres retirar el catálogo creado por esa migración, pues elimina esa tabla y sus filas.
-
-3. Inicia el backend con `npm run dev`.
+El catálogo ordenado y las reglas de instalación están en [database/README.md](src/database/README.md). No apliques manualmente una lista parcial de SQL ni vuelvas a ejecutar seeds sobre una base existente.
 
 El registro público está en `POST /api/auth/register`. Requiere nombre, correo, contraseña de al menos 8 caracteres, cédula, fechas de nacimiento e ingreso, nacionalidad y género. El servidor asigna el rol `estudiante`; correo y cédula deben ser únicos.
 
@@ -118,6 +107,6 @@ El buzón de soporte docente requiere aplicar `src/database/migrations/006_sopor
 
 El avance del estudiante está en `GET /api/matriculas/avance`. Las materias se consideran aprobadas con nota igual o superior a `3.0`. Al matricular un curso que tenga prerrequisitos pendientes, `POST /api/matriculas` responde `409 PRERREQUISITOS_PENDIENTES`.
 
-El profesor consulta sus cursos en `GET /api/matriculas/docente/cursos` y sus estudiantes matriculados en `GET /api/matriculas/docente/cursos/:cursoId/estudiantes`. El backend limita estas listas a los cursos cuyo campo `docente` coincide con el nombre del usuario profesor, ignorando mayúsculas y tildes.
+El profesor consulta sus cursos en `GET /api/matriculas/docente/cursos` y sus estudiantes matriculados en `GET /api/matriculas/docente/cursos/:cursoId/estudiantes`. El backend limita estas listas a los cursos cuyo `docente_id` coincide con el identificador del profesor autenticado.
 
-Un usuario con rol `admin` o el profesor asignado registra o actualiza una nota con `PUT /api/matriculas/calificaciones/:usuarioId/:codigoMateria`, enviando un token Bearer y un cuerpo como `{ "nota": 3.5 }`. Para profesores, el estudiante debe estar matriculado en el curso asignado. El código es el del pensum, por ejemplo `ISI01`; las notas aceptadas van de `0.0` a `5.0` con un decimal.
+Un usuario con rol `admin` o el profesor asignado registra o actualiza una nota con `PUT /api/matriculas/calificaciones/:usuarioId/:codigoMateria`, enviando un token Bearer y un cuerpo como `{ "corte1": 3.5, "corte2": 4.0, "corte3": 3.8 }`. La nota final se calcula con pesos de 30 %, 30 % y 40 %. Para profesores, el estudiante debe estar matriculado en el curso asignado. El código es el del pensum, por ejemplo `ISI01`; las notas aceptadas van de `0.0` a `5.0` con un decimal.

@@ -1,5 +1,11 @@
 import api from '@/api/axios'
 
+export interface SesionHorario {
+  dia: number
+  horaInicio: string
+  horaFin: string
+}
+
 export interface Curso {
   id: number
   codigo: string
@@ -7,7 +13,7 @@ export interface Curso {
   docente: string | null
   docenteId: number | null
   horario: string
-  sesiones?: { dia: number; horaInicio: string; horaFin: string }[]
+  sesiones?: SesionHorario[]
   cuposTotales: number
   cuposDisponibles: number
   codigoPensum: string
@@ -42,7 +48,7 @@ export async function asignarProfesor(cursoId: number, profesorId: number): Prom
 export interface NuevoCurso {
   codigoPensum: string
   profesorId: number
-  sesiones: { dia: number; horaInicio: string; horaFin: string }[]
+  sesiones: SesionHorario[]
   cuposTotales: number
 }
 
