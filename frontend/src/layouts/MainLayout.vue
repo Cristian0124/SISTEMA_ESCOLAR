@@ -53,23 +53,10 @@ async function salir() {
         <span class="brand-mark" aria-hidden="true">SE</span>
         <span>Sistema académico<small>{{ perfil.espacio }}</small></span>
       </RouterLink>
-      <div class="session">
-        <span class="role-label">{{ perfil.nombre }}</span>
-        <span class="user-name">{{ auth.usuario?.nombre }}</span>
-        <button class="logout" type="button" :disabled="saliendo" @click="salir">{{ saliendo ? 'Saliendo…' : 'Salir' }}</button>
-        <button class="menu-toggle" type="button" :aria-expanded="menuAbierto" aria-controls="menu-principal" @click="menuAbierto = !menuAbierto">{{ menuAbierto ? 'Cerrar menú' : 'Menú' }}</button>
-      </div>
-    </header>
-    <div class="workspace">
+      <label class="menu-search"><span class="visually-hidden">Buscar en el menú</span><input v-model="busqueda" type="search" placeholder="Buscar proceso" /></label>
       <aside id="menu-principal" class="sidebar" :class="{ 'is-open': menuAbierto }" :aria-label="`Navegación de ${perfil.nombre.toLocaleLowerCase()}`" @keydown.esc="menuAbierto = false">
-        <section class="profile">
-          <div class="avatar" aria-hidden="true">{{ iniciales }}</div>
-          <strong>{{ auth.usuario?.nombre }}</strong>
-          <span>{{ perfil.nombre }} · Código {{ auth.usuario?.id }}</span>
-        </section>
-        <label class="menu-search"><span>Buscar en el menú</span><input v-model="busqueda" type="search" placeholder="Buscar proceso" /></label>
         <nav aria-label="Procesos disponibles">
-          <RouterLink class="nav-link" :to="perfil.inicio" exact-active-class="active-link"><span aria-hidden="true">⌂</span>Inicio</RouterLink>
+          <RouterLink class="nav-link home-link" :to="perfil.inicio" exact-active-class="active-link"><span aria-hidden="true">⌂</span>Inicio</RouterLink>
           <section v-for="grupo in gruposVisibles" :key="grupo.titulo" class="menu-group">
             <h2>{{ grupo.titulo }}</h2>
             <RouterLink v-for="opcion in grupo.opciones" :key="opcion.ruta" class="nav-link" :to="opcion.ruta" exact-active-class="active-link"><span aria-hidden="true">{{ opcion.icono }}</span>{{ opcion.titulo }}</RouterLink>
@@ -77,9 +64,22 @@ async function salir() {
           <p v-if="!gruposVisibles.length" class="empty-search" role="status">No hay procesos coincidentes.</p>
         </nav>
       </aside>
+      <div class="session">
+        <button class="menu-toggle" type="button" :aria-expanded="menuAbierto" aria-controls="menu-principal" @click="menuAbierto = !menuAbierto">{{ menuAbierto ? 'Cerrar menú' : 'Menú' }}</button>
+      </div>
+    </header>
+    <div class="workspace">
       <div id="contenido-principal" ref="contenido" class="page-content" tabindex="-1"><RouterView /></div>
     </div>
-    <footer class="statusbar"><span>Sistema académico · {{ perfil.espacio }}</span><span class="session-status"><i aria-hidden="true"></i>Sesión activa</span></footer>
+    <footer class="statusbar">
+      <div class="user-session">
+        <span class="session-avatar" aria-hidden="true">{{ iniciales }}</span>
+        <span class="role-label">{{ perfil.nombre }}</span>
+        <span class="user-name">{{ auth.usuario?.nombre }}</span>
+        <button class="logout" type="button" :disabled="saliendo" @click="salir">{{ saliendo ? 'Saliendo…' : 'Salir' }}</button>
+      </div>
+      <div class="status-meta"><span>Sistema académico · {{ perfil.espacio }}</span><span class="session-status"><i aria-hidden="true"></i>Sesión activa</span></div>
+    </footer>
   </div>
 </template>
 
@@ -120,11 +120,11 @@ async function salir() {
   top: 0;
   z-index: 10;
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 16px;
-  min-height: 62px;
-  padding: 10px 18px;
+  gap: 18px;
+  min-height: 68px;
+  padding: 10px clamp(14px, 2vw, 28px);
   border-top: 3px solid var(--accent);
   border-bottom: 1px solid var(--line);
   background: #fff;
@@ -132,6 +132,7 @@ async function salir() {
 
 .brand {
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
   gap: 10px;
   color: var(--ink);
@@ -159,9 +160,23 @@ async function salir() {
 
 .session {
   display: flex;
+  flex: 0 0 auto;
+  order: 2;
   align-items: center;
   gap: 12px;
   font-size: 12px;
+}
+
+.session-avatar {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: var(--accent);
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .role-label {
@@ -204,64 +219,30 @@ button:disabled {
 }
 
 .workspace {
-  display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
   flex: 1;
 }
 
 .sidebar {
-  position: sticky;
-  top: 65px;
-  align-self: start;
-  max-height: calc(100dvh - 65px);
-  overflow-y: auto;
-  border-right: 1px solid var(--line);
-  background: var(--sidebar);
-}
-
-.profile {
-  display: grid;
-  justify-items: center;
-  gap: 7px;
-  padding: 22px 12px;
-  border-bottom: 1px solid var(--line);
-}
-
-.avatar {
-  display: grid;
-  width: 46px;
-  height: 46px;
-  place-items: center;
-  border-radius: 50%;
-  color: white;
-  background: var(--accent);
-  font-size: 17px;
-}
-
-.profile strong {
-  max-width: 100%;
-  overflow-wrap: anywhere;
-  font-size: 12px;
-  text-align: center;
-}
-
-.profile > span {
-  color: var(--muted);
-  font-size: 10px;
+  display: flex;
+  flex: 1 0 100%;
+  order: 3;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
 }
 
 .menu-search {
-  display: grid;
-  gap: 6px;
-  padding: 14px 12px;
-  font-size: 11px;
-  color: var(--muted);
+  flex: 0 1 275px;
+  min-width: 180px;
+  margin-left: auto;
 }
 
 .menu-search input {
   width: 100%;
-  min-height: 36px;
-  padding: 8px;
+  min-height: 34px;
+  padding: 7px 10px;
   border: 1px solid var(--line);
   border-radius: 4px;
   color: var(--ink);
@@ -270,30 +251,45 @@ button:disabled {
 }
 
 nav {
-  padding-bottom: 16px;
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 5px;
+  scrollbar-width: thin;
 }
 
 .menu-group {
-  margin: 12px 0 0;
+  display: contents;
 }
 
 .menu-group h2 {
-  margin: 0;
-  padding: 8px 12px;
+  align-self: center;
+  margin: 0 2px 0 5px;
+  padding: 7px 9px;
+  border-radius: 4px;
   color: var(--accent);
-  font-size: 10px;
+  background: var(--sidebar);
+  font-size: 9px;
+  font-weight: 700;
   text-transform: uppercase;
-  line-height: 1.5;
+  white-space: nowrap;
+  flex: 0 0 auto;
 }
 
 .nav-link {
   display: flex;
+  flex: 0 0 auto;
   align-items: center;
   gap: 9px;
   min-height: 38px;
-  padding: 9px 12px;
-  border-bottom: 1px solid var(--line);
-  border-left: 3px solid transparent;
+  padding: 8px 10px;
+  border: 1px solid transparent;
+  border-radius: 4px;
   color: var(--ink);
   background: #fff;
   font-size: 12px;
@@ -309,24 +305,37 @@ nav {
 
 .nav-link:hover {
   background: var(--sidebar);
+  border-color: var(--line);
 }
 
 .active-link {
-  border-left-color: var(--accent);
+  border-color: var(--line);
   color: var(--accent);
   background: var(--sidebar);
   font-weight: bold;
 }
 
 .empty-search {
-  margin: 14px;
+  margin: 6px;
+  padding: 8px;
   color: var(--muted);
   font-size: 12px;
 }
 
 .page-content {
   min-width: 0;
+  min-height: 100%;
   background: white;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
 }
 
 .page-content:focus {
@@ -337,12 +346,28 @@ nav {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-  gap: 8px;
-  padding: 10px 18px;
+  align-items: center;
+  gap: 12px 20px;
+  padding: 12px 18px;
   border-top: 1px solid var(--line);
   background: #fff;
   color: var(--muted);
   font-size: 10px;
+}
+
+.user-session, .status-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.status-meta { margin-left: auto; }
+
+.user-name {
+  max-width: 260px;
+  color: var(--ink);
+  font-size: 12px;
 }
 
 .session-status {
@@ -378,37 +403,32 @@ nav {
     padding: 10px 12px;
   }
 
-  .session {
-    gap: 7px;
-  }
+  .brand { margin-right: auto; }
 
-  .role-label, .user-name {
-    display: none;
-  }
+  .session { gap: 7px; }
 
   .menu-toggle {
     display: block;
   }
 
-  .workspace {
-    display: block;
-  }
-
   .sidebar {
     display: none;
-    position: static;
-    max-height: none;
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
+    flex: 1 0 100%;
+    order: 3;
+    align-items: center;
+    padding: 12px 0 4px;
+    border-top: 1px solid var(--line);
   }
+
+  .sidebar nav { flex-wrap: nowrap; align-items: center; }
 
   .sidebar.is-open {
-    display: block;
+    display: flex;
   }
 
-  .profile {
-    display: none;
-  }
+  .menu-search { flex: 0 1 190px; min-width: 130px; }
+  .user-name { max-width: 170px; }
+  .status-meta { margin-left: 0; }
 
   .statusbar {
     padding: 10px 12px;
