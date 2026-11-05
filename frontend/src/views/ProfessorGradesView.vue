@@ -187,7 +187,7 @@ async function salir() {
 </template>
 
 <style scoped>
-.grades-shell { --ink: #263d40; --muted: #728184; --line: #dce4e4; --accent: #176d85; display: grid; grid-template-rows: 54px minmax(0, 1fr) 34px; min-height: 100vh; color: var(--ink); background: #f5f7f6; font-family: 'Trebuchet MS', 'Aptos', sans-serif; }
+.grades-shell { --ink: #33213b; --muted: #715d78; --line: #e4dce4; --accent: #704c78; display: grid; grid-template-rows: 54px minmax(0, 1fr) 34px; min-height: 100vh; color: var(--ink); background: #f5f1e9; font-family: 'Trebuchet MS', 'Aptos', sans-serif; }
 .topbar, .topbar-user, .logout-button { display: flex; align-items: center; }
 .topbar { justify-content: space-between; gap: 16px; padding: 0 18px; border-top: 4px solid #25454a; border-bottom: 1px solid var(--line); background: #fff; }
 .brand { color: var(--ink); font-family: Georgia, 'Times New Roman', serif; font-size: 16px; text-decoration: none; }
@@ -203,22 +203,22 @@ h1 { margin: 0; font-size: clamp(25px, 4vw, 34px); }
 .page-heading > p:last-child { color: var(--muted); font-size: 14px; }
 .grade-form { display: grid; gap: 22px; padding: clamp(18px, 4vw, 28px); border: 1px solid var(--line); background: #fff; }
 .grade-fields { display: grid; gap: 9px; }
-label { color: #405458; font-size: 12px; font-weight: 700; }
-input, select { width: 100%; min-height: 42px; padding: 8px 11px; border: 1px solid #cbd7d8; border-radius: 4px; color: var(--ink); background: #fff; font: inherit; }
-input:focus, select:focus { outline: 2px solid #1685a244; border-color: var(--accent); }
+label { color: #493550; font-size: 12px; font-weight: 700; }
+input, select { width: 100%; min-height: 42px; padding: 8px 11px; border: 1px solid #d2c6d4; border-radius: 4px; color: var(--ink); background: #fff; font: inherit; }
+input:focus, select:focus { outline: 2px solid #9466a044; border-color: var(--accent); }
 .student-list { border: 1px solid var(--line); }
 .student-list-header, .student-row { display: grid; grid-template-columns: minmax(160px, 1.5fr) 65px repeat(3, minmax(85px, 1fr)) 90px; align-items: center; gap: 9px; padding: 11px 12px; }
-.student-list-header { color: var(--muted); background: #f5f8f8; font-size: 10px; font-weight: 700; }
+.student-list-header { color: var(--muted); background: #f1eaf2; font-size: 10px; font-weight: 700; }
 .student-row { border-top: 1px solid var(--line); }
 .student-name { display: grid; gap: 4px; min-width: 0; }
 .student-name strong { overflow-wrap: anywhere; font-size: 12px; }
 .student-name span, .current-grade { color: var(--muted); font-size: 11px; }
 .grade-input { min-height: 36px; padding: 5px 8px; }
 .primary-button { justify-self: start; }
-.row-result { grid-column: 1 / -1; color: #246c4a; font-size: 11px; }
+.row-result { grid-column: 1 / -1; color: #426a50; font-size: 11px; }
 .grade-hint { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
 .notice { margin: 0; padding: 11px 12px; font-size: 12px; line-height: 1.5; }
-.success { color: #246c4a; background: #eaf5ee; }.error { color: #8d3028; background: #fff4f2; }
+.success { color: #426a50; background: #edf3e9; }.error { color: #8d3028; background: #fff4f2; }
 .primary-button, .secondary-button { min-height: 40px; padding: 0 16px; border: 1px solid var(--accent); border-radius: 4px; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; }
 .primary-button { justify-self: start; color: #fff; background: var(--accent); }.secondary-button { color: var(--accent); background: #fff; }
 button:disabled { opacity: .55; cursor: not-allowed; }

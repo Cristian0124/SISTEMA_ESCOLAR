@@ -53,19 +53,19 @@ defineProps<{ curso: Curso & { creditos?: number } }>()
 .course-card { min-width: 0; padding: 18px; border: 1px solid #e0e8e8; border-radius: 8px; background: #fff; transition: border-color 150ms ease, box-shadow 150ms ease; }
 .course-card:hover { border-color: #bfd6da; box-shadow: 0 5px 16px rgb(36 58 60 / 6%); }
 .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding-bottom: 15px; border-bottom: 1px solid #edf1f1; }
-.course-code { color: #176d85; font-size: 11px; font-weight: 700; letter-spacing: .08em; }
-h2 { margin: 6px 0 0; color: #243a3c; font-size: 17px; line-height: 1.35; }
-.seats { display: grid; flex: 0 0 auto; min-width: 54px; justify-items: center; padding: 6px 9px; border-radius: 6px; color: #246c4a; background: #eaf5ee; }
+.course-code { color: #704c78; font-size: 11px; font-weight: 700; letter-spacing: .08em; }
+h2 { margin: 6px 0 0; color: #33213b; font-size: 17px; line-height: 1.35; }
+.seats { display: grid; flex: 0 0 auto; min-width: 54px; justify-items: center; padding: 6px 9px; border-radius: 6px; color: #426a50; background: #edf3e9; }
 .seats strong { font-size: 17px; line-height: 1.1; }
 .seats span { font-size: 10px; }
-.seats-low { color: #925b13; background: #fff3dc; }
+.seats-low { color: #8b641f; background: #fff3dc; }
 .course-details { display: grid; gap: 13px; margin: 15px 0; }
 .detail-row { display: grid; grid-template-columns: 84px minmax(0, 1fr); gap: 12px; font-size: 12px; line-height: 1.45; }
-dt { color: #829092; }
-dt span { display: inline-block; width: 16px; color: #5b929e; }
-dd { margin: 0; overflow-wrap: anywhere; color: #3d5558; }
-.card-footer { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding-top: 12px; border-top: 1px solid #edf1f1; color: #829092; font-size: 11px; }
-.card-footer > span:last-of-type { color: #536b6e; }
+dt { color: #8b818c; }
+dt span { display: inline-block; width: 16px; color: #9466a0; }
+dd { margin: 0; overflow-wrap: anywhere; color: #493550; }
+.card-footer { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding-top: 12px; border-top: 1px solid #edf1f1; color: #8b818c; font-size: 11px; }
+.card-footer > span:last-of-type { color: #715d78; }
 .capacity-track { grid-column: 1 / -1; height: 5px; overflow: hidden; border-radius: 5px; background: #eaf0f0; }
 .capacity-track span { display: block; height: 100%; border-radius: inherit; background: #5b9c83; }
 .capacity-track-low span { background: #d5a348; }

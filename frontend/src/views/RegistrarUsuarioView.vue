@@ -108,27 +108,27 @@ async function registrar() {
 </template>
 
 <style scoped>
-.registration-page { max-width: 900px; margin: 0 auto; padding: 34px clamp(18px, 5vw, 56px); color: #243a3c; }
+.registration-page { max-width: 900px; margin: 0 auto; padding: 34px clamp(18px, 5vw, 56px); color: #33213b; }
 header { margin-bottom: 24px; }
-.eyebrow { margin: 0 0 7px; color: #1685a2; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
+.eyebrow { margin: 0 0 7px; color: #9466a0; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
 h1 { margin: 0; font-size: clamp(25px, 4vw, 34px); }
-header > p:last-child { color: #718083; }
-.registration-form { padding: 26px; border: 1px solid #dce3e3; border-radius: 8px; background: #fff; box-shadow: 0 8px 24px #203a3c0b; }
-h2 { margin: 0 0 16px; padding-bottom: 9px; border-bottom: 1px solid #e5ebeb; color: #176d85; font-size: 16px; }
+header > p:last-child { color: #715d78; }
+.registration-form { padding: 26px; border: 1px solid #e4dce4; border-radius: 8px; background: #fff; box-shadow: 0 8px 24px #203a3c0b; }
+h2 { margin: 0 0 16px; padding-bottom: 9px; border-bottom: 1px solid #e5ebeb; color: #704c78; font-size: 16px; }
 h2:not(:first-child) { margin-top: 28px; }
 .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-label { display: grid; gap: 7px; color: #405458; font-size: 13px; font-weight: 600; }
-input, select { width: 100%; min-height: 40px; padding: 8px 10px; border: 1px solid #cbd7d8; border-radius: 4px; color: #243a3c; background: white; font: inherit; font-weight: 400; }
-input:focus, select:focus { outline: 2px solid #1685a244; border-color: #1685a2; }
+label { display: grid; gap: 7px; color: #493550; font-size: 13px; font-weight: 600; }
+input, select { width: 100%; min-height: 40px; padding: 8px 10px; border: 1px solid #d2c6d4; border-radius: 4px; color: #33213b; background: white; font: inherit; font-weight: 400; }
+input:focus, select:focus { outline: 2px solid #9466a044; border-color: #9466a0; }
 .actions { display: flex; justify-content: flex-end; align-items: center; gap: 16px; margin-top: 24px; }
-.actions a { color: #52696c; text-decoration: none; font-size: 14px; }
-button { min-height: 40px; padding: 0 18px; border: 0; border-radius: 4px; color: white; background: #176d85; font: inherit; font-weight: 700; cursor: pointer; }
+.actions a { color: #493550; text-decoration: none; font-size: 14px; }
+button { min-height: 40px; padding: 0 18px; border: 0; border-radius: 4px; color: white; background: #704c78; font: inherit; font-weight: 700; cursor: pointer; }
 button:disabled { opacity: .65; cursor: wait; }
 .password-group { display: grid; gap: 7px; }
 .password-field { position: relative; }
 .password-field input { padding-right: 82px; }
-.password-toggle { position: absolute; top: 0; right: 0; height: 100%; min-height: 0; padding: 0 12px; color: #176d85; background: transparent; font-size: 13px; font-weight: 600; }
-.password-toggle:focus-visible { outline: 2px solid #1685a2; outline-offset: 2px; }
+.password-toggle { position: absolute; top: 0; right: 0; height: 100%; min-height: 0; padding: 0 12px; color: #704c78; background: transparent; font-size: 13px; font-weight: 600; }
+.password-toggle:focus-visible { outline: 2px solid #9466a0; outline-offset: 2px; }
 .notice { margin: 18px 0 0; font-size: 14px; }
 .success { color: #22754f; }.failure { color: #a43f39; }
 @media (max-width: 560px) { .registration-form { padding: 19px; }.fields { grid-template-columns: 1fr; gap: 13px; } }

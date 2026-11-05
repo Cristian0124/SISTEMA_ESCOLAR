@@ -104,11 +104,11 @@ async function iniciarSesion() {
 
 <style scoped>
 .login-page {
-  --ink: #183a32;
-  --muted: #6d7b75;
+  --ink: #33213b;
+  --muted: #715d78;
   --paper: #fbfcf8;
   --line: #dce4dd;
-  --accent: #c95336;
+  --accent: #704c78;
   display: grid;
   grid-template-columns: minmax(320px, 0.95fr) minmax(440px, 1.05fr);
   min-height: 100vh;
@@ -254,7 +254,7 @@ async function iniciarSesion() {
 
 .login-form label {
   margin: 0 0 9px;
-  color: #263f37;
+  color: #33213b;
   font-size: 13px;
   font-weight: 700;
 }
@@ -275,11 +275,11 @@ async function iniciarSesion() {
 }
 
 .login-form input::placeholder {
-  color: #99a69f;
+  color: #8b818c;
 }
 
 .login-form input:focus {
-  border-color: #39705d;
+  border-color: #704c78;
   box-shadow: 0 0 0 3px rgba(57, 112, 93, 0.14);
 }
 
@@ -304,10 +304,10 @@ async function iniciarSesion() {
   min-height: 52px;
   margin-top: 3px;
   padding: 0 17px;
-  border: 1px solid #204c40;
+  border: 1px solid #704c78;
   border-radius: 4px;
   color: white;
-  background: #204c40;
+  background: #704c78;
   cursor: pointer;
   font: inherit;
   font-size: 14px;
@@ -338,7 +338,7 @@ async function iniciarSesion() {
 .form-error {
   margin: -7px 0 16px;
   padding: 11px 12px;
-  border-left: 3px solid #c95336;
+  border-left: 3px solid #704c78;
   color: #873b29;
   background: #fff0e9;
   font-size: 13px;
@@ -359,7 +359,7 @@ async function iniciarSesion() {
   margin-bottom: 28px;
   place-items: center;
   border-radius: 50%;
-  color: #204c40;
+  color: #704c78;
   background: #e2eee4;
   font-size: 25px;
 }
@@ -407,7 +407,7 @@ async function iniciarSesion() {
   display: flex;
   justify-content: space-between;
   gap: 12px;
-  color: #89948d;
+  color: #8b818c;
   font-size: 11px;
 }
 
@@ -474,11 +474,11 @@ async function iniciarSesion() {
 }
 
 .login-page {
-  --ink: #263238;
-  --muted: #66727a;
+  --ink: #33213b;
+  --muted: #715d78;
   --paper: #edf3fb;
   --line: #d6e1ef;
-  --accent: #2458a6;
+  --accent: #704c78;
   display: grid;
   grid-template-columns: 1fr;
   place-items: center;
@@ -521,7 +521,7 @@ async function iniciarSesion() {
 
 .eyebrow {
   margin-bottom: 10px;
-  color: #63758c;
+  color: #715d78;
   font-size: 12px;
   letter-spacing: 0;
 }
@@ -532,7 +532,7 @@ async function iniciarSesion() {
 
 .form-content h2 {
   font-family: Arial, sans-serif;
-  color: #183b70;
+  color: #33213b;
   font-size: 30px;
   font-weight: 700;
   line-height: 1.25;
@@ -595,14 +595,14 @@ async function iniciarSesion() {
 
 .form-footnote {
   margin-top: 18px;
-  color: #707b82;
+  color: #715d78;
 }
 
 .success-mark {
   width: 42px;
   height: 42px;
   margin-bottom: 20px;
-  color: #356b4b;
+  color: #426a50;
   background: #e8f1e9;
   font-size: 22px;
 }
@@ -629,7 +629,7 @@ async function iniciarSesion() {
 
 .page-footer {
   margin-top: 24px;
-  color: #737e85;
+  color: #715d78;
   font-size: 12px;
 }
 

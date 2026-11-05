@@ -85,33 +85,33 @@ async function salir() {
 
 <style scoped>
 .app-shell {
-  --ink: #263d40;
-  --muted: #728184;
-  --line: #dce4e4;
-  --accent: #176d85;
-  --sidebar: #f1f5f4;
+  --ink: #33213b;
+  --muted: #715d78;
+  --line: #e4dce4;
+  --accent: #704c78;
+  --sidebar: #eee5ef;
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
   color: var(--ink);
-  background: #f5f7f6;
+  background: #f5f1e9;
   font-family: 'Trebuchet MS', 'Aptos', sans-serif;
 }
 
 .role-estudiante {
-  --ink: #1e3558;
-  --muted: #6e7f96;
-  --line: #dce5f0;
-  --accent: #2862b2;
-  --sidebar: #f1f5fb;
+  --ink: #33213b;
+  --muted: #715d78;
+  --line: #e4dce4;
+  --accent: #704c78;
+  --sidebar: #eee5ef;
 }
 
 .role-admin {
-  --ink: #34464d;
-  --muted: #758187;
-  --line: #cfd8dc;
-  --accent: #356f87;
-  --sidebar: #edf1f3;
+  --ink: #33213b;
+  --muted: #715d78;
+  --line: #e4dce4;
+  --accent: #704c78;
+  --sidebar: #eee5ef;
   font-family: Arial, sans-serif;
 }
 

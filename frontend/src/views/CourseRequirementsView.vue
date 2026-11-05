@@ -59,23 +59,23 @@ onMounted(() => void cargar())
 </template>
 
 <style scoped>
-.requirements-page { max-width: 1000px; margin: 0 auto; padding: 30px clamp(16px, 4vw, 42px); color: #243a3c; }
-.back-link { display: inline-block; margin-bottom: 20px; color: #176d85; font-size: 13px; text-decoration: none; }
+.requirements-page { max-width: 1000px; margin: 0 auto; padding: 30px clamp(16px, 4vw, 42px); color: #33213b; }
+.back-link { display: inline-block; margin-bottom: 20px; color: #704c78; font-size: 13px; text-decoration: none; }
 .back-link:hover { text-decoration: underline; }
-.eyebrow { margin: 0 0 7px; color: #1685a2; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.eyebrow { margin: 0 0 7px; color: #9466a0; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 h1 { margin: 0; font-size: clamp(24px, 4vw, 32px); }
-header > p:last-child { color: #718083; font-size: 14px; }
+header > p:last-child { color: #715d78; font-size: 14px; }
 .course-list { display: grid; gap: 12px; margin-top: 24px; }
-.course-item, .notice { padding: 18px; border: 1px solid #dce3e3; border-radius: 8px; background: #fff; }
+.course-item, .notice { padding: 18px; border: 1px solid #e4dce4; border-radius: 8px; background: #fff; }
 .course-item { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .course-item > div:last-child { display: grid; justify-items: end; gap: 5px; text-align: right; }
-.course-item span { color: #176d85; font-size: 11px; font-weight: 700; }
+.course-item span { color: #704c78; font-size: 11px; font-weight: 700; }
 .course-item h2 { margin: 5px 0 0; font-size: 15px; }
-.course-item p, .notice p { color: #718083; font-size: 12px; line-height: 1.5; }
+.course-item p, .notice p { color: #715d78; font-size: 12px; line-height: 1.5; }
 .course-item strong { font-size: 11px; }
-.state-passed { color: #246c4a; }.state-locked { color: #925b13; }.state-available { color: #176d85; }
-.catalog-link { justify-self: start; margin-top: 8px; color: #176d85; font-size: 13px; }
+.state-passed { color: #426a50; }.state-locked { color: #8b641f; }.state-available { color: #704c78; }
+.catalog-link { justify-self: start; margin-top: 8px; color: #704c78; font-size: 13px; }
 .error { border-color: #e8c9c5; color: #8d3028; background: #fff4f2; }
-button { padding: 9px 13px; border: 1px solid #176d85; border-radius: 5px; color: #176d85; background: #fff; font: inherit; cursor: pointer; }
+button { padding: 9px 13px; border: 1px solid #704c78; border-radius: 5px; color: #704c78; background: #fff; font: inherit; cursor: pointer; }
 @media (max-width: 620px) { .course-item { align-items: flex-start; flex-direction: column; gap: 5px; } }
 </style>

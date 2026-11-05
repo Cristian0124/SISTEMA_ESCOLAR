@@ -62,17 +62,17 @@ onMounted(() => void cargar())
 </template>
 
 <style scoped>
-.process-page { max-width: 1000px; margin: 0 auto; padding: 30px clamp(16px, 4vw, 42px); color: #243a3c; }
-.back-link { display: inline-block; margin-bottom: 20px; color: #176d85; font-size: 13px; text-decoration: none; }
-.eyebrow { margin: 0 0 7px; color: #1685a2; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.process-page { max-width: 1000px; margin: 0 auto; padding: 30px clamp(16px, 4vw, 42px); color: #33213b; }
+.back-link { display: inline-block; margin-bottom: 20px; color: #704c78; font-size: 13px; text-decoration: none; }
+.eyebrow { margin: 0 0 7px; color: #9466a0; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 h1 { margin: 0; font-size: clamp(24px, 4vw, 32px); }
-.process-page > header > p:last-child { color: #718083; font-size: 14px; }
-.notice, .grade-card { margin-top: 20px; padding: 22px; border: 1px solid #dce3e3; border-radius: 8px; background: #fff; }
-.notice p, .subject-heading p, .historical { color: #718083; font-size: 13px; line-height: 1.6; }
+.process-page > header > p:last-child { color: #715d78; font-size: 14px; }
+.notice, .grade-card { margin-top: 20px; padding: 22px; border: 1px solid #e4dce4; border-radius: 8px; background: #fff; }
+.notice p, .subject-heading p, .historical { color: #715d78; font-size: 13px; line-height: 1.6; }
 .error { color: #8d3028; }.grades-list { display: grid; gap: 16px; }.grade-card { margin: 0; }
 .subject-heading { display: flex; justify-content: space-between; gap: 16px; align-items: flex-start; }.subject-heading h2 { margin: 0; font-size: 20px; }.subject-heading p:last-child { margin-bottom: 0; }
-.final { display: grid; gap: 5px; min-width: 115px; text-align: right; color: #718083; font-size: 12px; }.final strong { color: #176d85; font-size: 24px; }
-.cuts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }.cuts > div { display: grid; gap: 7px; padding: 14px; border-radius: 6px; background: #f4f8f8; }.cuts span { color: #718083; font-size: 12px; }.cuts strong { font-size: 18px; }
-button { padding: 8px 12px; border: 1px solid #176d85; border-radius: 4px; color: #176d85; background: #fff; cursor: pointer; }
+.final { display: grid; gap: 5px; min-width: 115px; text-align: right; color: #715d78; font-size: 12px; }.final strong { color: #704c78; font-size: 24px; }
+.cuts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }.cuts > div { display: grid; gap: 7px; padding: 14px; border-radius: 6px; background: #f4f8f8; }.cuts span { color: #715d78; font-size: 12px; }.cuts strong { font-size: 18px; }
+button { padding: 8px 12px; border: 1px solid #704c78; border-radius: 4px; color: #704c78; background: #fff; cursor: pointer; }
 @media (max-width: 560px) { .subject-heading { flex-direction: column; }.final { text-align: left; }.cuts { gap: 6px; }.cuts > div { padding: 10px 8px; }.cuts span { font-size: 10px; }.cuts strong { font-size: 15px; } }
 </style>

@@ -218,17 +218,17 @@ onMounted(async () => {
 
 <style scoped>
 .catalog-page {
-  --ink: #243a3c;
-  --muted: #718083;
-  --line: #dfe7e7;
-  --accent: #176d85;
+  --ink: #33213b;
+  --muted: #715d78;
+  --line: #e4dce4;
+  --accent: #704c78;
   width: min(1180px, 100%);
   margin: 0 auto;
   padding: clamp(24px, 4vw, 48px);
   color: var(--ink);
 }
 
-.back-link { display: inline-block; margin-bottom: 18px; color: #176d85; font-size: 13px; text-decoration: none; }
+.back-link { display: inline-block; margin-bottom: 18px; color: #704c78; font-size: 13px; text-decoration: none; }
 .back-link:hover { text-decoration: underline; }
 
 .page-heading {
@@ -301,7 +301,7 @@ h1 {
   gap: 18px;
   padding: 16px 20px;
   border-bottom: 1px solid var(--line);
-  background: #fbfcfc;
+  background: #fffdf9;
 }
 
 .search-field {
@@ -360,7 +360,7 @@ h1 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
   padding: 20px;
-  background: #f8fafa;
+  background: #f1eaf2;
 }
 
 .refresh-error { margin: 0; padding: 10px 20px; color: #7a5617; background: #fff8e8; font-size: 12px; }
@@ -422,7 +422,7 @@ h1 {
   padding: 0 15px;
   border: 1px solid transparent;
   border-radius: 4px;
-  color: #5d7073;
+  color: #715d78;
   background: transparent;
   font: inherit;
   font-size: 12px;
@@ -451,7 +451,7 @@ h1 {
   gap: 2px;
   border: 1px solid var(--line);
   border-radius: 5px;
-  color: #627477;
+  color: #715d78;
   background: #fff;
   cursor: pointer;
 }
@@ -484,11 +484,11 @@ h1 {
 .subject-row-locked { background: #fcf8f1; }
 .subject-index { color: #90a0a2; font-size: 11px; font-variant-numeric: tabular-nums; }
 .subject-main { display: grid; justify-items: start; gap: 5px; min-width: 0; padding: 9px 0; }
-.subject-main strong { min-width: 0; color: #31494d; font-size: 13px; font-weight: 600; }
+.subject-main strong { min-width: 0; color: #493550; font-size: 13px; font-weight: 600; }
 .subject-status { padding: 3px 7px; border-radius: 3px; font-size: 10px; font-weight: 700; }
-.status-passed { color: #246c4a; background: #eaf5ee; }
-.status-available { color: #176d85; background: #eaf3f5; }
-.status-locked { color: #925b13; background: #fff0d1; }
+.status-passed { color: #426a50; background: #edf3e9; }
+.status-available { color: #704c78; background: #eee5ef; }
+.status-locked { color: #8b641f; background: #fff0d1; }
 .prerequisite-message { color: #8a5b20; font-size: 11px; line-height: 1.45; }
 .credit-value { justify-self: end; color: var(--accent); font-size: 13px; font-weight: 700; }
 .credit-value small { color: var(--muted); font-size: 10px; font-weight: 500; }
@@ -608,6 +608,6 @@ h1 {
   }
 }
 .academic-nav { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 20px; }
-.academic-nav a { color: #176d85; }
+.academic-nav a { color: #704c78; }
 select { padding: 8px; border: 1px solid #d5dfdf; border-radius: 6px; background: white; }
 </style>

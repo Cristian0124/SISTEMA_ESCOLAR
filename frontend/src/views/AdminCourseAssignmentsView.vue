@@ -228,40 +228,40 @@ onMounted(() => void cargar())
 </template>
 
 <style scoped>
-.assignment-page { max-width: 1240px; margin: 0 auto; padding: 30px clamp(16px, 4vw, 42px); color: #243a3c; }
-.back-link { color: #176d85; font-size: 13px; text-decoration: none; }
+.assignment-page { max-width: 1240px; margin: 0 auto; padding: 30px clamp(16px, 4vw, 42px); color: #33213b; }
+.back-link { color: #704c78; font-size: 13px; text-decoration: none; }
 .page-heading { margin: 22px 0; }
-.eyebrow { margin: 0 0 7px; color: #1685a2; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.eyebrow { margin: 0 0 7px; color: #9466a0; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 h1 { margin: 0; font-size: clamp(24px, 4vw, 32px); }
-.page-heading > p:last-child, .section-heading > p:last-child { color: #718083; font-size: 14px; line-height: 1.5; }
-.create-panel, .table-wrap, .notice { border: 1px solid #dce3e3; border-radius: 7px; background: #fff; }
+.page-heading > p:last-child, .section-heading > p:last-child { color: #715d78; font-size: 14px; line-height: 1.5; }
+.create-panel, .table-wrap, .notice { border: 1px solid #e4dce4; border-radius: 7px; background: #fff; }
 .create-panel { margin: 22px 0; padding: 20px; }
 .section-heading { margin-bottom: 16px; }
 .section-heading h2 { margin: 0; font-size: 19px; }
 .section-heading > p:last-child { margin-bottom: 0; font-size: 13px; }
 .course-form { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: end; }
-.course-form label { display: grid; gap: 6px; color: #506467; font-size: 12px; font-weight: 700; }
-.sessions { grid-column: 1 / -1; margin: 0; padding: 14px; border: 1px solid #cbd7d8; }
+.course-form label { display: grid; gap: 6px; color: #493550; font-size: 12px; font-weight: 700; }
+.sessions { grid-column: 1 / -1; margin: 0; padding: 14px; border: 1px solid #d2c6d4; }
 .session-fields { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-bottom: 12px; }
 .session-fields label { flex: 1 1 120px; }
-select, input { width: 100%; min-height: 39px; padding: 8px 10px; border: 1px solid #cbd7d8; border-radius: 4px; background: #fff; color: #243a3c; font: inherit; font-size: 12px; }
-select:disabled { background: #f3f6f6; color: #879496; }
-button { min-height: 36px; padding: 0 13px; border: 0; border-radius: 4px; color: white; background: #176d85; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+select, input { width: 100%; min-height: 39px; padding: 8px 10px; border: 1px solid #d2c6d4; border-radius: 4px; background: #fff; color: #33213b; font: inherit; font-size: 12px; }
+select:disabled { background: #f1eaf2; color: #8b818c; }
+button { min-height: 36px; padding: 0 13px; border: 0; border-radius: 4px; color: white; background: #704c78; font: inherit; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
 button:disabled { cursor: not-allowed; opacity: .55; }
 .create-button { min-height: 39px; }
-.form-note { grid-column: 1 / -1; margin: -5px 0 0; color: #718083; font-size: 12px; }
+.form-note { grid-column: 1 / -1; margin: -5px 0 0; color: #715d78; font-size: 12px; }
 .offering-section { margin-top: 30px; }
 .table-wrap { overflow-x: auto; }
 table { width: 100%; min-width: 900px; border-collapse: collapse; text-align: left; }
 th, td { padding: 13px 15px; border-bottom: 1px solid #e8eeee; font-size: 12px; }
-th { color: #617477; background: #f5f8f8; font-size: 10px; text-transform: uppercase; }
+th { color: #715d78; background: #f1eaf2; font-size: 10px; text-transform: uppercase; }
 td strong, td small { display: block; }
-td small { margin-top: 4px; color: #879496; }
+td small { margin-top: 4px; color: #8b818c; }
 td select { min-width: 210px; }
 .notice { margin: 16px 0; padding: 16px; font-size: 13px; }
-.notice-error { color: #8d3028; background: #fff4f2; }.notice-success { color: #246c4a; background: #eaf5ee; }
-.notice p { margin: 6px 0; }.notice a { color: #176d85; }
-.empty { padding: 20px; color: #718083; text-align: center; }
+.notice-error { color: #8d3028; background: #fff4f2; }.notice-success { color: #426a50; background: #edf3e9; }
+.notice p { margin: 6px 0; }.notice a { color: #704c78; }
+.empty { padding: 20px; color: #715d78; text-align: center; }
 @media (max-width: 850px) { .course-form { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 540px) { .course-form { grid-template-columns: 1fr; } .form-note { grid-column: auto; } }
 </style>

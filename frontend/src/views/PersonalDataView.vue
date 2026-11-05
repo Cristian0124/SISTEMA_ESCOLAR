@@ -125,21 +125,21 @@ async function guardar() {
 </template>
 
 <style scoped>
-.profile-page { max-width: 940px; margin: 0 auto; padding: 30px clamp(16px, 4vw, 42px); color: #243a3c; }
-.back-link { color: #176d85; font-size: 13px; text-decoration: none; }
+.profile-page { max-width: 940px; margin: 0 auto; padding: 30px clamp(16px, 4vw, 42px); color: #33213b; }
+.back-link { color: #704c78; font-size: 13px; text-decoration: none; }
 .page-heading { margin: 22px 0; }
-.eyebrow { margin: 0 0 7px; color: #1685a2; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.eyebrow { margin: 0 0 7px; color: #9466a0; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 h1 { margin: 0; font-size: clamp(24px, 4vw, 32px); }
-.page-heading > p:last-child { color: #718083; font-size: 14px; }
-.profile-form { display: grid; gap: 27px; padding: clamp(18px, 4vw, 30px); border: 1px solid #dce3e3; border-radius: 8px; background: #fff; }
-h2 { margin: 0 0 16px; padding-bottom: 10px; border-bottom: 1px solid #e5ebeb; color: #176d85; font-size: 16px; }
+.page-heading > p:last-child { color: #715d78; font-size: 14px; }
+.profile-form { display: grid; gap: 27px; padding: clamp(18px, 4vw, 30px); border: 1px solid #e4dce4; border-radius: 8px; background: #fff; }
+h2 { margin: 0 0 16px; padding-bottom: 10px; border-bottom: 1px solid #e5ebeb; color: #704c78; font-size: 16px; }
 .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-label { display: grid; gap: 7px; color: #405458; font-size: 13px; font-weight: 600; }
-input, select { width: 100%; min-height: 40px; padding: 8px 10px; border: 1px solid #cbd7d8; border-radius: 4px; color: #243a3c; background: white; font: inherit; font-weight: 400; }
-input:focus, select:focus { outline: 2px solid #1685a244; border-color: #1685a2; }
+label { display: grid; gap: 7px; color: #493550; font-size: 13px; font-weight: 600; }
+input, select { width: 100%; min-height: 40px; padding: 8px 10px; border: 1px solid #d2c6d4; border-radius: 4px; color: #33213b; background: white; font: inherit; font-weight: 400; }
+input:focus, select:focus { outline: 2px solid #9466a044; border-color: #9466a0; }
 .actions { display: flex; justify-content: flex-end; align-items: center; gap: 18px; }
-.actions a { color: #52696c; font-size: 13px; text-decoration: none; }
-button { min-height: 40px; padding: 0 18px; border: 0; border-radius: 4px; color: #fff; background: #176d85; font: inherit; font-weight: 700; cursor: pointer; }
-.message { margin: 0; font-size: 13px; }.success { color: #22754f; }.error { color: #a43f39; }.storage-note { margin: -16px 0 0; color: #718083; font-size: 11px; }
+.actions a { color: #493550; font-size: 13px; text-decoration: none; }
+button { min-height: 40px; padding: 0 18px; border: 0; border-radius: 4px; color: #fff; background: #704c78; font: inherit; font-weight: 700; cursor: pointer; }
+.message { margin: 0; font-size: 13px; }.success { color: #22754f; }.error { color: #a43f39; }.storage-note { margin: -16px 0 0; color: #715d78; font-size: 11px; }
 @media (max-width: 580px) { .fields { grid-template-columns: 1fr; gap: 13px; }.actions { justify-content: space-between; } }
 </style>

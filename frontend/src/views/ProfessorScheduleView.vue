@@ -46,12 +46,12 @@ onMounted(() => void cargar())
 </template>
 
 <style scoped>
-.schedule-page { width: min(900px, 100%); min-height: 100vh; margin: auto; padding: 32px clamp(16px, 4vw, 42px); color: #263d40; background: #fff; font-family: 'Trebuchet MS', 'Aptos', sans-serif; }
-.back-link { color: #176d85; font-size: 12px; text-decoration: none; }
-header { margin: 28px 0 24px; } .eyebrow, .code { color: #176d85; font-size: 10px; font-weight: 700; letter-spacing: .1em; }
-h1 { margin: 0; font-size: 32px; } header > p:last-child { color: #728184; font-size: 14px; }
-.course-list { display: grid; gap: 10px; } .course-row { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 16px; border: 1px solid #dce4e4; }
-.course-row h2 { margin: 6px 0 0; font-size: 16px; } .course-row p { display: grid; gap: 5px; margin: 0; color: #263d40; text-align: right; font-size: 13px; } .course-row p strong { color: #728184; font-size: 11px; }
-.notice { padding: 14px; border: 1px solid #dce4e4; color: #728184; font-size: 13px; } .error { display: flex; justify-content: space-between; gap: 12px; color: #8d3028; background: #fff4f2; } button { border: 1px solid #cbdada; padding: 6px 10px; color: #176d85; background: #fff; cursor: pointer; }
+.schedule-page { width: min(900px, 100%); min-height: 100vh; margin: auto; padding: 32px clamp(16px, 4vw, 42px); color: #33213b; background: #fff; font-family: 'Trebuchet MS', 'Aptos', sans-serif; }
+.back-link { color: #704c78; font-size: 12px; text-decoration: none; }
+header { margin: 28px 0 24px; } .eyebrow, .code { color: #704c78; font-size: 10px; font-weight: 700; letter-spacing: .1em; }
+h1 { margin: 0; font-size: 32px; } header > p:last-child { color: #715d78; font-size: 14px; }
+.course-list { display: grid; gap: 10px; } .course-row { display: flex; justify-content: space-between; align-items: center; gap: 20px; padding: 16px; border: 1px solid #e4dce4; }
+.course-row h2 { margin: 6px 0 0; font-size: 16px; } .course-row p { display: grid; gap: 5px; margin: 0; color: #33213b; text-align: right; font-size: 13px; } .course-row p strong { color: #715d78; font-size: 11px; }
+.notice { padding: 14px; border: 1px solid #e4dce4; color: #715d78; font-size: 13px; } .error { display: flex; justify-content: space-between; gap: 12px; color: #8d3028; background: #fff4f2; } button { border: 1px solid #cbdada; padding: 6px 10px; color: #704c78; background: #fff; cursor: pointer; }
 @media (max-width: 600px) { .course-row { align-items: flex-start; flex-direction: column; } .course-row p { text-align: left; } }
 </style>

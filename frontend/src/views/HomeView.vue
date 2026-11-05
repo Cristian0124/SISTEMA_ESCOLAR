@@ -37,7 +37,7 @@ const auth = useAuthStore()
   border: 1px solid var(--line);
   border-top: 0;
   border-radius: 0 0 3px 3px;
-  color: #176d85;
+  color: #704c78;
   background: white;
   font-size: 12px;
 }
@@ -63,7 +63,7 @@ const auth = useAuthStore()
 
 .welcome-eyebrow {
   margin: 0 0 12px;
-  color: #1685a2;
+  color: #9466a0;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -71,14 +71,14 @@ const auth = useAuthStore()
 
 .welcome-content h1 {
   margin: 0;
-  color: #243a3c;
+  color: #33213b;
   font-size: clamp(24px, 4vw, 34px);
 }
 
 .welcome-description {
   max-width: 480px;
   margin: 12px 0 22px;
-  color: #718083;
+  color: #715d78;
   font-size: 14px;
   line-height: 1.6;
 }

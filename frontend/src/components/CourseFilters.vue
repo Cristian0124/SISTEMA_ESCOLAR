@@ -110,15 +110,15 @@ function limpiarFiltros(): void {
 
 <style scoped>
 .course-filters { min-width: 0; }
-.filter-controls { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #dfe7e7; background: #fbfcfc; }
+.filter-controls { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; padding: 16px 20px; border-bottom: 1px solid #e4dce4; background: #fffdf9; }
 .search-field { display: flex; flex: 1 1 250px; align-items: center; gap: 9px; min-width: 190px; min-height: 40px; padding: 0 11px; border: 1px solid #d5dfdf; border-radius: 6px; background: #fff; }
-.search-field:focus-within, .filter-field select:focus { outline: 2px solid #1685a244; border-color: #1685a2; }
-.search-icon { color: #176d85; font-size: 22px; line-height: 1; }
-.search-field input { width: 100%; min-width: 0; border: 0; outline: 0; color: #243a3c; background: transparent; font: inherit; font-size: 13px; }
-.filter-field { display: grid; gap: 5px; min-width: 140px; color: #536b6e; font-size: 11px; }
-.filter-field select { min-height: 40px; padding: 0 10px; border: 1px solid #d5dfdf; border-radius: 6px; color: #334b4e; background: #fff; font: inherit; font-size: 12px; }
-.clear-filters { min-height: 38px; padding: 0 10px; border: 0; color: #176d85; background: transparent; font: inherit; font-size: 12px; cursor: pointer; }
-.results-count { margin: 0; padding: 10px 20px 0; color: #718083; font-size: 11px; }
+.search-field:focus-within, .filter-field select:focus { outline: 2px solid #9466a044; border-color: #9466a0; }
+.search-icon { color: #704c78; font-size: 22px; line-height: 1; }
+.search-field input { width: 100%; min-width: 0; border: 0; outline: 0; color: #33213b; background: transparent; font: inherit; font-size: 13px; }
+.filter-field { display: grid; gap: 5px; min-width: 140px; color: #715d78; font-size: 11px; }
+.filter-field select { min-height: 40px; padding: 0 10px; border: 1px solid #d5dfdf; border-radius: 6px; color: #493550; background: #fff; font: inherit; font-size: 12px; }
+.clear-filters { min-height: 38px; padding: 0 10px; border: 0; color: #704c78; background: transparent; font: inherit; font-size: 12px; cursor: pointer; }
+.results-count { margin: 0; padding: 10px 20px 0; color: #715d78; font-size: 11px; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; }
 @media (max-width: 580px) { .filter-controls { align-items: stretch; flex-direction: column; padding: 13px; }.search-field, .filter-field { width: 100%; }.results-count { padding-right: 13px; padding-left: 13px; } }
 </style>

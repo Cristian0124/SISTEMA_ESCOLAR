@@ -80,16 +80,16 @@ onMounted(() => void cargar())
 </template>
 
 <style scoped>
-.academic-page { max-width: 1120px; margin: auto; padding: 28px 18px; color: #243a3c; }
+.academic-page { max-width: 1120px; margin: auto; padding: 28px 18px; color: #33213b; }
 nav { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 24px; }
-a { color: #176d85; }
+a { color: #704c78; }
 h1 { margin-bottom: 8px; }
-.intro { color: #536b6e; }
-.notice, .enrollment { padding: 16px; border: 1px solid #dfe7e7; border-radius: 8px; background: #fff; margin: 16px 0; }
+.intro { color: #715d78; }
+.notice, .enrollment { padding: 16px; border: 1px solid #e4dce4; border-radius: 8px; background: #fff; margin: 16px 0; }
 .enrollment h2 { margin: 5px 0 12px; font-size: 19px; }
 .enrollment p { margin: 7px 0; }
-.student { color: #536b6e; }
-button { padding: 10px 16px; border: 1px solid #176d85; border-radius: 6px; background: #176d85; color: white; cursor: pointer; margin: 5px; font: inherit; }
+.student { color: #715d78; }
+button { padding: 10px 16px; border: 1px solid #704c78; border-radius: 6px; background: #704c78; color: white; cursor: pointer; margin: 5px; font: inherit; }
 button:disabled { opacity: .55; cursor: not-allowed; }
 button:focus-visible, a:focus-visible { outline: 3px solid #d5a348; outline-offset: 3px; }
 .error { color: #8d3028; background: #fff4f2; }

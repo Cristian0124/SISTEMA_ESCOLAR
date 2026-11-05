@@ -62,10 +62,10 @@ onMounted(cargar)
   </main>
 </template>
 <style scoped>
-.academic-page { max-width: 1000px; margin: auto; padding: 32px 24px; color: #243a3c; }
-a { color: #176d85; } label { display: grid; gap: 8px; margin: 24px 0; font-weight: 600; }
+.academic-page { max-width: 1000px; margin: auto; padding: 32px 24px; color: #33213b; }
+a { color: #704c78; } label { display: grid; gap: 8px; margin: 24px 0; font-weight: 600; }
 select { width: 100%; padding: 12px; border: 1px solid #bdcdcf; border-radius: 6px; background: white; color: inherit; }
-section { margin: 24px 0; background: white; border: 1px solid #dce3e3; border-radius: 8px; padding: 18px; }
+section { margin: 24px 0; background: white; border: 1px solid #e4dce4; border-radius: 8px; padding: 18px; }
 table { width: 100%; border-collapse: collapse; } th, td { text-align: left; padding: 10px 6px; border-bottom: 1px solid #e7eeee; }
 th:last-child, td:last-child { text-align: right; }
 .notice { padding: 16px; background: #fff8e7; border-radius: 6px; line-height: 1.6; }

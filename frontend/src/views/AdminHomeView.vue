@@ -58,7 +58,7 @@ const auth = useAuthStore()
 
 .welcome-row h1 {
   margin: 0;
-  color: #334d57;
+  color: #33213b;
   font-family: Arial, sans-serif;
   font-size: 24px;
   font-weight: 600;
@@ -107,7 +107,7 @@ const auth = useAuthStore()
   gap: 7px;
   margin-top: auto;
   padding-top: 10px;
-  color: #356f87;
+  color: #704c78;
   font-size: 10px;
   font-weight: 700;
 }
@@ -154,7 +154,7 @@ const auth = useAuthStore()
   padding: 7px 10px;
   border: 1px solid #ccd6da;
   border-bottom-color: #fff;
-  color: #31728c;
+  color: #704c78;
   background: #fff;
   font-size: 11px;
 }
@@ -189,7 +189,7 @@ const auth = useAuthStore()
 .section-heading {
   margin-bottom: 0;
   padding: 0 4px 7px;
-  border-bottom: 1px solid #cfd8dc;
+  border-bottom: 1px solid #e4dce4;
 }
 
 .section-heading h2 {
@@ -248,7 +248,7 @@ const auth = useAuthStore()
 .module-icon {
   width: auto;
   height: auto;
-  color: #2180a0;
+  color: #9466a0;
   background: transparent;
   font-size: 13px;
 }

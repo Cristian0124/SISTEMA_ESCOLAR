@@ -71,17 +71,17 @@ onMounted(cargar)
 </template>
 
 <style scoped>
-.process-page { max-width: 1000px; margin: 0 auto; padding: 30px clamp(16px, 4vw, 42px); color: #243a3c; }
-.back-link { display: inline-block; margin-bottom: 20px; color: #176d85; font-size: 13px; text-decoration: none; }
+.process-page { max-width: 1000px; margin: 0 auto; padding: 30px clamp(16px, 4vw, 42px); color: #33213b; }
+.back-link { display: inline-block; margin-bottom: 20px; color: #704c78; font-size: 13px; text-decoration: none; }
 .back-link:hover { text-decoration: underline; }
-.eyebrow { margin: 0 0 7px; color: #1685a2; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.eyebrow { margin: 0 0 7px; color: #9466a0; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 h1 { margin: 0; font-size: clamp(24px, 4vw, 32px); }
-header > p:last-child { color: #718083; font-size: 14px; }
-.notice { margin-top: 24px; padding: 22px; border: 1px solid #dce3e3; border-radius: 8px; background: #fff; }
-.notice strong { color: #405458; font-size: 15px; }
-.notice p { color: #718083; font-size: 13px; line-height: 1.6; }
-.notice h2 { margin: 0; color: #405458; font-size: 17px; }
-button { padding: 10px 16px; border: 1px solid #176d85; border-radius: 6px; background: #176d85; color: #fff; font: inherit; cursor: pointer; }
+header > p:last-child { color: #715d78; font-size: 14px; }
+.notice { margin-top: 24px; padding: 22px; border: 1px solid #e4dce4; border-radius: 8px; background: #fff; }
+.notice strong { color: #493550; font-size: 15px; }
+.notice p { color: #715d78; font-size: 13px; line-height: 1.6; }
+.notice h2 { margin: 0; color: #493550; font-size: 17px; }
+button { padding: 10px 16px; border: 1px solid #704c78; border-radius: 6px; background: #704c78; color: #fff; font: inherit; cursor: pointer; }
 button:disabled { opacity: .55; cursor: wait; }
 button:focus-visible { outline: 3px solid #d5a348; outline-offset: 3px; }
 .error p { color: #8d3028; }

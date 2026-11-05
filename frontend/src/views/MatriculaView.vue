@@ -199,18 +199,18 @@ async function matricular() {
 </template>
 
 <style scoped>
-.academic-page { max-width: 1120px; margin: auto; padding: 28px 18px; color: #243a3c; }
-.back-link { display: inline-block; margin-bottom: 18px; color: #176d85; font-size: 13px; text-decoration: none; }
+.academic-page { max-width: 1120px; margin: auto; padding: 28px 18px; color: #33213b; }
+.back-link { display: inline-block; margin-bottom: 18px; color: #704c78; font-size: 13px; text-decoration: none; }
 .back-link:hover { text-decoration: underline; }
-a { color: #176d85; }
-h1 { margin-bottom: 8px; } .intro { color: #536b6e; }
+a { color: #704c78; }
+h1 { margin-bottom: 8px; } .intro { color: #715d78; }
 .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin: 20px 0; }
-.choice, .summary, .notice, .enrollment { padding: 16px; border: 1px solid #dfe7e7; border-radius: 8px; background: #fff; margin: 16px 0; }
+.choice, .summary, .notice, .enrollment { padding: 16px; border: 1px solid #e4dce4; border-radius: 8px; background: #fff; margin: 16px 0; }
 .choice { margin: 0; padding: 10px; } .choice label { display: flex; gap: 8px; padding: 12px 2px; align-items: center; }
 .prerequisite-state { margin: 0 2px 10px; font-size: 12px; line-height: 1.45; }
-.state-passed { color: #246c4a; }.state-locked { color: #925b13; }.state-available { color: #176d85; }.credit-warning { color: #925b13; font-size: 12px; }
-button { padding: 10px 16px; border: 1px solid #176d85; border-radius: 6px; background: #176d85; color: white; cursor: pointer; margin: 5px; font: inherit; }
+.state-passed { color: #426a50; }.state-locked { color: #8b641f; }.state-available { color: #704c78; }.credit-warning { color: #8b641f; font-size: 12px; }
+button { padding: 10px 16px; border: 1px solid #704c78; border-radius: 6px; background: #704c78; color: white; cursor: pointer; margin: 5px; font: inherit; }
 button:disabled { opacity: .55; cursor: not-allowed; } button:focus-visible, a:focus-visible { outline: 3px solid #d5a348; outline-offset: 3px; }
-.error { color: #8d3028; background: #fff4f2; } .success { color: #246c4a; background: #eaf5ee; }
+.error { color: #8d3028; background: #fff4f2; } .success { color: #426a50; background: #edf3e9; }
 li { margin: 10px 0; } .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 </style>
