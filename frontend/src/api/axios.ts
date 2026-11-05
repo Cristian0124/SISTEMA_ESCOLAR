@@ -28,13 +28,18 @@ api.interceptors.response.use(
   async (error: AxiosError) => {
     const original = error.config as ConfigReintento | undefined
     const esRutaAuth = original?.url?.startsWith('/auth/')
+    const codigo = (error.response?.data as { codigo?: string } | undefined)?.codigo
+    const sesionConRolDesactualizado = error.response?.status === 403 && codigo === 'ROL_MODIFICADO'
 
-    if (error.response?.status !== 401 || !original || original._reintentado || esRutaAuth) {
+    if ((error.response?.status !== 401 && !sesionConRolDesactualizado)
+      || !original || original._reintentado || esRutaAuth) {
       return Promise.reject(error)
     }
 
     original._reintentado = true
     const auth = useAuthStore()
+    const rolAnterior = auth.usuario?.rol
+    let datos: LoginResponse
 
     try {
       renovando ??= api
@@ -43,19 +48,22 @@ api.interceptors.response.use(
         .finally(() => {
           renovando = null
         })
-      const datos = await renovando
-      auth.establecerSesion(datos)
-      return api(original) // reintenta la petición original
+      datos = await renovando
     } catch {
       auth.limpiarSesion()
       window.location.assign('/login')
       return Promise.reject(error)
     }
+
+    auth.establecerSesion(datos)
+    if (rolAnterior && rolAnterior !== datos.usuario.rol) {
+      const inicio = datos.usuario.rol === 'admin' ? '/admin/home'
+        : datos.usuario.rol === 'profesor' ? '/profesor/home' : '/home'
+      window.location.replace(inicio)
+      return Promise.reject(error)
+    }
+
+    return api(original)
   }
 )
-
-
-
-
-
 export default api
