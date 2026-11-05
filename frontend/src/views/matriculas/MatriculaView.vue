@@ -1,17 +1,17 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
-import CourseCard from '@/components/CourseCard.vue'
-import CourseFilters, { type CourseFilters as CourseFiltersState } from '@/components/CourseFilters.vue'
+import TarjetaCurso from '@/components/TarjetaCurso.vue'
+import FiltrosCursos, { type FiltrosCursos as EstadoFiltrosCursos } from '@/components/FiltrosCursos.vue'
 import { consultarAvancePensum, type MateriaAvance } from '@/api/pensum.api'
-import { useCoursesStore } from '@/stores/courses.store'
-import { useAuthStore } from '@/stores/auth'
-import { useCourseAutoRefresh } from '@/composables/useCourseAutoRefresh'
-import { obtenerMisCreditos, type ResumenCreditos } from '@/api/credits.api'
+import { useCursosStore } from '@/stores/cursos.store'
+import { useAutenticacionStore } from '@/stores/autenticacion.store'
+import { useActualizacionCursos } from '@/composables/useActualizacionCursos'
+import { obtenerMisCreditos, type ResumenCreditos } from '@/api/creditos.api'
 import { crearMatricula } from '@/api/matriculas.api'
 import { isAxiosError } from 'axios'
-const store = useCoursesStore()
-const auth = useAuthStore()
-const filtrosCursos = ref<CourseFiltersState>({ busqueda: '', semestre: '', disponibilidad: 'todos' })
+const store = useCursosStore()
+const auth = useAutenticacionStore()
+const filtrosCursos = ref<EstadoFiltrosCursos>({ busqueda: '', semestre: '', disponibilidad: 'todos' })
 const seleccion = ref<number[]>([])
 const confirmando = ref(false)
 const enviando = ref(false)
@@ -24,7 +24,7 @@ const avanceCargado = ref(false)
 const errorAvance = ref('')
 const balanceCreditos = ref<ResumenCreditos | null>(null)
 const errorCreditos = ref('')
-useCourseAutoRefresh(() => true, () => enviando.value)
+useActualizacionCursos(() => true, () => enviando.value)
 const seleccionados = computed(() => store.cursos.filter(c => seleccion.value.includes(c.id)))
 const totalCreditos = computed(() => {
   const valores = seleccionados.value.map(c => (c as typeof c & { creditos?: number }).creditos)
@@ -145,7 +145,7 @@ async function matricular() {
     <p v-if="store.cargando" role="status">Cargando oferta académica…</p>
     <div v-else-if="store.error" class="notice error" role="alert">{{ store.error }} <button :disabled="enviando" @click="store.cargarCursos">Reintentar</button></div>
     <p v-else-if="!store.cursos.length">No hay cursos publicados.</p>
-    <CourseFilters
+    <FiltrosCursos
       v-else
       v-model="filtrosCursos"
       :cursos="store.cursos"
@@ -153,7 +153,7 @@ async function matricular() {
     >
       <div v-if="cursosFiltrados.length" class="grid">
         <div v-for="curso in cursosFiltrados" :key="curso.id" class="choice">
-          <CourseCard :curso="curso" />
+          <TarjetaCurso :curso="curso" />
           <label><input v-model="seleccion" type="checkbox" :value="curso.id" :disabled="enviando || confirmando || cargandoAvance || curso.cuposDisponibles <= 0 || cursoBloqueado(curso) || !puedeSeleccionarCurso(curso)" />{{ curso.cuposDisponibles > 0 ? `Seleccionar ${curso.nombre}` : 'Sin cupos disponibles' }}</label>
           <p v-if="avanceDeCurso(curso)?.aprobada" class="prerequisite-state state-passed">Materia aprobada; no necesitas volver a matricularla.</p>
           <p v-else-if="requisitosPendientes(curso).length" class="prerequisite-state state-locked">Bloqueada. Aprueba primero: {{ requisitosPendientes(curso).join(', ') }}.</p>
@@ -161,7 +161,7 @@ async function matricular() {
         </div>
       </div>
       <div v-else class="notice">No encontramos cursos con ese nombre o esos filtros.</div>
-    </CourseFilters>
+    </FiltrosCursos>
     <section class="summary" aria-label="Resumen de matrícula">
       <h2>Resumen de matrícula</h2>
       <p v-if="balanceCreditos">Semestre de referencia: {{ balanceCreditos.semestre }}° · Cupo total: {{ balanceCreditos.creditosBase + balanceCreditos.creditosExtra }} créditos · Matriculados: {{ balanceCreditos.creditosMatriculados }} · Disponibles: {{ balanceCreditos.creditosDisponibles }}</p>

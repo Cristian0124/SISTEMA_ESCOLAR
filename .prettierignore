@@ -1,0 +1,9 @@
+**/node_modules/**
+**/dist/**
+**/coverage/**
+**/package-lock.json
+**/.env
+**/.env.*
+state/**
+backend/src/data/**
+backend/src/database/migrations/**

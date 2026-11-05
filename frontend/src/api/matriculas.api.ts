@@ -1,5 +1,5 @@
 import api from './axios'
-import type { Curso } from './courses.api'
+import type { Curso } from './cursos.api'
 
 export interface Matricula {
   id: number

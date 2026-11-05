@@ -6,7 +6,11 @@
     "dev": "concurrently --kill-others \"npm:dev:backend\" \"npm:dev:frontend\"",
     "dev:backend": "npm --prefix backend run dev",
     "dev:frontend": "npm --prefix frontend run dev",
-    "install:all": "npm install --prefix backend && npm install --prefix frontend"
+    "install:all": "npm install --prefix backend && npm install --prefix frontend",
+    "tools:install": "npm install --prefix herramientas",
+    "lint": "node herramientas/node_modules/eslint/bin/eslint.js --config herramientas/eslint.config.mjs backend/src backend/tests frontend/src frontend/tests frontend/vite.config.ts",
+    "format:check": "node herramientas/node_modules/prettier/bin/prettier.cjs . --check",
+    "format": "node herramientas/node_modules/prettier/bin/prettier.cjs . --write"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"

@@ -1,5 +1,5 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios'
-import { useAuthStore } from '@/stores/auth'
+import { useAutenticacionStore } from '@/stores/autenticacion.store'
 import type { LoginResponse } from '@/types'
 
 const api = axios.create({
@@ -16,7 +16,7 @@ interface ConfigReintento extends InternalAxiosRequestConfig {
 let renovando: Promise<LoginResponse> | null = null
 
 api.interceptors.request.use((config) => {
-  const auth = useAuthStore()
+  const auth = useAutenticacionStore()
   if (auth.accessToken) {
     config.headers.Authorization = `Bearer ${auth.accessToken}`
   }
@@ -37,7 +37,7 @@ api.interceptors.response.use(
     }
 
     original._reintentado = true
-    const auth = useAuthStore()
+    const auth = useAutenticacionStore()
     const rolAnterior = auth.usuario?.rol
     let datos: LoginResponse
 

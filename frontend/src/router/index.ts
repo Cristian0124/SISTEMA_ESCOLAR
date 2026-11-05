@@ -1,47 +1,39 @@
 import { createRouter, createWebHistory, type RouterHistory } from 'vue-router'
 import type { RolUsuario } from '@/types'
-import { useAuthStore } from '@/stores/auth'
+import { useAutenticacionStore } from '@/stores/autenticacion.store'
 import { inicioPorRol } from './inicio'
+import { rutasInicio } from './rutas/inicio.routes'
+import { rutasAutenticacion } from './rutas/autenticacion.routes'
+import { rutasAcademico } from './rutas/academico.routes'
+import { rutasMatriculas } from './rutas/matriculas.routes'
+import { rutasPerfil } from './rutas/perfil.routes'
+import { rutasCalificaciones } from './rutas/calificaciones.routes'
+import { rutasHorarios } from './rutas/horarios.routes'
+import { rutasSoporte } from './rutas/soporte.routes'
+import { rutasDocumentos } from './rutas/documentos.routes'
 
 export function createAppRouter(history: RouterHistory = createWebHistory()) {
   const router = createRouter({
     history,
     routes: [
-      { path: '/login', component: () => import('../views/auth/LoginView.vue') },
-      { path: '/', meta: { roles: ['estudiante', 'admin'] }, component: () => import('../layouts/MainLayout.vue'), children: [
-        { path: '/oferta-academica', name: 'oferta-academica', component: () => import('../views/academico/AcademicOfferView.vue') },
-        { path: '', redirect: '/inicio' },
-        { path: '/home', name: 'home', meta: { roles: ['estudiante'] }, component: () => import('../views/inicio/HomeView.vue') },
-        { path: '/admin/home', meta: { roles: ['admin'] }, name: 'admin-home', component: () => import('../views/inicio/AdminHomeView.vue') },
-        { path: '/profesor/home', meta: { roles: ['profesor'] }, name: 'profesor-home', component: () => import('../views/inicio/ProfessorHomeView.vue') },
-        { path: '/profesor/calificaciones', meta: { roles: ['profesor'] }, name: 'profesor-calificaciones', component: () => import('../views/calificaciones/ProfessorGradesView.vue') },
-        { path: '/profesor/horario', meta: { roles: ['profesor'] }, name: 'profesor-horario', component: () => import('../views/horarios/ProfessorScheduleView.vue') },
-        { path: '/profesor/soporte', meta: { roles: ['profesor'] }, name: 'profesor-soporte', component: () => import('../views/soporte/ProfessorSupportView.vue') },
-        { path: '/inicio', component: () => import('../views/inicio/HomeView.vue') },
-        { path: '/catalog', component: () => import('../views/academico/CatalogView.vue') },
-        { path: '/documentos', name: 'documentos', component: () => import('../views/documentos/DocumentsView.vue') },
-        { path: '/notas-registradas', name: 'notas-registradas', component: () => import('../views/calificaciones/GradesView.vue') },
-        { path: '/requisitos-materia', name: 'requisitos-materia', component: () => import('../views/academico/CourseRequirementsView.vue') },
-        { path: '/perfil', name: 'perfil', component: () => import('../views/perfil/PersonalDataView.vue') },
-        { path: '/datos-personales', redirect: { name: 'perfil' } },
-        { path: '/hoja-de-vida', name: 'hoja-de-vida', component: () => import('../views/perfil/ResumeView.vue') },
-        { path: '/matricula', component: () => import('../views/matriculas/MatriculaView.vue') },
-        { path: '/mis-matriculas', component: () => import('../views/matriculas/MyEnrollmentsView.vue') },
-        { path: '/admin/usuarios/nuevo', meta: { roles: ['admin'] }, name: 'registrar-usuario', component: () => import('../views/auth/RegistrarUsuarioView.vue') },
-        { path: '/admin/academico', meta: { roles: ['admin'] }, name: 'administracion-academica', component: () => import('../views/academico/AdminCourseAssignmentsView.vue') },
-        { path: '/admin/cursos/profesores', redirect: { name: 'administracion-academica' } },
-        { path: '/admin/solicitudes-creditos', meta: { roles: ['admin'] }, name: 'solicitudes-creditos', component: () => import('../views/matriculas/AdminCreditRequestsView.vue') },
-        { path: '/admin/soporte-docente', meta: { roles: ['admin'] }, name: 'admin-soporte-docente', component: () => import('../views/soporte/AdminSupportView.vue') },
-        { path: '/adicion-creditos', name: 'adicion-creditos', component: () => import('../views/matriculas/AdditionCreditsView.vue') },
-        { path: '/schedule', component: () => import('../views/horarios/ScheduleView.vue') },
-        { path: '/my-enrollments', redirect: '/mis-matriculas' },
+      { path: '/login', component: () => import('../views/autenticacion/LoginView.vue') },
+      { path: '/', meta: { roles: ['estudiante', 'admin'] }, component: () => import('../layouts/PrincipalLayout.vue'), children: [
+        ...rutasInicio,
+        ...rutasAutenticacion,
+        ...rutasAcademico,
+        ...rutasMatriculas,
+        ...rutasPerfil,
+        ...rutasCalificaciones,
+        ...rutasHorarios,
+        ...rutasSoporte,
+        ...rutasDocumentos,
       ] },
-      { path: '/:pathMatch(.*)*', name: 'not-found', component: () => import('../views/NotFoundView.vue') },
+      { path: '/:pathMatch(.*)*', name: 'not-found', component: () => import('../views/PaginaNoEncontradaView.vue') },
     ],
   })
 
   router.beforeEach(async (to) => {
-    const auth = useAuthStore()
+    const auth = useAutenticacionStore()
 
     if (!auth.usuario && to.path !== '/login') await auth.restaurarSesion()
 

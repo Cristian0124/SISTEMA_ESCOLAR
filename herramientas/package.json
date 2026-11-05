@@ -1,0 +1,16 @@
+{
+  "name": "sistema-escolar-herramientas",
+  "private": true,
+  "type": "module",
+  "description": "Herramientas de análisis y formato compartidas por frontend y backend",
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "eslint": "^9.0.0",
+    "eslint-plugin-vue": "^9.33.0",
+    "globals": "^15.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.0.0",
+    "vue-eslint-parser": "^9.0.0"
+  }
+}
