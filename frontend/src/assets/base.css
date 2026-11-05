@@ -5,7 +5,7 @@
 :root {
   font-family: Inter, 'Segoe UI', Arial, sans-serif;
   color: #33213b;
-  background: #f5f1e9;
+  background: #f7f4f8;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -13,8 +13,8 @@
   --school-blue: #704c78;
   --school-blue-dark: #56385e;
   --school-blue-soft: #eee5ef;
-  --school-page: #f5f1e9;
-  --school-surface: #fffdf9;
+  --school-page: #f7f4f8;
+  --school-surface: #fff;
   --school-ink: #33213b;
   --school-muted: #715d78;
   --school-border: #e4dce4;

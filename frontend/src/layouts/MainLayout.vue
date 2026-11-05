@@ -94,7 +94,7 @@ async function salir() {
   flex-direction: column;
   min-height: 100dvh;
   color: var(--ink);
-  background: #f5f1e9;
+  background: #f7f4f8;
   font-family: 'Trebuchet MS', 'Aptos', sans-serif;
 }
 
@@ -219,7 +219,9 @@ button:disabled {
 }
 
 .workspace {
+  display: flex;
   flex: 1;
+  min-height: 0;
 }
 
 .sidebar {
@@ -260,8 +262,10 @@ nav {
   overflow-x: auto;
   overflow-y: hidden;
   padding-bottom: 5px;
-  scrollbar-width: thin;
+  scrollbar-width: none;
 }
+
+nav::-webkit-scrollbar { display: none; }
 
 .menu-group {
   display: contents;
@@ -323,8 +327,9 @@ nav {
 }
 
 .page-content {
+  flex: 1;
   min-width: 0;
-  min-height: 100%;
+  min-height: 0;
   background: white;
 }
 
