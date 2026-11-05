@@ -23,6 +23,7 @@ const cargandoAvance = ref(false)
 const avanceCargado = ref(false)
 const errorAvance = ref('')
 const balanceCreditos = ref<ResumenCreditos | null>(null)
+const cargandoCreditos = ref(false)
 const errorCreditos = ref('')
 useActualizacionCursos(() => true, () => enviando.value)
 const seleccionados = computed(() => store.cursos.filter(c => seleccion.value.includes(c.id)))
@@ -34,29 +35,44 @@ function avanceDeCurso(curso: (typeof store.cursos)[number]) {
   return avanceMaterias.value.find((materia) => materia.codigo === curso.codigoPensum)
 }
 
-function requisitosPendientes(curso: (typeof store.cursos)[number]) {
-  return avanceDeCurso(curso)?.requisitosPendientes ?? []
-}
-
-function cursoBloqueado(curso: (typeof store.cursos)[number]) {
+function motivoBloqueoCurso(curso: (typeof store.cursos)[number]): string {
+  if (curso.cuposDisponibles <= 0) return 'Sin cupos disponibles.'
+  if (cargandoAvance.value) return 'Consultando tus prerrequisitos…'
   const avance = avanceDeCurso(curso)
-  return avance?.bloqueada === true || avance?.aprobada === true || avance?.prerrequisitosVerificados === false
-}
-
-function puedeSeleccionarCurso(curso: (typeof store.cursos)[number]) {
-  if (seleccion.value.includes(curso.id)) return true
-  if (!balanceCreditos.value || typeof curso.creditos !== 'number') return false
-  return (totalCreditos.value ?? 0) + curso.creditos <= balanceCreditos.value.creditosDisponibles
+  if (avance?.aprobada) return 'Materia aprobada; no necesitas volver a matricularla.'
+  if (avance?.prerrequisitosVerificados === false) {
+    return 'El pénsum de tu carrera está pendiente de validación académica. Solicita su revisión a la administración para habilitar la matrícula.'
+  }
+  if (avance?.requisitosPendientes.length) {
+    return `Aprueba primero: ${avance.requisitosPendientes.join(', ')}.`
+  }
+  if (avance?.bloqueada) return 'Esta materia tiene prerrequisitos pendientes.'
+  if (cargandoCreditos.value) return 'Consultando tus créditos disponibles…'
+  if (!balanceCreditos.value) {
+    // Una consulta fallida permite preparar la selección; el servidor comprueba el saldo al confirmar.
+    return errorCreditos.value ? '' : 'Esperando la consulta de créditos disponibles.'
+  }
+  if (typeof curso.creditos !== 'number') return 'El catálogo no informa los créditos de este curso. Solicita su revisión a la administración.'
+  if (seleccion.value.includes(curso.id)) return ''
+  const disponibles = Math.max(0, balanceCreditos.value.creditosDisponibles - (totalCreditos.value ?? 0))
+  if (curso.creditos > disponibles) {
+    return `Este curso requiere ${curso.creditos} créditos y quedan ${disponibles} disponibles para tu selección.`
+  }
+  return ''
 }
 
 async function cargarBalanceCreditos() {
+  cargandoCreditos.value = true
   errorCreditos.value = ''
   try {
     if (!auth.accessToken) await auth.restaurarSesion()
     if (auth.usuario?.rol !== 'estudiante') return
     balanceCreditos.value = await obtenerMisCreditos()
   } catch {
+    balanceCreditos.value = null
     errorCreditos.value = 'No se pudo consultar tu cupo de créditos. El servidor validará el saldo al confirmar.'
+  } finally {
+    cargandoCreditos.value = false
   }
 }
 
@@ -154,18 +170,34 @@ async function matricular() {
       <div v-if="cursosFiltrados.length" class="grid">
         <div v-for="curso in cursosFiltrados" :key="curso.id" class="choice">
           <TarjetaCurso :curso="curso" />
-          <label><input v-model="seleccion" type="checkbox" :value="curso.id" :disabled="enviando || confirmando || cargandoAvance || curso.cuposDisponibles <= 0 || cursoBloqueado(curso) || !puedeSeleccionarCurso(curso)" />{{ curso.cuposDisponibles > 0 ? `Seleccionar ${curso.nombre}` : 'Sin cupos disponibles' }}</label>
-          <p v-if="avanceDeCurso(curso)?.aprobada" class="prerequisite-state state-passed">Materia aprobada; no necesitas volver a matricularla.</p>
-          <p v-else-if="requisitosPendientes(curso).length" class="prerequisite-state state-locked">Bloqueada. Aprueba primero: {{ requisitosPendientes(curso).join(', ') }}.</p>
-          <p v-else-if="avanceCargado && curso.codigoPensum" class="prerequisite-state state-available">Prerrequisitos cumplidos.</p>
+          <label>
+            <input
+              v-model="seleccion"
+              type="checkbox"
+              :value="curso.id"
+              :aria-describedby="`estado-curso-${curso.id}`"
+              :disabled="enviando || confirmando || (!seleccion.includes(curso.id) && !!motivoBloqueoCurso(curso))"
+            />
+            {{ curso.cuposDisponibles > 0 ? `Seleccionar ${curso.nombre}` : 'Sin cupos disponibles' }}
+          </label>
+          <p v-if="motivoBloqueoCurso(curso)" :id="`estado-curso-${curso.id}`" class="prerequisite-state state-locked">
+            {{ motivoBloqueoCurso(curso) }}
+          </p>
+          <p v-else :id="`estado-curso-${curso.id}`" class="prerequisite-state state-available">
+            {{ avanceCargado && avanceDeCurso(curso) && !errorCreditos ? 'Prerrequisitos cumplidos.' : 'El servidor validará los requisitos y créditos al confirmar.' }}
+          </p>
         </div>
       </div>
       <div v-else class="notice">No encontramos cursos con ese nombre o esos filtros.</div>
     </FiltrosCursos>
     <section class="summary" aria-label="Resumen de matrícula">
       <h2>Resumen de matrícula</h2>
-      <p v-if="balanceCreditos">Semestre de referencia: {{ balanceCreditos.semestre }}° · Cupo total: {{ balanceCreditos.creditosBase + balanceCreditos.creditosExtra }} créditos · Matriculados: {{ balanceCreditos.creditosMatriculados }} · Disponibles: {{ balanceCreditos.creditosDisponibles }}</p>
-      <p v-else-if="errorCreditos" class="credit-warning">{{ errorCreditos }}</p>
+      <p v-if="cargandoCreditos" role="status">Consultando tus créditos disponibles…</p>
+      <p v-else-if="balanceCreditos">Semestre de referencia: {{ balanceCreditos.semestre }}° · Cupo total: {{ balanceCreditos.creditosBase + balanceCreditos.creditosExtra }} créditos · Matriculados: {{ balanceCreditos.creditosMatriculados }} · Disponibles: {{ balanceCreditos.creditosDisponibles }}</p>
+      <div v-else-if="errorCreditos" class="credit-warning" role="status">
+        <p>{{ errorCreditos }}</p>
+        <button type="button" :disabled="enviando" @click="cargarBalanceCreditos">Reintentar consulta de créditos</button>
+      </div>
       <p v-if="!seleccionados.length">Todavía no has seleccionado cursos.</p>
       <ul><li v-for="curso in seleccionados" :key="curso.id">{{ curso.codigo }} — {{ curso.nombre }} · {{ curso.horario }}</li></ul>
       <p>Cursos seleccionados: {{ seleccionados.length }}</p><p>Total de créditos: {{ totalCreditos ?? 'No disponible: el catálogo no informa todos los créditos.' }}</p>
@@ -194,7 +226,7 @@ h1 { margin-bottom: 8px; } .intro { color: var(--school-muted); }
 .choice, .summary, .notice, .enrollment { padding: 16px; border: 1px solid var(--school-border); border-radius: 8px; background: #fff; margin: 16px 0; }
 .choice { margin: 0; padding: 10px; } .choice label { display: flex; gap: 8px; padding: 12px 2px; align-items: center; }
 .prerequisite-state { margin: 0 2px 10px; font-size: 12px; line-height: 1.45; }
-.state-passed { color: #426a50; }.state-locked { color: #8b641f; }.state-available { color: var(--school-blue); }.credit-warning { color: #8b641f; font-size: 12px; }
+.state-locked { color: #8b641f; }.state-available { color: var(--school-blue); }.credit-warning { color: #8b641f; font-size: 12px; }
 button { padding: 10px 16px; border: 1px solid var(--school-blue); border-radius: 6px; background: var(--school-blue); color: white; cursor: pointer; margin: 5px; font: inherit; }
 button:disabled { opacity: .55; cursor: not-allowed; } button:focus-visible, a:focus-visible { outline: 3px solid #d5a348; outline-offset: 3px; }
 .error { color: #8d3028; background: #fff4f2; } .success { color: #426a50; background: #edf3e9; }
