@@ -39,6 +39,19 @@ La migración agrega tablas y columnas sin borrar ni reasignar usuarios, asignat
 
 Las tablas públicas consultadas no incluyen prerrequisitos. Los nuevos planes quedan con `prerrequisitos_verificados = FALSE`; la consulta está habilitada, pero la matrícula de esos planes devuelve `PENSUM_PENDIENTE_VALIDACION`. Para habilitarla se necesita revisar los prerrequisitos con información académica oficial, cargar `prerrequisitos_materia` y marcar el plan como verificado. No se crean horarios, cupos ni asignaciones docentes ficticias: también se deben abrir grupos reales en `cursos`, usando los identificadores del nuevo plan.
 
+El administrador puede realizar esa revisión desde **Validación del pénsum**, en
+`/admin/pensum`. Selecciona una carrera, indica los prerrequisitos de cada asignatura
+y confirma la revisión académica antes de usar **Guardar y validar pénsum**. Una
+lista vacía indica que esa asignatura no tiene prerrequisitos. **Guardar como
+pendiente** conserva la revisión con la matrícula de la carrera pendiente de validación.
+La consulta de facultades y carreras también enlaza directamente a la revisión.
+
+El servidor exige todas las asignaturas de la carrera y rechaza requisitos ajenos,
+repetidos, autorreferencias y ciclos. Prerrequisitos y estado del plan se guardan
+en una transacción. Una versión del contenido evita sobrescribir una edición
+guardada por otro administrador. Tras validar el plan, el estudiante debe volver
+a cargar su pantalla de matrícula para consultar el estado actualizado.
+
 ## Instalación y verificación
 
 Con el esquema anterior instalado y la conexión de `backend/.env` configurada:
@@ -62,6 +75,8 @@ La migración contiene el catálogo aplicado a la base de datos. Una actualizaci
 - `GET /api/academico/facultades`
 - `GET /api/academico/carreras`
 - `GET /api/academico/carreras/:codigo/pensum`
+- `GET /api/academico/carreras/:codigo/prerrequisitos` (administrador)
+- `PUT /api/academico/carreras/:codigo/prerrequisitos` (administrador, revisión completa y confirmación explícita para validar)
 - `GET /api/academico/estudiantes/sin-carrera` (administrador)
 - `PATCH /api/academico/estudiantes/:id/carrera` con `{ "carreraCodigo": "CIV" }` (administrador, asignación inicial)
 

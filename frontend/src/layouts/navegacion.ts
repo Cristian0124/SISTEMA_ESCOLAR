@@ -42,6 +42,12 @@ export const modulosAdmin: Acceso[] = [
     ruta: '/admin/academico',
   },
   {
+    titulo: 'Validación del pénsum',
+    descripcion: 'Revisa los prerrequisitos de cada carrera y valida su pénsum para habilitar la matrícula.',
+    icono: '✓',
+    ruta: '/admin/pensum',
+  },
+  {
     titulo: 'Solicitudes de créditos',
     descripcion: 'Revisa y decide las solicitudes de créditos adicionales enviadas por estudiantes.',
     icono: '+',

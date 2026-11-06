@@ -115,6 +115,8 @@ describe('layout y navegación por rol', () => {
 
   it.each([
     ['estudiante', '/admin/home', '/home'],
+    ['estudiante', '/admin/pensum', '/home'],
+    ['profesor', '/admin/pensum', '/profesor/home'],
     ['profesor', '/catalog', '/profesor/home'],
     ['admin', '/home', '/admin/home'],
   ] as const)('redirige a %s cuando intenta entrar a otro panel', async (rol, ruta, esperado) => {

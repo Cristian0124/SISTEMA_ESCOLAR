@@ -81,7 +81,7 @@ export async function crearMatricula(
       throw new HttpError(409, "CURSO_OTRA_CARRERA", "El curso no pertenece al pensum de tu carrera");
     }
     const plan = await cliente.query(`SELECT c.prerrequisitos_verificados FROM usuarios u
-      JOIN carreras c ON c.codigo = u.carrera_codigo WHERE u.id = $1`, [usuarioId]);
+      JOIN carreras c ON c.codigo = u.carrera_codigo WHERE u.id = $1 FOR SHARE OF c`, [usuarioId]);
     if (plan.rows[0] && !plan.rows[0].prerrequisitos_verificados) {
       throw new HttpError(409, "PENSUM_PENDIENTE_VALIDACION", "Los prerrequisitos del programa requieren validación académica antes de matricular");
     }
