@@ -51,9 +51,6 @@ onMounted(cargar)
     <template v-else-if="carrera">
       <h2>{{ carrera.nombre }}</h2>
       <p>{{ carrera.asignaturas }} asignaturas · {{ carrera.creditos }} créditos.</p>
-      <p class="notice">{{ carrera.prerrequisitosVerificados ? 'Prerrequisitos verificados. Pénsum validado.' : 'Los prerrequisitos están pendientes de verificación académica.' }}</p>
-      <RouterLink v-if="auth.usuario?.rol === 'admin'"
-        :to="{ name: 'validacion-pensum', query: { carrera: seleccion } }">Revisar y validar este pénsum</RouterLink>
       <section v-for="semestre in semestres" :key="semestre">
         <h3>Semestre {{ semestre }}</h3>
         <table><thead><tr><th scope="col">Asignatura</th><th scope="col">Créditos</th></tr></thead>

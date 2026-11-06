@@ -6,8 +6,6 @@ const router = Router();
 router.get('/facultades', controlador.listarFacultades);
 router.get('/carreras', controlador.listarCarreras);
 router.get('/carreras/:codigo/pensum', controlador.consultarPensum);
-router.get('/carreras/:codigo/prerrequisitos', autenticar, autorizar('admin'), controlador.consultarPrerrequisitos);
-router.put('/carreras/:codigo/prerrequisitos', autenticar, autorizar('admin'), controlador.guardarPrerrequisitos);
 router.get('/estudiantes/sin-carrera', autenticar, autorizar('admin'), controlador.listarEstudiantesSinCarrera);
 // La asignación inicial conserva notas y matrículas; no realiza traslados.
 router.patch('/estudiantes/:id/carrera', autenticar, autorizar('admin'), controlador.asignarCarreraInicial);

@@ -4,7 +4,6 @@ import cursosRoutes from "./cursos.routes";
 import matriculasRoutes from "./matriculas.routes";
 import creditosRoutes from "./creditos.routes";
 import soporteRoutes from "./soporte.routes";
-import documentosRoutes from "./documentos.routes";
 
 import academicoRoutes from "./academico.routes";
 import perfilRoutes from './perfil.routes';
@@ -23,6 +22,5 @@ router.use("/cursos", cursosRoutes);
 router.use("/matriculas", matriculasRoutes);
 router.use("/creditos", creditosRoutes);
 router.use("/soporte", soporteRoutes);
-router.use("/documentos", documentosRoutes);
 
 export default router;

@@ -32,40 +32,43 @@ const consultaCursos = `
       'dia', h.dia, 'horaInicio', h.hora_inicio, 'horaFin', h.hora_fin)
       ORDER BY h.dia, h.hora_inicio) FROM curso_horarios h WHERE h.curso_id = curso.id), '[]'::jsonb) AS sesiones,
     curso.cupos_totales AS "cuposTotales",
-    GREATEST(
-      curso.cupos_disponibles - COUNT(matricula.id)::integer,
-      0
-    ) AS "cuposDisponibles",
-    materia.semestre,
-    materia.creditos,
+    GREATEST(curso.cupos_disponibles - (
+      SELECT COUNT(*)::integer FROM matriculas m
+      WHERE m.curso_id = curso.id AND m.estado = 'Activa'
+        AND m.periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
+    ), 0) AS "cuposDisponibles",
+    plan.semestre,
+    plan.creditos,
     curso.codigo_pensum AS "codigoPensum",
     carrera.codigo AS "carreraCodigo",
-    carrera.nombre AS "carreraNombre",
+    CASE WHEN $1::integer IS NULL THEN oferta.carreras ELSE carrera.nombre END AS "carreraNombre",
     facultad.codigo AS "facultadCodigo",
     facultad.nombre AS "facultadNombre"
   FROM cursos AS curso
-  JOIN materias_pensum AS materia ON materia.codigo = curso.codigo_pensum
-  LEFT JOIN carreras AS carrera ON carrera.codigo = materia.carrera_codigo
-  LEFT JOIN facultades AS facultad ON facultad.codigo = carrera.facultad_codigo
+  JOIN materias AS materia ON materia.codigo = curso.codigo_pensum
+  JOIN LATERAL (
+    SELECT p.* FROM materias_pensum p
+    WHERE p.codigo = materia.codigo
+      AND ($1::integer IS NULL OR p.carrera_codigo = (SELECT carrera_codigo FROM usuarios WHERE id = $1))
+    ORDER BY p.carrera_codigo LIMIT 1
+  ) AS plan ON TRUE
+  JOIN carreras AS carrera ON carrera.codigo = plan.carrera_codigo
+  JOIN facultades AS facultad ON facultad.codigo = carrera.facultad_codigo
+  CROSS JOIN LATERAL (
+    SELECT string_agg(c.nombre, ', ' ORDER BY c.nombre) AS carreras
+    FROM materias_pensum p JOIN carreras c ON c.codigo = p.carrera_codigo
+    WHERE p.codigo = materia.codigo
+  ) AS oferta
   LEFT JOIN usuarios AS docente ON docente.id = curso.docente_id
-  LEFT JOIN matriculas AS matricula
-    ON matricula.curso_id = curso.id AND matricula.estado = 'Activa'
-    AND matricula.periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
 `;
 
 export async function listarCursos(usuarioId?: number): Promise<Curso[]> {
-  const resultado = await pool.query<Curso>(
-    `${consultaCursos} ${usuarioId ? "WHERE materia_del_programa(materia.codigo, $1)" : ""} GROUP BY curso.id, materia.codigo, docente.id, carrera.codigo, facultad.codigo ORDER BY curso.id`,
-    usuarioId ? [usuarioId] : []
-  );
+  const resultado = await pool.query<Curso>(`${consultaCursos} ORDER BY curso.id`, [usuarioId ?? null]);
   return resultado.rows;
 }
 
 export async function buscarCursoPorId(id: number): Promise<Curso | null> {
-  const resultado = await pool.query<Curso>(
-    `${consultaCursos} WHERE curso.id = $1 GROUP BY curso.id, materia.codigo, docente.id, carrera.codigo, facultad.codigo LIMIT 1`,
-    [id]
-  );
+  const resultado = await pool.query<Curso>(`${consultaCursos} WHERE curso.id = $2`, [null, id]);
   return resultado.rows[0] ?? null;
 }
 
@@ -89,11 +92,9 @@ export async function crearCurso(
     await cliente.query("BEGIN");
     const materia = await cliente.query(
       `SELECT materia.codigo
-       FROM materias_pensum AS materia
-       JOIN carreras AS carrera ON carrera.codigo = materia.carrera_codigo
-       JOIN facultades AS facultad ON facultad.codigo = carrera.facultad_codigo
-       WHERE materia.codigo = $1
-       FOR SHARE OF materia, carrera, facultad`,
+       FROM materias AS materia
+       WHERE materia.codigo = $1 AND EXISTS (SELECT 1 FROM materias_pensum WHERE codigo = $1)
+       FOR SHARE OF materia`,
       [codigoPensum]
     );
     if (!materia.rowCount) {
@@ -126,9 +127,7 @@ export async function crearCurso(
         VALUES($1,$2,$3,$4)`,[cursoId,s.dia,s.horaInicio,s.horaFin]);
     }
     const curso = await cliente.query<Curso>(
-      `${consultaCursos} WHERE curso.id = $1
-       GROUP BY curso.id, materia.codigo, docente.id, carrera.codigo, facultad.codigo`,
-      [cursoId]
+      `${consultaCursos} WHERE curso.id = $2`, [null, cursoId]
     );
     await cliente.query("COMMIT");
     return curso.rows[0] ?? null;

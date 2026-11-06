@@ -13,18 +13,17 @@ test('varios grupos: calificación correcta y matrícula única por asignatura',
     const ids: Record<string, number> = {};
     for (const rol of ['estudiante', 'profesor']) {
       const r = await pool.query(`INSERT INTO usuarios(nombre,correo,password_hash,rol,cedula,fecha_nacimiento,fecha_ingreso,nacionalidad,genero,carrera_codigo)
-        VALUES($1,$2,'hash',$1,$1,'2000-01-01',CURRENT_DATE,'Prueba','Otro',$3) RETURNING id`, [rol,`${rol}@test.example`,rol==='estudiante'?'SIV':null]);
+        VALUES($1,$2,'hash',$1,$1,'2000-01-01',CURRENT_DATE,'Prueba','Otro',$3) RETURNING id`, [rol,`${rol}@test.example`,rol==='estudiante'?'SIS':null]);
       ids[rol] = r.rows[0].id;
     }
-    await pool.query("UPDATE carreras SET prerrequisitos_verificados=TRUE WHERE codigo='SIV'");
     const grupos = [];
     for (const [codigo, horario] of [['GRUP1','Lunes 08:00 - 09:00'],['GRUP2','Martes 08:00 - 09:00']]) {
       const r = await pool.query(`INSERT INTO cursos(codigo,codigo_pensum,docente_id,horario,cupos_totales,cupos_disponibles)
-        VALUES($1,'10001',$2,$3,30,30) RETURNING id`, [codigo,ids.profesor,horario]);
+        VALUES($1,'09001',$2,$3,30,30) RETURNING id`, [codigo,ids.profesor,horario]);
       const curso = await buscarCursoPorId(r.rows[0].id); assert.ok(curso); grupos.push(curso);
     }
     await crearMatricula(ids.estudiante, grupos[1]);
-    const resultado = await registrarCalificacion(ids.profesor,ids.estudiante,'10001',{corte1:2,corte2:2,corte3:2});
+    const resultado = await registrarCalificacion(ids.profesor,ids.estudiante,'09001',{corte1:2,corte2:2,corte3:2});
     assert.equal(resultado.nota,2);
     await assert.rejects(crearMatricula(ids.estudiante,grupos[0]),e=>e instanceof HttpError && e.codigo==='ASIGNATURA_YA_MATRICULADA');
     // Reintentar el mismo grupo es idempotente.

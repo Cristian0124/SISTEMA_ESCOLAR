@@ -54,6 +54,10 @@ async function salir() {
         <span>Sistema académico<small>{{ perfil.espacio }}</small></span>
       </RouterLink>
       <label class="menu-search"><span class="visually-hidden">Buscar en el menú</span><input v-model="busqueda" type="search" placeholder="Buscar proceso" /></label>
+      <div class="session">
+        <button class="menu-toggle" type="button" :aria-expanded="menuAbierto" aria-controls="menu-principal" @click="menuAbierto = !menuAbierto">{{ menuAbierto ? 'Cerrar menú' : 'Menú' }}</button>
+        <button class="logout" type="button" :disabled="saliendo" @click="salir">{{ saliendo ? 'Saliendo…' : 'Salir' }}</button>
+      </div>
       <aside id="menu-principal" class="sidebar" :class="{ 'is-open': menuAbierto }" :aria-label="`Navegación de ${perfil.nombre.toLocaleLowerCase()}`" @keydown.esc="menuAbierto = false">
         <nav aria-label="Procesos disponibles">
           <RouterLink class="nav-link home-link" :to="perfil.inicio" exact-active-class="active-link"><span aria-hidden="true">⌂</span>Inicio</RouterLink>
@@ -64,9 +68,6 @@ async function salir() {
           <p v-if="!gruposVisibles.length" class="empty-search" role="status">No hay procesos coincidentes.</p>
         </nav>
       </aside>
-      <div class="session">
-        <button class="menu-toggle" type="button" :aria-expanded="menuAbierto" aria-controls="menu-principal" @click="menuAbierto = !menuAbierto">{{ menuAbierto ? 'Cerrar menú' : 'Menú' }}</button>
-      </div>
     </header>
     <div class="workspace">
       <div id="contenido-principal" ref="contenido" class="page-content" tabindex="-1"><RouterView /></div>
@@ -76,7 +77,6 @@ async function salir() {
         <span class="session-avatar" aria-hidden="true">{{ iniciales }}</span>
         <span class="role-label">{{ perfil.nombre }}</span>
         <span class="user-name">{{ auth.usuario?.nombre }}</span>
-        <button class="logout" type="button" :disabled="saliendo" @click="salir">{{ saliendo ? 'Saliendo…' : 'Salir' }}</button>
       </div>
       <div class="status-meta"><span>Sistema académico · {{ perfil.espacio }}</span><span class="session-status"><i aria-hidden="true"></i>Sesión activa</span></div>
     </footer>
@@ -285,6 +285,41 @@ nav::-webkit-scrollbar { display: none; }
   flex: 0 0 auto;
 }
 
+.role-estudiante nav {
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 16px 0;
+  overflow: visible;
+  padding: 8px 0 0 0;
+}
+
+.role-estudiante .home-link {
+  align-self: center;
+  margin-right: clamp(12px, 2vw, 30px);
+}
+
+.role-estudiante .menu-group {
+  display: flex;
+  flex: 1 1 150px;
+  flex-direction: column;
+  min-width: 0;
+  gap: 8px;
+  padding: 0 clamp(14px, 2vw, 34px);
+  border-inline-start: 1px solid var(--line);
+}
+
+.role-estudiante .menu-group h2 {
+  align-self: flex-start;
+  margin: 0;
+  font-size: 11px;
+  white-space: normal;
+}
+
+.role-estudiante .menu-group .nav-link {
+  min-height: 36px;
+  padding: 7px 8px;
+}
+
 .nav-link {
   display: flex;
   flex: 0 0 auto;
@@ -410,7 +445,7 @@ nav::-webkit-scrollbar { display: none; }
 
   .brand { margin-right: auto; }
 
-  .session { gap: 7px; }
+  .session { order: 0; gap: 7px; margin-left: auto; }
 
   .menu-toggle {
     display: block;
@@ -427,11 +462,26 @@ nav::-webkit-scrollbar { display: none; }
 
   .sidebar nav { flex-wrap: nowrap; align-items: center; }
 
+  .role-estudiante nav {
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    max-height: 60dvh;
+    overflow-y: auto;
+  }
+  .role-estudiante .home-link { align-self: flex-start; margin-right: 0; }
+  .role-estudiante .menu-group {
+    flex: 0 0 auto;
+    padding: 12px 0 0;
+    border-inline-start: 0;
+    border-top: 1px solid var(--line);
+  }
+
   .sidebar.is-open {
     display: flex;
   }
 
-  .menu-search { flex: 0 1 190px; min-width: 130px; }
+  .menu-search { order: 2; flex: 1 0 100%; min-width: 0; }
   .user-name { max-width: 170px; }
   .status-meta { margin-left: 0; }
 

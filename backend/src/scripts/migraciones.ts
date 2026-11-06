@@ -17,8 +17,7 @@ async function ejecutar() {
     for (const migracion of migraciones.filter(m => pendientes.includes(m.archivo))) {
       const sql = await readFile(path.resolve(__dirname, '../database/migrations', migracion.archivo), 'utf8');
       await cliente.query('BEGIN');
-      // Un único límite transaccional, incluso para migraciones antiguas sin BEGIN.
-      await cliente.query(sql.replace(/^\s*(BEGIN|COMMIT);\s*$/gm, ''));
+      await cliente.query(sql);
       await cliente.query('COMMIT');
       console.log(`Aplicada: ${migracion.archivo}`);
     }

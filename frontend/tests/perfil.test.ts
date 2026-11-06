@@ -2,16 +2,14 @@ import { beforeEach, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { flushPromises, mount } from '@vue/test-utils'
 import DatosPersonalesView from '@/views/perfil/DatosPersonalesView.vue'
-import HojaDeVidaView from '@/views/perfil/HojaDeVidaView.vue'
 import { useAutenticacionStore } from '@/stores/autenticacion.store'
 import * as api from '@/api/perfil.api'
 
-vi.mock('@/api/perfil.api',()=>({consultarDatos:vi.fn(),guardarDatos:vi.fn(),consultarHoja:vi.fn(),guardarHoja:vi.fn()}))
+vi.mock('@/api/perfil.api',()=>({consultarDatos:vi.fn(),guardarDatos:vi.fn()}))
 beforeEach(()=>{
   localStorage.clear();vi.resetAllMocks();setActivePinia(createPinia())
   useAutenticacionStore().establecerSesion({accessToken:'prueba',usuario:{id:1,nombre:'Estudiante',rol:'estudiante'}})
-  vi.mocked(api.consultarDatos).mockResolvedValue({nombre:'Estudiante',correo:'uno@example.test',nacionalidad:'Colombiana',ciudad:'Cali',edad:'26',semestre:'1',estudio:'Sistemas',direccion:'',telefono:'',celular:'',tipoSangre:''})
-  vi.mocked(api.consultarHoja).mockResolvedValue({descripcion:'Perfil guardado',foto:'',estudios:[]})
+  vi.mocked(api.consultarDatos).mockResolvedValue({nombre:'Estudiante',correo:'uno@example.test',nacionalidad:'Colombiana',ciudad:'Cali',edad:'26',semestre:'1',estudio:'Sistemas',direccion:'',telefono:'',celular:'',tipoSangre:'',foto:''})
 })
 const opciones={global:{stubs:{RouterLink:true}}}
 it('carga y guarda datos en el servidor y mantiene campos académicos de solo lectura',async()=>{
@@ -32,11 +30,16 @@ it('no muestra éxito cuando falla el guardado y conserva un borrador',async()=>
     expect(localStorage.getItem('sistema-escolar:datos-personales:1')).not.toBeNull()
   } finally {vista.unmount()}
 })
-it('carga y guarda la hoja de vida del servidor',async()=>{
-  const vista=mount(HojaDeVidaView,opciones)
-  try {await flushPromises();expect((vista.get('textarea').element as HTMLTextAreaElement).value).toBe('Perfil guardado')
-    await vista.get('form').trigger('submit');await flushPromises()
-    expect(api.guardarHoja).toHaveBeenCalledOnce()
-    expect(vista.text()).toContain('se guardó correctamente en el servidor')
+it('previsualiza una foto y la guarda con los datos personales',async()=>{
+  const vista=mount(DatosPersonalesView,opciones)
+  try {
+    await flushPromises()
+    const campo=vista.get('input[type="file"]')
+    Object.defineProperty(campo.element,'files',{value:[new File(['foto'],'foto.png',{type:'image/png'})]})
+    await campo.trigger('change')
+    await vi.waitFor(()=>expect(vista.get('.photo-field img').attributes('src')).toBe('data:image/png;base64,Zm90bw=='))
+    await vista.get('form').trigger('submit')
+    await flushPromises()
+    expect(api.guardarDatos).toHaveBeenCalledWith(expect.objectContaining({foto:'data:image/png;base64,Zm90bw=='}))
   } finally {vista.unmount()}
 })

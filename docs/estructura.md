@@ -27,18 +27,18 @@ Consulta [las reglas de migraciones](../backend/src/database/README.md).
 ## Frontend
 
 Las pantallas de `views/` se agrupan por funcionalidad:
-`auth`, `academico`, `matriculas`, `perfil`, `calificaciones`, `horarios`,
-`soporte`, `inicio` y `documentos`. La página 404 queda en la raíz de `views/`.
+`autenticacion`, `academico`, `matriculas`, `perfil`, `calificaciones`, `horarios`,
+`soporte` e `inicio`. La página 404 queda en la raíz de `views/`.
 Las URLs públicas conservan sus direcciones anteriores.
 
 - `api/`: peticiones HTTP y contratos específicos de cada funcionalidad.
 - `api/axios.ts`: URL base, credenciales, token y renovación ante HTTP 401.
 - `stores/`: estado compartido entre pantallas.
 - `composables/`: comportamiento reutilizable ligado al ciclo de vida de Vue.
-- `components/`: presentación reutilizable; `academic/` contiene el editor de sesiones.
+- `components/`: presentación reutilizable; `academico/` contiene el editor de sesiones.
 - `layouts/`: estructura común y navegación por rol.
-- `router/`: rutas y permisos declarados en `meta.roles`.
-- `services/`: autenticación y utilidades de borradores locales.
+- `router/`: creación del router y guard de sesión en `index.ts`; rutas y permisos en los archivos de `rutas/`, agrupados por funcionalidad.
+- `services/`: utilidades de borradores locales. La autenticación HTTP está en `api/autenticacion.api.ts`.
 - `types/`: tipos comunes de usuario y sesión.
 
 Las vistas no construyen su propia URL del backend ni renuevan tokens con fetch.
@@ -54,9 +54,12 @@ del backend siguen siendo la autoridad para permitir cada operación.
 
 Para nuevas funcionalidades, usar el mismo nombre de dominio en las distintas
 capas y conservar los sufijos existentes (`.routes.ts`, `.controller.ts`,
-`.service.ts`, `.repository.ts`, `.schema.ts`, `.api.ts`). Los nombres históricos
-de archivos se conservan para reducir cambios sin efecto funcional.
+`.service.ts`, `.repository.ts`, `.schema.ts`, `.api.ts`). En el frontend, los nombres de dominio se escriben en español; las vistas usan PascalCase y el sufijo `View.vue`, los stores usan `.store.ts` y las APIs usan `.api.ts`. Se conservan las URLs y los nombres de rutas para mantener compatibles los enlaces.
 
 Las pruebas de frontend están en `frontend/tests`; las de backend, en
 `backend/tests`. La preparación de la base de pruebas consume el catálogo común
 de migraciones y utiliza esquemas aislados.
+
+Los componentes comunes de interfaz están en `components/ui/`: `EncabezadoPagina` centraliza título, descripción y enlace de regreso; `AvisoPagina` muestra errores, estados vacíos y acciones de reintento. Las pantallas pueden conservar componentes específicos cuando su contenido lo requiera.
+
+Consulta las herramientas de formato y análisis en [Desarrollo local](desarrollo.md).

@@ -40,18 +40,18 @@ export async function obtenerResumenCreditos(usuarioId: number): Promise<Resumen
        SELECT LEAST(COALESCE((
          SELECT MAX(materia.semestre)::integer + 1
          FROM calificaciones AS calificacion
-         JOIN materias_pensum AS materia ON materia.codigo = calificacion.codigo_materia
-         WHERE calificacion.usuario_id = $1 AND calificacion.nota >= 3.0 AND materia_del_programa(materia.codigo, $1)
-       ), 1), (SELECT COALESCE(MAX(semestre), 1) FROM materias_pensum WHERE materia_del_programa(codigo, $1)))::integer AS semestre
+         JOIN plan_del_estudiante($1) AS materia ON materia.codigo = calificacion.codigo_materia
+         WHERE calificacion.usuario_id = $1 AND calificacion.nota >= 3.0
+       ), 1), (SELECT COALESCE(MAX(semestre), 1) FROM plan_del_estudiante($1)))::integer AS semestre
      ), base AS (
        SELECT COALESCE(SUM(creditos), 0)::integer AS creditos
-       FROM materias_pensum
-       WHERE semestre = (SELECT semestre FROM nivel) AND materia_del_programa(codigo, $1)
+       FROM plan_del_estudiante($1)
+       WHERE semestre = (SELECT semestre FROM nivel)
      ), usados AS (
        SELECT COALESCE(SUM(materia.creditos), 0)::integer AS creditos
        FROM matriculas AS matricula
        JOIN cursos AS curso ON curso.id = matricula.curso_id
-       JOIN materias_pensum AS materia ON materia.codigo = curso.codigo_pensum
+       JOIN plan_del_estudiante($1) AS materia ON materia.codigo = curso.codigo_pensum
        WHERE matricula.usuario_id = $1 AND matricula.estado = 'Activa'
          AND matricula.periodo = ${periodoActual}
      ), extras AS (
@@ -60,7 +60,7 @@ export async function obtenerResumenCreditos(usuarioId: number): Promise<Resumen
        WHERE usuario_id = $1 AND periodo = ${periodoActual} AND estado = 'Aprobada'
      )
      SELECT nivel.semestre,
-            (SELECT COALESCE(SUM(creditos), 0)::integer FROM materias_pensum WHERE materia_del_programa(codigo, $1)) AS "creditosPrograma",
+            (SELECT COALESCE(SUM(creditos), 0)::integer FROM plan_del_estudiante($1)) AS "creditosPrograma",
             base.creditos AS "creditosBase",
             usados.creditos AS "creditosMatriculados",
             extras.creditos AS "creditosExtra",

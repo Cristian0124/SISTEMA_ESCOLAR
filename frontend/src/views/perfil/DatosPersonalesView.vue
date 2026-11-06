@@ -19,6 +19,7 @@ const datos = reactive<DatosPersonales>({
   celular: '',
   tipoSangre: '',
   nacionalidad: '',
+  foto: '',
 })
 const guardado = ref(false)
 const error = ref('')
@@ -26,6 +27,7 @@ const cargando = ref(true)
 const cargado = ref(false)
 const guardando = ref(false)
 const hayBorrador = ref(false)
+const leyendoFoto = ref(false)
 
 const storageKey = () => claveBorradorPerfil('datos-personales', auth.usuario?.id ?? 'local')
 
@@ -46,15 +48,35 @@ onMounted(async () => {
 function recuperarBorrador() {
   try {
     const borrador = cargarBorrador(storageKey(), { ...datos })
-    for (const campo of ['nombre','correo','ciudad','direccion','telefono','celular','tipoSangre','nacionalidad'] as const) {
+    for (const campo of ['nombre','correo','ciudad','direccion','telefono','celular','tipoSangre','nacionalidad','foto'] as const) {
       if (typeof borrador[campo] === 'string') datos[campo] = borrador[campo]
     }
     guardado.value = false
   } catch { error.value = 'No fue posible recuperar el borrador local.' }
 }
 
+function seleccionarFoto(evento: Event) {
+  const input = evento.target as HTMLInputElement
+  const archivo = input.files?.[0]
+  if (!archivo) return
+  input.value = ''
+  guardado.value = false
+  error.value = ''
+  if (!['image/png', 'image/jpeg', 'image/webp'].includes(archivo.type) || archivo.size > 1024 * 1024) {
+    error.value = 'Selecciona una foto PNG, JPEG o WebP de hasta 1 MB.'
+    return
+  }
+
+  const lector = new FileReader()
+  leyendoFoto.value = true
+  lector.onload = () => { if (typeof lector.result === 'string') datos.foto = lector.result }
+  lector.onerror = () => { error.value = 'No se pudo leer la foto seleccionada.' }
+  lector.onloadend = () => { leyendoFoto.value = false }
+  lector.readAsDataURL(archivo)
+}
+
 async function guardar() {
-  if (!cargado.value || guardando.value) return
+  if (!cargado.value || guardando.value || leyendoFoto.value) return
   guardando.value = true
   error.value = ''
   guardado.value = false
@@ -78,7 +100,20 @@ async function guardar() {
     <p v-if="cargando" role="status">Cargando tus datos…</p>
     <form v-else class="profile-form" @submit.prevent="guardar">
       <button v-if="!cargado" type="button" @click="cargar">Reintentar carga</button>
-      <button v-if="hayBorrador && cargado" type="button" @click="recuperarBorrador">Recuperar borrador de este navegador</button>
+      <button v-if="hayBorrador && cargado" type="button" :disabled="guardando || leyendoFoto" @click="recuperarBorrador">Recuperar borrador de este navegador</button>
+      <section>
+        <h2>Foto del estudiante</h2>
+        <div class="photo-field">
+          <img v-if="datos.foto" :src="datos.foto" alt="Vista previa de la foto del estudiante" />
+          <label>Seleccionar foto
+            <input type="file" accept="image/png,image/jpeg,image/webp"
+              :disabled="!cargado || guardando || leyendoFoto" @change="seleccionarFoto" />
+            <small>PNG, JPEG o WebP de hasta 1 MB.</small>
+          </label>
+          <button v-if="datos.foto" type="button" :disabled="guardando || leyendoFoto"
+            @click="datos.foto = ''; guardado = false">Quitar foto</button>
+        </div>
+      </section>
       <section>
         <h2>Información personal</h2>
         <div class="fields">
@@ -114,7 +149,7 @@ async function guardar() {
       <p v-if="guardado" class="message success" role="status">Tus datos se guardaron correctamente en el servidor.</p>
       <div class="actions">
         <RouterLink to="/inicio">Cancelar</RouterLink>
-        <button type="submit" :disabled="guardando || !cargado">{{ guardando ? 'Guardando…' : 'Guardar cambios' }}</button>
+        <button type="submit" :disabled="guardando || leyendoFoto || !cargado">{{ guardando ? 'Guardando…' : 'Guardar cambios' }}</button>
       </div>
       <p class="storage-note">Los datos guardados estarán disponibles al iniciar sesión desde otro dispositivo.</p>
     </form>
@@ -126,6 +161,8 @@ async function guardar() {
 .profile-form { display: grid; gap: 27px; padding: clamp(18px, 4vw, 30px); border: 1px solid var(--school-border); border-radius: 8px; background: #fff; }
 h2 { margin: 0 0 16px; padding-bottom: 10px; border-bottom: 1px solid #e5ebeb; color: var(--school-blue); font-size: 16px; }
 .fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.photo-field { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.photo-field img { width: 96px; height: 96px; border-radius: 50%; object-fit: cover; }
 label { display: grid; gap: 7px; color: #493550; font-size: 13px; font-weight: 600; }
 input, select { width: 100%; min-height: 40px; padding: 8px 10px; border: 1px solid #d2c6d4; border-radius: 4px; color: var(--school-ink); background: white; font: inherit; font-weight: 400; }
 input:focus, select:focus { outline: 2px solid #9466a044; border-color: #9466a0; }

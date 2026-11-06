@@ -48,6 +48,6 @@ ni crea usuarios; las operaciones de base de datos son explícitas.
 - [Desarrollo local y verificaciones](docs/desarrollo.md)
 - [Organización y convenciones](docs/estructura.md)
 - [Migraciones de base de datos](backend/src/database/README.md)
-- [Oferta académica y validaciones pendientes](docs/oferta-academica.md)
+- [Oferta académica y prerrequisitos](docs/oferta-academica.md)
 - [API y administración del backend](backend/README.md)
 - [Interfaz y contrato de autenticación](frontend/README.md)

@@ -76,26 +76,25 @@ export async function crearMatricula(
     if (mismaMateria.rowCount) {
       throw new HttpError(409, "ASIGNATURA_YA_MATRICULADA", "Ya tienes matriculado otro grupo de esta asignatura en el periodo vigente");
     }
-    const pertenece = await cliente.query("SELECT materia_del_programa($1, $2) AS pertenece", [curso.codigoPensum, usuarioId]);
-    if (!pertenece.rows[0]?.pertenece) {
+    const { rows: [plan] } = await cliente.query<{ carrera_codigo: string; semestre: number; creditos: number }>(
+      'SELECT carrera_codigo, semestre, creditos FROM plan_del_estudiante($1) WHERE codigo = $2',
+      [usuarioId, curso.codigoPensum]
+    );
+    if (!plan) {
       throw new HttpError(409, "CURSO_OTRA_CARRERA", "El curso no pertenece al pensum de tu carrera");
     }
-    const plan = await cliente.query(`SELECT c.prerrequisitos_verificados FROM usuarios u
-      JOIN carreras c ON c.codigo = u.carrera_codigo WHERE u.id = $1 FOR SHARE OF c`, [usuarioId]);
-    if (plan.rows[0] && !plan.rows[0].prerrequisitos_verificados) {
-      throw new HttpError(409, "PENSUM_PENDIENTE_VALIDACION", "Los prerrequisitos del programa requieren validación académica antes de matricular");
-    }
+    curso = { ...curso, semestre: plan.semestre, creditos: plan.creditos };
     const balance = await cliente.query<{ creditosPermitidos: number; creditosUsados: number }>(
       `WITH nivel AS (
          SELECT LEAST(COALESCE((
            SELECT MAX(materia.semestre)::integer + 1
            FROM calificaciones AS calificacion
-           JOIN materias_pensum AS materia ON materia.codigo = calificacion.codigo_materia
-           WHERE calificacion.usuario_id = $1 AND calificacion.nota >= 3.0 AND materia_del_programa(materia.codigo, $1)
-         ), 1), (SELECT COALESCE(MAX(semestre), 1) FROM materias_pensum WHERE materia_del_programa(codigo, $1)))::integer AS semestre
+           JOIN plan_del_estudiante($1) AS materia ON materia.codigo = calificacion.codigo_materia
+           WHERE calificacion.usuario_id = $1 AND calificacion.nota >= 3.0
+         ), 1), (SELECT COALESCE(MAX(semestre), 1) FROM plan_del_estudiante($1)))::integer AS semestre
        ), base AS (
          SELECT COALESCE(SUM(creditos), 0)::integer AS creditos
-         FROM materias_pensum WHERE semestre = (SELECT semestre FROM nivel) AND materia_del_programa(codigo, $1)
+         FROM plan_del_estudiante($1) WHERE semestre = (SELECT semestre FROM nivel)
        ), extra AS (
          SELECT COALESCE(SUM(creditos), 0)::integer AS creditos
          FROM solicitudes_creditos
@@ -106,7 +105,7 @@ export async function crearMatricula(
          SELECT COALESCE(SUM(materia.creditos), 0)::integer AS creditos
          FROM matriculas AS matricula
          JOIN cursos AS curso ON curso.id = matricula.curso_id
-         JOIN materias_pensum AS materia ON materia.codigo = curso.codigo_pensum
+         JOIN plan_del_estudiante($1) AS materia ON materia.codigo = curso.codigo_pensum
          WHERE matricula.usuario_id = $1 AND matricula.estado = 'Activa'
            AND matricula.periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
        )
@@ -148,10 +147,10 @@ export async function crearMatricula(
          ON calificacion.usuario_id = $1
          AND calificacion.codigo_materia = prerrequisito.codigo_requisito
          AND calificacion.nota >= 3.0
-       WHERE prerrequisito.codigo_materia = $2
+       WHERE prerrequisito.codigo_materia = $2 AND prerrequisito.carrera_codigo = $3
          AND calificacion.usuario_id IS NULL
        ORDER BY prerrequisito.codigo_requisito`,
-      [usuarioId, curso.codigoPensum]
+      [usuarioId, curso.codigoPensum, plan.carrera_codigo]
     );
     if (requisitosPendientes.rowCount) {
       const codigos = requisitosPendientes.rows.map((fila) => fila.codigo_requisito);
@@ -196,7 +195,7 @@ export async function crearMatricula(
       `SELECT c.codigo, materia.nombre, h.dia,
               to_char(h.hora_inicio, 'HH24:MI') AS inicio, to_char(h.hora_fin, 'HH24:MI') AS fin
        FROM matriculas m JOIN cursos c ON c.id = m.curso_id
-       JOIN materias_pensum materia ON materia.codigo = c.codigo_pensum
+       JOIN materias materia ON materia.codigo = c.codigo_pensum
        JOIN curso_horarios h ON h.curso_id = c.id
        JOIN curso_horarios nuevo ON nuevo.curso_id = $2 AND nuevo.dia = h.dia
          AND nuevo.hora_inicio < h.hora_fin AND h.hora_inicio < nuevo.hora_fin
@@ -314,8 +313,8 @@ export async function listarTodasDelPeriodo(): Promise<MatriculaAdministrativa[]
               'horario', curso.horario,
               'cuposTotales', curso.cupos_totales,
               'cuposDisponibles', curso.cupos_disponibles,
-              'semestre', materia.semestre,
-              'creditos', materia.creditos
+              'semestre', plan.semestre,
+              'creditos', plan.creditos
             ) AS curso,
             matricula.estado,
             matricula.fecha,
@@ -323,7 +322,8 @@ export async function listarTodasDelPeriodo(): Promise<MatriculaAdministrativa[]
      FROM matriculas AS matricula
      JOIN usuarios AS usuario ON usuario.id = matricula.usuario_id
      JOIN cursos AS curso ON curso.id = matricula.curso_id
-     JOIN materias_pensum AS materia ON materia.codigo = curso.codigo_pensum
+     JOIN materias AS materia ON materia.codigo = curso.codigo_pensum
+     LEFT JOIN materias_pensum AS plan ON plan.codigo = materia.codigo AND plan.carrera_codigo = usuario.carrera_codigo
      LEFT JOIN usuarios AS docente ON docente.id = curso.docente_id
      WHERE matricula.estado = 'Activa'
        AND matricula.periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END

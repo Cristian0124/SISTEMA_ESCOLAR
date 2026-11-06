@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { isAxiosError } from 'axios'
-import { listarMisMatriculas, listarTodasLasMatriculas, type Matricula } from '@/api/matriculas.api'
+import { listarTodasLasMatriculas, type Matricula } from '@/api/matriculas.api'
 import { useAutenticacionStore } from '@/stores/autenticacion.store'
 
 const auth = useAutenticacionStore()
-const esAdmin = computed(() => auth.usuario?.rol === 'admin')
 const matriculas = ref<Matricula[]>([])
 const cargando = ref(false)
 const error = ref('')
@@ -17,7 +16,7 @@ async function cargar() {
   matriculas.value = []
   try {
     if (!auth.accessToken) await auth.restaurarSesion()
-    matriculas.value = await (esAdmin.value ? listarTodasLasMatriculas() : listarMisMatriculas())
+    matriculas.value = await listarTodasLasMatriculas()
   } catch (fallo) {
     error.value = isAxiosError(fallo)
       ? fallo.response?.data?.mensaje ?? 'No fue posible consultar las matrículas. Intenta nuevamente.'
@@ -33,23 +32,20 @@ onMounted(() => void cargar())
 <template>
   <main class="academic-page">
     <nav aria-label="Navegación académica">
-      <RouterLink :to="esAdmin ? '/admin/home' : '/inicio'">Inicio</RouterLink>
-      <RouterLink v-if="!esAdmin" to="/catalog">Mi pénsum</RouterLink>
-      <RouterLink v-if="!esAdmin" to="/matricula">Seleccionar cursos</RouterLink>
+      <RouterLink to="/admin/home">Inicio</RouterLink>
     </nav>
-    <h1>{{ esAdmin ? 'Matrículas del periodo' : 'Mis matrículas' }}</h1>
-    <p class="intro">{{ esAdmin ? 'Consulta los cursos matriculados por los estudiantes durante el periodo vigente.' : 'Consulta los cursos registrados para tu usuario en el periodo vigente.' }}</p>
+    <h1>Matrículas del periodo</h1>
+    <p class="intro">Consulta los cursos matriculados por los estudiantes durante el periodo vigente.</p>
     <button :disabled="cargando" @click="cargar">{{ cargando ? 'Actualizando…' : 'Actualizar matrículas' }}</button>
     <p v-if="cargando" role="status">Consultando matrículas…</p>
     <div v-else-if="error" class="notice error" role="alert">{{ error }} <button @click="cargar">Reintentar</button></div>
     <div v-else-if="!matriculas.length" class="notice">
-      <p>{{ esAdmin ? 'No hay matrículas registradas en el periodo vigente.' : 'Aún no tienes matrículas registradas en el periodo vigente.' }}</p>
-      <RouterLink v-if="!esAdmin" to="/matricula">Seleccionar cursos</RouterLink>
+      <p>No hay matrículas registradas en el periodo vigente.</p>
     </div>
     <section v-else aria-label="Matrículas registradas">
-      <p role="status">{{ matriculas.length }} {{ esAdmin ? 'matrículas registradas' : 'cursos matriculados' }}</p>
+      <p role="status">{{ matriculas.length }} matrículas registradas</p>
       <article v-for="matricula in matriculas" :key="matricula.id" class="enrollment">
-        <p v-if="esAdmin" class="student">Estudiante: <strong>{{ matricula.nombreEstudiante }}</strong><span v-if="matricula.correoEstudiante"> · {{ matricula.correoEstudiante }}</span></p>
+        <p class="student">Estudiante: <strong>{{ matricula.nombreEstudiante }}</strong><span v-if="matricula.correoEstudiante"> · {{ matricula.correoEstudiante }}</span></p>
         <h2>{{ matricula.curso.codigo }} — {{ matricula.curso.nombre }}</h2>
         <p>Docente: {{ matricula.curso.docente ?? 'Sin asignar' }}</p>
         <p>Horario: {{ matricula.curso.horario }}</p>

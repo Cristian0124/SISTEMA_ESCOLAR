@@ -10,7 +10,6 @@ import { rutasPerfil } from './rutas/perfil.routes'
 import { rutasCalificaciones } from './rutas/calificaciones.routes'
 import { rutasHorarios } from './rutas/horarios.routes'
 import { rutasSoporte } from './rutas/soporte.routes'
-import { rutasDocumentos } from './rutas/documentos.routes'
 
 export function createAppRouter(history: RouterHistory = createWebHistory()) {
   const router = createRouter({
@@ -26,7 +25,6 @@ export function createAppRouter(history: RouterHistory = createWebHistory()) {
         ...rutasCalificaciones,
         ...rutasHorarios,
         ...rutasSoporte,
-        ...rutasDocumentos,
       ] },
       { path: '/:pathMatch(.*)*', name: 'not-found', component: () => import('../views/PaginaNoEncontradaView.vue') },
     ],

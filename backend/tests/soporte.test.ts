@@ -29,6 +29,6 @@ test('soporte: envío, respuesta y detección de migración ausente', async () =
     assert.equal(mias[0].respuesta,'Tu consulta ha sido atendida');
     await verificarEsquema();
     await pool.query('DROP TABLE solicitudes_soporte');
-    await assert.rejects(verificarEsquema(), /006_soporte_docente.sql/);
+    await assert.rejects(verificarEsquema(), /001_esquema.sql/);
   } finally { await new Promise<void>(r=>servidor.close(()=>r())); await limpiar(); await pool.end(); }
 });

@@ -84,7 +84,6 @@ async function registrar() {
             <option v-for="c in carreras" :key="c.codigo" :value="c.codigo">{{ c.nombre }} · {{ c.modalidad }}</option>
           </select></label>
         </div>
-        <RouterLink to="/oferta-academica">Consultar carreras y pénsum</RouterLink>
       </template>
       <h2>Acceso al sistema</h2>
       <div class="fields">

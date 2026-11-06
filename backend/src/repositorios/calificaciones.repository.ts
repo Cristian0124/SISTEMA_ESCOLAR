@@ -7,7 +7,6 @@ export interface AvanceMateria {
   creditos: number;
   prerrequisitos: string[];
   nota: number | null;
-  prerrequisitosVerificados: boolean;
 }
 
 export interface CortesCalificacion {
@@ -34,25 +33,23 @@ export async function listarAvanceEstudiante(usuarioId: number): Promise<AvanceM
     `SELECT
        materia.codigo,
        materia.nombre,
-       materia.semestre,
-       materia.creditos,
-       COALESCE((SELECT carrera.prerrequisitos_verificados FROM carreras carrera
-         WHERE carrera.codigo = materia.carrera_codigo), TRUE) AS "prerrequisitosVerificados",
+       plan.semestre,
+      plan.creditos,
        COALESCE(
          ARRAY_AGG(prerrequisito.codigo_requisito ORDER BY prerrequisito.codigo_requisito)
            FILTER (WHERE prerrequisito.codigo_requisito IS NOT NULL),
          ARRAY[]::VARCHAR[]
        ) AS prerrequisitos,
        calificacion.nota::text AS nota
-     FROM materias_pensum AS materia
+     FROM plan_del_estudiante($1) AS plan
+     JOIN materias AS materia ON materia.codigo = plan.codigo
      LEFT JOIN prerrequisitos_materia AS prerrequisito
-       ON prerrequisito.codigo_materia = materia.codigo
+       ON prerrequisito.codigo_materia = materia.codigo AND prerrequisito.carrera_codigo = plan.carrera_codigo
      LEFT JOIN calificaciones AS calificacion
        ON calificacion.codigo_materia = materia.codigo
        AND calificacion.usuario_id = $1
-     WHERE materia_del_programa(materia.codigo, $1)
-     GROUP BY materia.codigo, calificacion.nota
-     ORDER BY materia.semestre, materia.codigo`,
+     GROUP BY materia.codigo, plan.semestre, plan.creditos, calificacion.nota
+     ORDER BY plan.semestre, materia.codigo`,
     [usuarioId]
   );
 
@@ -72,7 +69,7 @@ export async function listarCodigosAprobados(usuarioId: number): Promise<string[
 
 export async function materiaExiste(codigo: string, usuarioId?: number): Promise<boolean> {
   const resultado = await pool.query(
-    `SELECT 1 FROM materias_pensum WHERE codigo = $1 ${usuarioId ? "AND materia_del_programa(codigo, $2)" : ""} LIMIT 1`,
+    `SELECT 1 FROM materias WHERE codigo = $1 ${usuarioId ? "AND materia_del_programa(codigo, $2)" : ""} LIMIT 1`,
     usuarioId ? [codigo, usuarioId] : [codigo]
   );
   return resultado.rowCount !== 0;
@@ -121,7 +118,7 @@ export async function listarCalificacionesMateriasMatriculadas(
        curso.codigo AS "cursoCodigo",
        materia.codigo AS "codigoMateria",
        materia.nombre AS "nombreMateria",
-       materia.semestre,
+       plan.semestre,
        curso.horario,
        calificacion.corte_1::text AS "corte1",
        calificacion.corte_2::text AS "corte2",
@@ -129,13 +126,14 @@ export async function listarCalificacionesMateriasMatriculadas(
        calificacion.nota::text AS nota
      FROM matriculas AS matricula
      JOIN cursos AS curso ON curso.id = matricula.curso_id
-     JOIN materias_pensum AS materia ON materia.codigo = curso.codigo_pensum
+     JOIN materias AS materia ON materia.codigo = curso.codigo_pensum
+     JOIN plan_del_estudiante($1) AS plan ON plan.codigo = materia.codigo
      LEFT JOIN calificaciones AS calificacion
        ON calificacion.usuario_id = matricula.usuario_id
        AND calificacion.codigo_materia = materia.codigo
      WHERE matricula.usuario_id = $1 AND matricula.estado = 'Activa'
        AND matricula.periodo = to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END
-     ORDER BY materia.semestre, materia.nombre, curso.codigo`,
+     ORDER BY plan.semestre, materia.nombre, curso.codigo`,
     [usuarioId]
   );
 

@@ -3,6 +3,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { createMemoryHistory } from 'vue-router'
 import { flushPromises, mount, type VueWrapper } from '@vue/test-utils'
 import App from '@/App.vue'
+import api from '@/api/axios'
 import { createAppRouter } from '@/router'
 import { useAutenticacionStore } from '@/stores/autenticacion.store'
 import type { RolUsuario } from '@/types'
@@ -31,11 +32,28 @@ async function abrir(rol: RolUsuario | null, ruta: string) {
 }
 
 describe('layout y navegación por rol', () => {
-  it('retira opciones provisionales y conserva la dirección antigua de matrículas', async () => {
+  it('muestra en Mi pénsum los códigos de requisitos aunque estén cumplidos', async () => {
+    const materias = [
+      { codigo: '09024', nombre: 'Ingeniería de software I', semestre: 5, creditos: 3,
+        prerrequisitos: ['09015', '09019'], aprobada: false, bloqueada: false, requisitosPendientes: [] },
+    ]
+    await vi.mocked(api.get).withImplementation(
+      async (ruta) => ({ data: ruta === '/matriculas/avance' ? materias : [] }),
+      async () => {
+        const { router, vista } = await abrir('estudiante', '/catalog')
+        expect(router.currentRoute.value.path).toBe('/catalog')
+        expect(vista.get('aside').text()).not.toContain('Consulta de requisitos de materia')
+        expect(vista.get('.prerequisite-message').text()).toBe('Requisitos: 09015, 09019')
+      },
+    )
+  })
+
+  it('retira opciones provisionales y conserva el acceso administrativo a matrículas', async () => {
     const { router, vista } = await abrir('admin', '/admin/home')
     expect(vista.get('aside').text()).not.toContain('Sala de espera')
     expect(vista.get('aside').text()).not.toContain('Telemetría')
-    await router.push('/my-enrollments')
+    expect(vista.find('aside a[href="/mis-matriculas"]').exists()).toBe(true)
+    await router.push('/mis-matriculas')
     await flushPromises()
     expect(router.currentRoute.value.path).toBe('/mis-matriculas')
     expect(vista.find('a[href="/matricula"]').exists()).toBe(false)
@@ -73,7 +91,7 @@ describe('layout y navegación por rol', () => {
   })
 
   it.each([
-    ['estudiante', '/home', '/documentos', 'Matrícula individual', 'Registrar usuarios'],
+    ['estudiante', '/home', '/perfil', 'Matrícula individual', 'Registrar usuarios'],
     ['admin', '/admin/home', '/oferta-academica', 'Registrar usuarios', 'Hoja de vida'],
     ['profesor', '/profesor/home', '/profesor/soporte', 'Horario docente', 'Registrar usuarios'],
   ] as const)('conserva el menú de %s al cambiar de pantalla', async (rol, inicio, destino, visible, oculto) => {
@@ -82,7 +100,11 @@ describe('layout y navegación por rol', () => {
     expect(vista.findAll('header.topbar')).toHaveLength(1)
     expect(vista.get('aside').text()).toContain(visible)
     expect(vista.get('aside').text()).not.toContain(oculto)
-    if (rol === 'estudiante') expect(vista.get('aside').text()).not.toContain('Facultades y carreras')
+    if (rol === 'estudiante') {
+      expect(vista.get('aside').text()).not.toContain('Facultades y carreras')
+      expect(vista.get('aside').text()).not.toContain('Consulta de documentos')
+      expect(vista.find('aside a[href="/mis-matriculas"]').exists()).toBe(false)
+    }
     await vista.get(`aside a[href="${destino}"]`).trigger('click')
     await vi.waitFor(() => expect(router.currentRoute.value.path).toBe(destino))
     await flushPromises()
@@ -99,15 +121,15 @@ describe('layout y navegación por rol', () => {
     expect(vista.get('aside').classes()).toContain('is-open')
     await vista.get('.menu-search input').setValue('ningunresultado')
     expect(vista.get('aside').text()).toContain('No hay procesos coincidentes.')
-    await vista.get('.menu-search input').setValue('documentos')
-    await vista.get('aside a[href="/documentos"]').trigger('click')
+    await vista.get('.menu-search input').setValue('datos personales')
+    await vista.get('aside a[href="/perfil"]').trigger('click')
     await flushPromises()
     expect(vista.get('.menu-toggle').attributes('aria-expanded')).toBe('false')
     expect(vista.get('.menu-search input').element).toHaveProperty('value', '')
   })
 
   it('mantiene el login fuera del layout y redirige rutas privadas sin sesión', async () => {
-    const { router, vista } = await abrir(null, '/documentos')
+    const { router, vista } = await abrir(null, '/perfil')
     expect(router.currentRoute.value.path).toBe('/login')
     expect(vista.find('.app-shell').exists()).toBe(false)
     expect(vista.find('.login-page').exists()).toBe(true)
@@ -115,8 +137,9 @@ describe('layout y navegación por rol', () => {
 
   it.each([
     ['estudiante', '/admin/home', '/home'],
-    ['estudiante', '/admin/pensum', '/home'],
-    ['profesor', '/admin/pensum', '/profesor/home'],
+    ['estudiante', '/mis-matriculas', '/home'],
+    ['estudiante', '/admin/academico', '/home'],
+    ['profesor', '/admin/academico', '/profesor/home'],
     ['profesor', '/catalog', '/profesor/home'],
     ['admin', '/home', '/admin/home'],
   ] as const)('redirige a %s cuando intenta entrar a otro panel', async (rol, ruta, esperado) => {
@@ -125,7 +148,7 @@ describe('layout y navegación por rol', () => {
   })
 
   it('cierra sesión desde cualquier pantalla y elimina el layout', async () => {
-    const { router, auth, vista } = await abrir('estudiante', '/documentos')
+    const { router, auth, vista } = await abrir('estudiante', '/perfil')
     await vista.get('.logout').trigger('click')
     await flushPromises()
     expect(auth.usuario).toBeNull()

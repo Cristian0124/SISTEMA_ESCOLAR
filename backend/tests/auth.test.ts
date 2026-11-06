@@ -38,6 +38,8 @@ let estudianteId: number;
 let administradorId: number;
 let profesorId: number;
 let profesorSinAsignacionId: number;
+let cursoProfesorId: number;
+let cursoCalculoId: number;
 
 function tokenPara(id: number, rol: "admin" | "estudiante" | "profesor") {
   return jwt.sign({ id, nombre: "Usuario de prueba", rol }, JWT_ACCESS_SECRET);
@@ -69,7 +71,6 @@ before(async () => {
   }, await bcrypt.hash("ProfesorPrueba123!", 4), "profesor");
   assert.ok(profesor);
   profesorId = profesor.id;
-  await pool.query('UPDATE cursos SET docente_id = $1 WHERE id = 2', [profesorId]);
 
   const profesorSinAsignacion = await crearUsuarioAdministrado({
     nombre: "Profesor sin cursos",
@@ -82,6 +83,16 @@ before(async () => {
   }, await bcrypt.hash("ProfesorPrueba456!", 4), "profesor");
   assert.ok(profesorSinAsignacion);
   profesorSinAsignacionId = profesorSinAsignacion.id;
+
+  const grupos = await pool.query<{ id: number; codigo_pensum: string }>(
+    `INSERT INTO cursos (codigo, codigo_pensum, docente_id, horario, cupos_totales, cupos_disponibles)
+     VALUES ('AUTH-09005', '09005', $1, 'Lunes 08:00 - 10:00', 30, 30),
+            ('AUTH-09006', '09006', NULL, 'Martes 08:00 - 10:00', 30, 30)
+     RETURNING id, codigo_pensum`,
+    [profesorId]
+  );
+  cursoProfesorId = grupos.rows.find((grupo) => grupo.codigo_pensum === '09005')!.id;
+  cursoCalculoId = grupos.rows.find((grupo) => grupo.codigo_pensum === '09006')!.id;
 
   servidor = app.listen(0);
   await new Promise<void>((resolve, reject) => {
@@ -120,8 +131,6 @@ test("registro y autenticación", async (contexto) => {
     assert.equal(cuerpo.usuario.rol, "estudiante");
     assert.equal("password_hash" in cuerpo.usuario, false);
     estudianteId = cuerpo.usuario.id;
-    // Las pruebas siguientes verifican la compatibilidad con estudiantes del plan anterior.
-    await pool.query("UPDATE usuarios SET carrera_codigo = NULL WHERE id = $1", [estudianteId]);
 
     const resultado = await pool.query<{ password_hash: string }>(
       "SELECT password_hash FROM usuarios WHERE correo = $1",
@@ -171,7 +180,7 @@ test("registro y autenticación", async (contexto) => {
     const matricula = await fetch(`${baseUrl}/api/matriculas`, {
       method: "POST",
       headers: { authorization: `Bearer ${tokenPara(estudianteId, "estudiante")}`, "content-type": "application/json" },
-      body: JSON.stringify({ cursoId: 2 })
+      body: JSON.stringify({ cursoId: cursoProfesorId })
     });
     assert.equal(matricula.status, 201);
 
@@ -180,9 +189,9 @@ test("registro y autenticación", async (contexto) => {
     });
     const cursosAsignados = await cursosRespuesta.json() as Array<{ id: number; codigoPensum: string }>;
     assert.equal(cursosRespuesta.status, 200);
-    assert.deepEqual(cursosAsignados.map((curso) => curso.id), [2]);
+    assert.deepEqual(cursosAsignados.map((curso) => curso.id), [cursoProfesorId]);
 
-    const listaRespuesta = await fetch(`${baseUrl}/api/matriculas/docente/cursos/2/estudiantes`, {
+    const listaRespuesta = await fetch(`${baseUrl}/api/matriculas/docente/cursos/${cursoProfesorId}/estudiantes`, {
       headers: { authorization: tokenProfesor }
     });
     const estudiantes = await listaRespuesta.json() as Array<{ id: number; nombre: string; cedula: string; nota: number | null }>;
@@ -191,12 +200,12 @@ test("registro y autenticación", async (contexto) => {
     assert.equal(estudiantes[0].id, estudianteId);
     assert.equal(estudiantes[0].nota, null);
 
-    const noAsignado = await fetch(`${baseUrl}/api/matriculas/docente/cursos/2/estudiantes`, {
+    const noAsignado = await fetch(`${baseUrl}/api/matriculas/docente/cursos/${cursoProfesorId}/estudiantes`, {
       headers: { authorization: `Bearer ${tokenPara(profesorSinAsignacionId, "profesor")}` }
     });
     assert.equal(noAsignado.status, 403);
 
-    const calificacion = await fetch(`${baseUrl}/api/matriculas/calificaciones/${estudianteId}/ISI05`, {
+    const calificacion = await fetch(`${baseUrl}/api/matriculas/calificaciones/${estudianteId}/09005`, {
       method: "PUT",
       headers: { authorization: tokenProfesor, "content-type": "application/json" },
       body: JSON.stringify({ corte1: 4.1, corte2: 4.1, corte3: 4.1 })
@@ -204,7 +213,7 @@ test("registro y autenticación", async (contexto) => {
     assert.equal(calificacion.status, 200);
 
     const resultado = await pool.query<{ registrada_por: number }>(
-      "SELECT registrada_por FROM calificaciones WHERE usuario_id = $1 AND codigo_materia = 'ISI05'",
+      "SELECT registrada_por FROM calificaciones WHERE usuario_id = $1 AND codigo_materia = '09005'",
       [estudianteId]
     );
     assert.equal(resultado.rows[0].registrada_por, profesorId);
@@ -217,19 +226,19 @@ test("registro y autenticación", async (contexto) => {
         authorization: `Bearer ${tokenPara(estudianteId, "estudiante")}`,
         "content-type": "application/json"
       },
-      body: JSON.stringify({ cursoId: 3 })
+      body: JSON.stringify({ cursoId: cursoCalculoId })
     });
     const cuerpo = await respuesta.json() as { codigo: string; mensaje: string };
 
     assert.equal(respuesta.status, 409);
     assert.equal(cuerpo.codigo, "PRERREQUISITOS_PENDIENTES");
-    assert.match(cuerpo.mensaje, /ISI01/);
+    assert.match(cuerpo.mensaje, /09001/);
   });
 
-  await contexto.test("desbloquea Cálculo I cuando se aprueba ISI01 con 3.0", async () => {
+  await contexto.test("desbloquea Cálculo I cuando se aprueba 09001 con 3.0", async () => {
     const autorizacion = `Bearer ${tokenPara(administradorId, "admin")}`;
     const registrarNota = (nota: number) => fetch(
-      `${baseUrl}/api/matriculas/calificaciones/${estudianteId}/ISI01`,
+      `${baseUrl}/api/matriculas/calificaciones/${estudianteId}/09001`,
       {
         method: "PUT",
         headers: { authorization: autorizacion, "content-type": "application/json" },
@@ -244,7 +253,7 @@ test("registro y autenticación", async (contexto) => {
       headers: { authorization: `Bearer ${tokenPara(estudianteId, "estudiante")}` }
     });
     const avanceBloqueado = await respuestaBloqueada.json() as Array<{ codigo: string; bloqueada: boolean }>;
-    assert.equal(avanceBloqueado.find((materia) => materia.codigo === "ISI06")?.bloqueada, true);
+    assert.equal(avanceBloqueado.find((materia) => materia.codigo === "09006")?.bloqueada, true);
 
     const aprobada = await registrarNota(3.0);
     assert.equal(aprobada.status, 200);
@@ -253,7 +262,7 @@ test("registro y autenticación", async (contexto) => {
       headers: { authorization: `Bearer ${tokenPara(estudianteId, "estudiante")}` }
     });
     const avanceDisponible = await respuestaDisponible.json() as Array<{ codigo: string; aprobada: boolean; bloqueada: boolean }>;
-    const calculo = avanceDisponible.find((materia) => materia.codigo === "ISI06");
+    const calculo = avanceDisponible.find((materia) => materia.codigo === "09006");
     assert.equal(calculo?.aprobada, false);
     assert.equal(calculo?.bloqueada, false);
   });

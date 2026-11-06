@@ -1,6 +1,6 @@
 import * as repositorio from '../repositorios/perfil.repository';
 import { obtenerResumenCreditos } from '../repositorios/creditos.repository';
-import { esquemaDatos, esquemaHoja } from '../schemas/perfil.schema';
+import { esquemaDatos } from '../schemas/perfil.schema';
 import { HttpError } from '../types/http-error';
 
 export async function consultarDatos(usuarioId: number) {
@@ -22,16 +22,5 @@ export async function guardarDatos(usuarioId: number, entrada: unknown) {
     }
     throw error;
   }
-  return datos.data;
-}
-
-export async function consultarHoja(usuarioId: number) {
-  return { descripcion: '', foto: '', estudios: [], ...await repositorio.consultarHojaDeVida(usuarioId) };
-}
-
-export async function guardarHoja(usuarioId: number, entrada: unknown) {
-  const datos = esquemaHoja.safeParse(entrada);
-  if (!datos.success) throw new HttpError(400, 'HOJA_INVALIDA', 'Revisa la descripción, los estudios y la foto (PNG, JPEG o WebP de hasta 1 MB)');
-  await repositorio.guardarHojaDeVida(usuarioId, datos.data);
   return datos.data;
 }

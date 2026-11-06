@@ -18,7 +18,7 @@ test('crear grupos con varias sesiones y rechazar horarios inválidos',async()=>
     const d=servidor.address();assert.ok(d && typeof d!=='string');
     const headers={'Content-Type':'application/json',Authorization:`Bearer ${jwt.sign({id:ids.admin,nombre:'Admin',rol:'admin'},JWT_ACCESS_SECRET)}`};
     const sesiones=[{dia:1,horaInicio:'08:00',horaFin:'10:00'},{dia:3,horaInicio:'14:00',horaFin:'16:00'}];
-    const crear=(horas:unknown)=>fetch(`http://127.0.0.1:${d.port}/api/cursos`,{method:'POST',headers,body:JSON.stringify({codigoPensum:'10001',profesorId:ids.profesor,cuposTotales:30,sesiones:horas})});
+    const crear=(horas:unknown)=>fetch(`http://127.0.0.1:${d.port}/api/cursos`,{method:'POST',headers,body:JSON.stringify({codigoPensum:'09001',profesorId:ids.profesor,cuposTotales:30,sesiones:horas})});
     const resultado=await crear(sesiones);assert.equal(resultado.status,201);
     const curso=await resultado.json() as {id:number;sesiones:unknown[];horario:string};
     assert.equal(curso.sesiones.length,2);assert.match(curso.horario,/Miércoles 14:00/);

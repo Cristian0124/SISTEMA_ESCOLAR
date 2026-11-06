@@ -7,19 +7,15 @@ export interface Acceso {
 export interface GrupoMenu { titulo: string; opciones: Acceso[] }
 
 export const gruposEstudiante: GrupoMenu[] = [
-  { titulo: 'Proceso de Administración', opciones: [
+  { titulo: 'Proceso de administración', opciones: [
     { titulo: 'Actualización de datos personales', icono: '▤', ruta: '/perfil' },
-    { titulo: 'Hoja de vida', icono: '▤', ruta: '/hoja-de-vida' },
-    { titulo: 'Consulta de documentos', icono: '▤', ruta: '/documentos' },
   ] },
-  { titulo: 'Proceso Novedades Académicas', opciones: [
+  { titulo: 'Proceso de novedades académicas', opciones: [
     { titulo: 'Adición de créditos', icono: '◉', ruta: '/adicion-creditos' },
   ] },
-  { titulo: 'Proceso Matrícula Académica', opciones: [
+  { titulo: 'Proceso de matrícula académica', opciones: [
     { titulo: 'Mi pénsum', icono: '▦', ruta: '/catalog' },
-    { titulo: 'Consulta de requisitos de materia', icono: '▤', ruta: '/requisitos-materia' },
     { titulo: 'Matrícula individual', icono: '▤', ruta: '/matricula' },
-    { titulo: 'Mis matrículas', icono: '▤', ruta: '/mis-matriculas' },
   ] },
   { titulo: 'Consultas académicas', opciones: [
     { titulo: 'Notas registradas', icono: '✓', ruta: '/notas-registradas' },
@@ -40,12 +36,6 @@ export const modulosAdmin: Acceso[] = [
     descripcion: 'Crea grupos desde los pensums por facultad y carrera y asígnalos a profesores activos.',
     icono: '✓',
     ruta: '/admin/academico',
-  },
-  {
-    titulo: 'Validación del pénsum',
-    descripcion: 'Revisa los prerrequisitos de cada carrera y valida su pénsum para habilitar la matrícula.',
-    icono: '✓',
-    ruta: '/admin/pensum',
   },
   {
     titulo: 'Solicitudes de créditos',

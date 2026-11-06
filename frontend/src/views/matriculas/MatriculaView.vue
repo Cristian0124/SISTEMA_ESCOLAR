@@ -40,9 +40,6 @@ function motivoBloqueoCurso(curso: (typeof store.cursos)[number]): string {
   if (cargandoAvance.value) return 'Consultando tus prerrequisitos…'
   const avance = avanceDeCurso(curso)
   if (avance?.aprobada) return 'Materia aprobada; no necesitas volver a matricularla.'
-  if (avance?.prerrequisitosVerificados === false) {
-    return 'El pénsum de tu carrera está pendiente de validación académica. Solicita su revisión a la administración para habilitar la matrícula.'
-  }
   if (avance?.requisitosPendientes.length) {
     return `Aprueba primero: ${avance.requisitosPendientes.join(', ')}.`
   }
@@ -134,7 +131,7 @@ async function matricular() {
           : fallo.response?.status === 501
             ? 'El servidor todavía no permite registrar matrículas. Tu selección se conserva.'
             : !fallo.response
-              ? 'No fue posible confirmar el curso pendiente. Consulta Mis matrículas antes de reintentar para comprobar si se registró.'
+              ? 'No fue posible confirmar el curso pendiente. Consulta tu horario antes de reintentar para comprobar si se registró.'
               : `${curso.nombre}: ${mensaje}`
         break
       }
@@ -144,7 +141,7 @@ async function matricular() {
   } catch (e) {
     error.value = e instanceof Error
       ? e.message
-      : 'No fue posible confirmar el curso pendiente. Consulta Mis matrículas antes de reintentar para comprobar si se registró.'
+      : 'No fue posible confirmar el curso pendiente. Consulta tu horario antes de reintentar para comprobar si se registró.'
   } finally {
     await store.cargarCursos()
     await cargarBalanceCreditos()
@@ -212,7 +209,7 @@ async function matricular() {
       {{ error }}
       <RouterLink v-if="sesionRequerida" to="/login">Iniciar sesión</RouterLink>
     </p>
-    <div v-if="exitos.length" class="notice success" role="status">El servidor confirmó: {{ exitos.join(', ') }}. <RouterLink to="/mis-matriculas">Ver mis matrículas</RouterLink></div>
+    <div v-if="exitos.length" class="notice success" role="status">El servidor confirmó: {{ exitos.join(', ') }}. <RouterLink to="/schedule">Ver mi horario</RouterLink></div>
   </main>
 </template>
 

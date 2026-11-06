@@ -35,7 +35,6 @@ const avance: MateriaAvance = {
   creditos: 4,
   prerrequisitos: [],
   requisitosPendientes: [],
-  prerrequisitosVerificados: true,
   aprobada: false,
   bloqueada: false,
 }
@@ -86,12 +85,17 @@ it('permite seleccionar un curso habilitado y muestra la selección en el resume
   expect(pantalla.get('.summary').text()).toContain('Cursos seleccionados: 1')
 })
 
-it('explica el bloqueo por pénsum pendiente sin anunciar prerrequisitos cumplidos', async () => {
-  vi.mocked(consultarAvancePensum).mockResolvedValue([{ ...avance, prerrequisitosVerificados: false }])
+it('explica el bloqueo cuando no se ha aprobado un prerrequisito', async () => {
+  vi.mocked(consultarAvancePensum).mockResolvedValue([{
+    ...avance,
+    prerrequisitos: ['09001'],
+    requisitosPendientes: ['09001'],
+    bloqueada: true,
+  }])
   const pantalla = await abrir()
 
   expect(pantalla.get<HTMLInputElement>('input[type="checkbox"]').element.disabled).toBe(true)
-  expect(pantalla.text()).toContain('El pénsum de tu carrera está pendiente de validación académica.')
+  expect(pantalla.text()).toContain('Aprueba primero: 09001.')
   expect(pantalla.text()).not.toContain('Prerrequisitos cumplidos.')
 })
 

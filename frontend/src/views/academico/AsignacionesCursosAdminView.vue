@@ -79,7 +79,7 @@ async function crear(): Promise<void> {
     })
     cursos.value.unshift(curso)
     seleccionados[curso.id] = curso.docenteId ?? ''
-    mensaje.value = `Se creó el grupo ${curso.codigo} para ${curso.carreraNombre}, asignado a ${curso.docente}.`
+    mensaje.value = `Se creó el grupo ${curso.codigo} con ${curso.docente}. Carreras: ${curso.carreraNombre}.`
     sesiones.value = [{ dia: 1, horaInicio: '', horaFin: '' }]
   } catch (fallo) {
     error.value = mensajeDeError(fallo, 'No fue posible crear el grupo y asignarlo al profesor.')
@@ -190,14 +190,14 @@ onMounted(() => void cargar())
         </div>
         <div v-else class="table-wrap">
           <table>
-            <thead><tr><th>Facultad y carrera</th><th>Curso</th><th>Horario y cupos</th><th>Profesor asignado</th><th>Acción</th></tr></thead>
+            <thead><tr><th>Facultad y carreras</th><th>Curso</th><th>Horario y cupos</th><th>Profesor asignado</th><th>Acción</th></tr></thead>
             <tbody>
               <tr v-for="curso in cursos" :key="curso.id">
                 <td>
                   <strong>{{ curso.facultadNombre ?? 'Catálogo legado' }}</strong>
                   <small>{{ curso.carreraNombre ?? 'Sin carrera asociada' }}</small>
                 </td>
-                <td><strong>{{ curso.codigo }} · {{ curso.nombre }}</strong><small>{{ curso.codigoPensum }} · {{ curso.semestre }}° semestre · {{ curso.creditos }} créditos</small></td>
+                <td><strong>{{ curso.codigo }} · {{ curso.nombre }}</strong><small>Materia {{ curso.codigoPensum }}</small></td>
                 <td>{{ curso.horario }}<small>{{ curso.cuposDisponibles }} de {{ curso.cuposTotales }} cupos disponibles</small></td>
                 <td>
                   <select v-model.number="seleccionados[curso.id]" :aria-label="`Profesor para ${curso.codigo}`">

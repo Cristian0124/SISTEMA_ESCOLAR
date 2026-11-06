@@ -100,7 +100,6 @@ onMounted(async () => {
     </nav>
 
     <section v-if="vista === 'pensum'" class="curriculum" aria-label="Plan de estudios de mi carrera">
-      <p v-if="carrera && !carrera.prerrequisitosVerificados" role="status">Prerrequisitos pendientes de verificación académica. <RouterLink to="/oferta-academica">Consultar pénsum</RouterLink></p>
       <div v-if="cargandoPensum" class="empty-state" role="status">
         <span class="loader" aria-hidden="true"></span>
         <strong>Consultando prerrequisitos</strong>
@@ -160,9 +159,9 @@ onMounted(async () => {
             <span
               class="subject-status"
               :class="materia.aprobada ? 'status-passed' : materia.bloqueada ? 'status-locked' : 'status-available'"
-            >{{ materia.aprobada ? 'Aprobada' : !materia.prerrequisitosVerificados ? 'Pendiente de validación' : materia.bloqueada ? 'Bloqueada' : 'Disponible' }}</span>
-            <small v-if="materia.bloqueada" class="prerequisite-message">
-              Requisitos pendientes: {{ materia.requisitosPendientes.join(', ') }}
+            >{{ materia.aprobada ? 'Aprobada' : materia.bloqueada ? 'Bloqueada' : 'Disponible' }}</span>
+            <small v-if="materia.prerrequisitos.length" class="prerequisite-message">
+              {{ materia.prerrequisitos.length === 1 ? 'Requisito' : 'Requisitos' }}: {{ materia.prerrequisitos.join(', ') }}
             </small>
           </div>
           <span class="credit-value">{{ materia.creditos }} <small>cr.</small></span>
@@ -173,7 +172,6 @@ onMounted(async () => {
         <span>Prueba con otro término o cambia de semestre.</span>
         <button class="retry-button" type="button" @click="limpiarFiltros">Limpiar filtros</button>
       </div>
-      <p class="source-note">Malla curricular organizada en 10 semestres.</p>
       </div>
     </section>
 
@@ -492,8 +490,6 @@ h1 {
 .prerequisite-message { color: #8a5b20; font-size: 11px; line-height: 1.45; }
 .credit-value { justify-self: end; color: var(--accent); font-size: 13px; font-weight: 700; }
 .credit-value small { color: var(--muted); font-size: 10px; font-weight: 500; }
-.source-note { margin: 12px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
-.source-note a { color: var(--accent); }
 
 .empty-state {
   display: grid;
