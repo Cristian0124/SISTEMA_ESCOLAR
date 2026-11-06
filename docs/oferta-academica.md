@@ -6,7 +6,7 @@ Se habilita únicamente la Facultad de Ingeniería de la Universidad Santiago de
 
 Fuente principal: https://www.usc.edu.co/facultad-de-ingenieria/
 
-Consulta: 28 de octubre de 2026. Cada programa conserva su enlace oficial en `backend/src/data/oferta-usc.json` y en la base de datos. Se transcriben las tablas públicas de asignaturas, semestres y créditos, con un total de 528 asignaturas. Los códigos de cinco dígitos son internos, no códigos oficiales USC. La importación conserva incluso inconsistencias del origen, como la repetición de «Algoritmos y Programación I» en Sistemas presencial. No se deducen equivalencias por nombre.
+Consulta: 28 de octubre de 2026. Los enlaces oficiales y las asignaturas consultadas están registrados en la migración `backend/src/database/migrations/007_facultades_carreras.sql` y en la base de datos. Se transcriben las tablas públicas de asignaturas, semestres y créditos, con un total de 528 asignaturas. Los códigos de cinco dígitos son internos, no códigos oficiales USC. Se conservan inconsistencias del origen, como la repetición de «Algoritmos y Programación I» en Sistemas presencial. No se deducen equivalencias por nombre.
 
 | Programa | Asignaturas | Créditos sumados de las tablas |
 | --- | ---: | ---: |
@@ -55,7 +55,7 @@ npm.cmd test
 
 Las pruebas usan esquemas temporales separados del esquema de la aplicación. Cubren el registro obligatorio, carrera inexistente, persistencia en la sesión, catálogo y avance por carrera, créditos, rechazo de matrícula cruzada y pendiente de validación, y compatibilidad de notas/prerrequisitos del plan anterior.
 
-Para repetir la consulta de fuentes se puede ejecutar `python scripts/import-usc.py` y luego `python scripts/generate-academic-migration.py`. Estos comandos generan archivos para revisión; no sincronizan cambios con una base ya migrada. Una actualización posterior requiere otra migración y revisión de versiones de pénsum.
+La migración contiene el catálogo aplicado a la base de datos. Una actualización posterior requiere revisar las fuentes oficiales, preparar otra migración y verificar las versiones de pénsum; no se sincroniza automáticamente con el sitio de USC.
 
 ## API
 
