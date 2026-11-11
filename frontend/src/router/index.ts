@@ -6,10 +6,8 @@ import { rutasInicio } from './rutas/inicio.routes'
 import { rutasAutenticacion } from './rutas/autenticacion.routes'
 import { rutasAcademico } from './rutas/academico.routes'
 import { rutasMatriculas } from './rutas/matriculas.routes'
-import { rutasPerfil } from './rutas/perfil.routes'
 import { rutasCalificaciones } from './rutas/calificaciones.routes'
 import { rutasHorarios } from './rutas/horarios.routes'
-import { rutasSoporte } from './rutas/soporte.routes'
 
 export function createAppRouter(history: RouterHistory = createWebHistory()) {
   const router = createRouter({
@@ -18,13 +16,14 @@ export function createAppRouter(history: RouterHistory = createWebHistory()) {
       { path: '/login', component: () => import('../views/autenticacion/LoginView.vue') },
       { path: '/', meta: { roles: ['estudiante', 'admin'] }, component: () => import('../layouts/PrincipalLayout.vue'), children: [
         ...rutasInicio,
+        { path: '/admin/simulacion', meta: { roles: ['admin'] }, component: () => import('@/views/administracion/SimulacionView.vue') },
+        { path: '/admin/periodos', meta: { roles: ['admin'] }, component: () => import('@/views/administracion/PeriodoView.vue') },
+        { path: '/admin/monitoreo', meta: { roles: ['admin'] }, component: () => import('@/views/administracion/MonitoreoView.vue') },
         ...rutasAutenticacion,
         ...rutasAcademico,
         ...rutasMatriculas,
-        ...rutasPerfil,
         ...rutasCalificaciones,
         ...rutasHorarios,
-        ...rutasSoporte,
       ] },
       { path: '/:pathMatch(.*)*', name: 'not-found', component: () => import('../views/PaginaNoEncontradaView.vue') },
     ],

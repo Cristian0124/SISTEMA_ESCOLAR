@@ -3,13 +3,12 @@ import authRoutes from "./auth.routes";
 import cursosRoutes from "./cursos.routes";
 import matriculasRoutes from "./matriculas.routes";
 import creditosRoutes from "./creditos.routes";
-import soporteRoutes from "./soporte.routes";
 
 import academicoRoutes from "./academico.routes";
-import perfilRoutes from './perfil.routes';
 
+import masivaRoutes from "./masiva.routes";
 const router = Router();
-router.use('/perfil',perfilRoutes);
+router.use("/masiva", masivaRoutes);
 router.use("/academico", academicoRoutes);
 
 router.get("/salud", (_req, res) => res.status(200).json({ ok: true }));
@@ -21,6 +20,5 @@ router.use("/auth", authRoutes);
 router.use("/cursos", cursosRoutes);
 router.use("/matriculas", matriculasRoutes);
 router.use("/creditos", creditosRoutes);
-router.use("/soporte", soporteRoutes);
 
 export default router;

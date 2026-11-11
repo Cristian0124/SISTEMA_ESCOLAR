@@ -1,17 +1,6 @@
 import { Router } from "express";
-import {
-  listarSolicitudes,
-  obtenerMisCreditos,
-  revisarSolicitud,
-  solicitarCreditosAdicionales
-} from "../controllers/creditos.controller";
+import { obtenerMisCreditos } from "../controllers/creditos.controller";
 import { autenticar, autorizar } from "../middlewares/auth.middleware";
-
 const router = Router();
-router.use(autenticar);
-router.get("/mios", autorizar("estudiante"), obtenerMisCreditos);
-router.post("/solicitudes", autorizar("estudiante"), solicitarCreditosAdicionales);
-router.get("/solicitudes", autorizar("admin"), listarSolicitudes);
-router.patch("/solicitudes/:id", autorizar("admin"), revisarSolicitud);
-
+router.get("/mios",autenticar,autorizar("estudiante"),obtenerMisCreditos);
 export default router;

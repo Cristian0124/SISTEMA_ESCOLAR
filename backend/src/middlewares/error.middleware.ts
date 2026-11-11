@@ -25,7 +25,7 @@ export const manejarError: ErrorRequestHandler = (error: unknown, req, res, _nex
     res.status(413).json({codigo:'ARCHIVO_GRANDE',mensaje:'La información enviada supera el tamaño permitido'});
     return;
   }
-  const referencia = randomUUID();
+  const referencia = (res.locals.correlacion as string | undefined) ?? randomUUID();
   // No registrar tokens, contraseñas, cuerpos, SQL ni mensajes del driver.
   console.error(JSON.stringify({evento:'error_http',referencia,metodo:req.method,ruta:req.route?.path ?? req.path,
     tipo:detalle.name ?? 'Error',codigo:detalle.code ?? 'DESCONOCIDO'}));

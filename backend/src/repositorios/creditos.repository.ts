@@ -25,9 +25,15 @@ export interface SolicitudCreditos {
 
 export type SolicitudCreditosEstudiante = Pick<SolicitudCreditos, "id" | "periodo" | "creditos" | "motivo" | "estado" | "solicitadoEn" | "revisadoEn">;
 
+// Usa la fecha de PostgreSQL para formar el periodo. Enero a junio usan -1 y julio a diciembre, -2.
 const periodoActual = `to_char(CURRENT_DATE, 'YYYY') || CASE WHEN EXTRACT(MONTH FROM CURRENT_DATE) <= 6 THEN '-1' ELSE '-2' END`;
 
 export async function obtenerResumenCreditos(usuarioId: number): Promise<ResumenCreditos> {
+  // WITH divide el resumen del estudiante $1 en cuatro cálculos de una fila:
+  // nivel toma el mayor semestre con una materia aprobada, suma uno y lo limita al último del plan.
+  // base suma los créditos de ese semestre. usados suma las matrículas activas del periodo.
+  // extras suma solo las solicitudes aprobadas del periodo. CROSS JOIN reúne los totales.
+  // TypeScript calcula los disponibles como base más extras menos usados, con mínimo cero.
   const resultado = await pool.query<{
     creditosPrograma: number;
     semestre: number;
@@ -75,61 +81,3 @@ export async function obtenerResumenCreditos(usuarioId: number): Promise<Resumen
   };
 }
 
-export async function crearSolicitudCreditos(usuarioId: number, creditos: number, motivo: string): Promise<void> {
-  await pool.query(
-    `INSERT INTO solicitudes_creditos (usuario_id, periodo, creditos, motivo)
-     VALUES ($1, ${periodoActual}, $2, $3)`,
-    [usuarioId, creditos, motivo]
-  );
-}
-
-export async function tieneSolicitudPendiente(usuarioId: number): Promise<boolean> {
-  const resultado = await pool.query(
-    "SELECT 1 FROM solicitudes_creditos WHERE usuario_id = $1 AND periodo = " + periodoActual + " AND estado = 'Pendiente' LIMIT 1",
-    [usuarioId]
-  );
-  return resultado.rowCount !== 0;
-}
-
-export async function obtenerUltimaSolicitudCreditos(usuarioId: number): Promise<SolicitudCreditosEstudiante | null> {
-  const resultado = await pool.query<SolicitudCreditosEstudiante>(
-    `SELECT id, periodo, creditos, motivo, estado,
-            solicitado_en AS "solicitadoEn", revisado_en AS "revisadoEn"
-     FROM solicitudes_creditos
-     WHERE usuario_id = $1
-     ORDER BY solicitado_en DESC, id DESC
-     LIMIT 1`,
-    [usuarioId]
-  );
-  return resultado.rows[0] ?? null;
-}
-
-export async function listarSolicitudesCreditos(): Promise<SolicitudCreditos[]> {
-  const resultado = await pool.query<SolicitudCreditos>(
-    `SELECT solicitud.id, solicitud.usuario_id AS "usuarioId",
-            usuario.nombre AS "nombreEstudiante", usuario.cedula,
-            solicitud.periodo, solicitud.creditos, solicitud.motivo,
-            solicitud.estado, solicitud.solicitado_en AS "solicitadoEn",
-            solicitud.revisado_en AS "revisadoEn"
-     FROM solicitudes_creditos AS solicitud
-     JOIN usuarios AS usuario ON usuario.id = solicitud.usuario_id
-     ORDER BY CASE solicitud.estado WHEN 'Pendiente' THEN 0 ELSE 1 END,
-              solicitud.solicitado_en DESC, solicitud.id DESC`
-  );
-  return resultado.rows;
-}
-
-export async function revisarSolicitudCreditos(
-  solicitudId: number,
-  estado: "Aprobada" | "Rechazada",
-  administradorId: number
-): Promise<boolean> {
-  const resultado = await pool.query(
-    `UPDATE solicitudes_creditos
-     SET estado = $2, revisado_por = $3, revisado_en = NOW()
-     WHERE id = $1 AND estado = 'Pendiente'
-     RETURNING id`,
-    [solicitudId, estado, administradorId]
-  );
-  return resultado.rowCount !== 0;
-}

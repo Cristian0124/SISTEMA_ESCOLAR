@@ -29,6 +29,10 @@ export interface CalificacionMateriaMatriculada {
 }
 
 export async function listarAvanceEstudiante(usuarioId: number): Promise<AvanceMateria[]> {
+  // Parte de plan_del_estudiante($1) y obtiene el nombre de cada materia.
+  // Los LEFT JOIN conservan materias sin nota o sin requisitos. ARRAY_AGG reúne los
+  // códigos de prerrequisitos por materia y COALESCE devuelve [] si no hay ninguno.
+  // La nota se lee como texto y luego se convierte a número, conservando null.
   const resultado = await pool.query<Omit<AvanceMateria, "nota"> & { nota: string | null }>(
     `SELECT
        materia.codigo,
@@ -61,6 +65,7 @@ export async function listarAvanceEstudiante(usuarioId: number): Promise<AvanceM
 
 export async function listarCodigosAprobados(usuarioId: number): Promise<string[]> {
   const resultado = await pool.query<{ codigo_materia: string }>(
+    // Devuelve los códigos de las materias aprobadas por el estudiante $1 con nota de 3.0 o más.
     "SELECT codigo_materia FROM calificaciones WHERE usuario_id = $1 AND nota >= 3.0",
     [usuarioId]
   );
@@ -69,6 +74,7 @@ export async function listarCodigosAprobados(usuarioId: number): Promise<string[
 
 export async function materiaExiste(codigo: string, usuarioId?: number): Promise<boolean> {
   const resultado = await pool.query(
+    // Comprueba si existe el código $1. Si recibe $2, también exige que figure en el pensum del estudiante.
     `SELECT 1 FROM materias WHERE codigo = $1 ${usuarioId ? "AND materia_del_programa(codigo, $2)" : ""} LIMIT 1`,
     usuarioId ? [codigo, usuarioId] : [codigo]
   );
@@ -82,6 +88,9 @@ export async function guardarCalificacion(
   nota: number,
   registradaPor: number
 ): Promise<void> {
+  // Guarda los tres cortes ($3 a $5), la nota final ($6) y quién la registró ($7).
+  // ON CONFLICT usa la pareja estudiante–materia ($1, $2). EXCLUDED contiene
+  // los valores nuevos con los que se actualiza la fila si ya existía.
   await pool.query(
     `INSERT INTO calificaciones (
        usuario_id, codigo_materia, corte_1, corte_2, corte_3, nota, registrada_por
@@ -101,6 +110,9 @@ export async function guardarCalificacion(
 export async function listarCalificacionesMateriasMatriculadas(
   usuarioId: number
 ): Promise<CalificacionMateriaMatriculada[]> {
+  // Cruza las matrículas activas del periodo de $1 con sus cursos, materias y pensum.
+  // LEFT JOIN trae las notas por estudiante y materia cuando existen. Los valores
+  // decimales se convierten de texto a número en TypeScript, preservando los null.
   const resultado = await pool.query<{
     matriculaId: number;
     cursoCodigo: string;

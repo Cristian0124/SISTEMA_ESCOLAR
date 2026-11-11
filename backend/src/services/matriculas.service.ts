@@ -1,3 +1,4 @@
+import type { ContextoSolicitud } from "../repositorios/solicitudes.repository";
 import { HttpError } from "../types/http-error";
 import { buscarUsuarioPorId } from "../repositorios/auth.repository";
 import { buscarCursoPorId, listarCursos } from "../repositorios/cursos.repository";
@@ -33,7 +34,8 @@ export async function listarEstudiantesDeCursoProfesor(profesorId: number, curso
 
 export async function crearMatricula(
   usuarioId: number,
-  cursoId: number
+  cursoId: number,
+  contexto?: ContextoSolicitud
 ) {
   await validarEstudiante(usuarioId);
 
@@ -47,7 +49,7 @@ export async function crearMatricula(
     );
   }
 
-  return repositorio.crearMatricula(usuarioId, curso);
+  return repositorio.crearMatricula(usuarioId, curso, contexto);
 }
 
 export async function listarMisMatriculas(usuarioId: number) {

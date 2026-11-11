@@ -91,9 +91,9 @@ describe('layout y navegación por rol', () => {
   })
 
   it.each([
-    ['estudiante', '/home', '/perfil', 'Matrícula individual', 'Registrar usuarios'],
+    ['estudiante', '/home', '/matricula', 'Matrícula masiva', 'Registrar usuarios'],
     ['admin', '/admin/home', '/oferta-academica', 'Registrar usuarios', 'Hoja de vida'],
-    ['profesor', '/profesor/home', '/profesor/soporte', 'Horario docente', 'Registrar usuarios'],
+    ['profesor', '/profesor/home', '/profesor/horario', 'Horario docente', 'Registrar usuarios'],
   ] as const)('conserva el menú de %s al cambiar de pantalla', async (rol, inicio, destino, visible, oculto) => {
     const { router, vista } = await abrir(rol, inicio)
     const encabezado = vista.get('header.topbar').element
@@ -121,15 +121,15 @@ describe('layout y navegación por rol', () => {
     expect(vista.get('aside').classes()).toContain('is-open')
     await vista.get('.menu-search input').setValue('ningunresultado')
     expect(vista.get('aside').text()).toContain('No hay procesos coincidentes.')
-    await vista.get('.menu-search input').setValue('datos personales')
-    await vista.get('aside a[href="/perfil"]').trigger('click')
+    await vista.get('.menu-search input').setValue('matrícula')
+    await vista.get('aside a[href="/matricula"]').trigger('click')
     await flushPromises()
     expect(vista.get('.menu-toggle').attributes('aria-expanded')).toBe('false')
     expect(vista.get('.menu-search input').element).toHaveProperty('value', '')
   })
 
   it('mantiene el login fuera del layout y redirige rutas privadas sin sesión', async () => {
-    const { router, vista } = await abrir(null, '/perfil')
+    const { router, vista } = await abrir(null, '/matricula')
     expect(router.currentRoute.value.path).toBe('/login')
     expect(vista.find('.app-shell').exists()).toBe(false)
     expect(vista.find('.login-page').exists()).toBe(true)
@@ -148,7 +148,7 @@ describe('layout y navegación por rol', () => {
   })
 
   it('cierra sesión desde cualquier pantalla y elimina el layout', async () => {
-    const { router, auth, vista } = await abrir('estudiante', '/perfil')
+    const { router, auth, vista } = await abrir('estudiante', '/matricula')
     await vista.get('.logout').trigger('click')
     await flushPromises()
     expect(auth.usuario).toBeNull()

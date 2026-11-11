@@ -1,53 +1,37 @@
-# Sistema Escolar
+# SIS 2.0
 
-Sistema de gestión académica con acceso para estudiantes, profesores y administradores.
-Incluye matrícula, oferta académica, calificaciones, horarios, perfiles y soporte.
+Sistema de matrícula con solicitudes persistentes, procesamiento asíncrono, reservas atómicas y monitoreo.
 
-## Estructura
+La API y el worker usan PostgreSQL como cola duradera y almacén de reservas. Redis queda como una extensión opcional. El worker embebido se inicia con el backend durante el desarrollo.
 
-| Carpeta | Contenido |
-| --- | --- |
-| `backend/` | API Express, PostgreSQL y migraciones |
-| `frontend/` | Interfaz Vue, TypeScript y Pinia |
-| `docs/` | Guías de desarrollo, estructura y oferta académica |
-| `herramientas/` | Configuración y dependencias de ESLint y Prettier |
+## Ejecución
 
-## Requisitos e instalación
+1. Ejecuta npm.cmd install y npm.cmd run install:all desde la raíz de SIS.
+2. Configura backend/.env y frontend/.env a partir de sus ejemplos. Usa una base exclusiva como sistema_escolar_v2.
+3. Desde backend ejecuta npm.cmd run db:migrate y npm.cmd run db:check.
+4. Crea un administrador desde backend con npm.cmd run control-admin.
+5. Desde la raíz de SIS ejecuta npm.cmd run dev.
 
-Necesitas Node.js 22 LTS, npm y una conexión a PostgreSQL.
+La configuración de ejemplo usa la interfaz en http://localhost:5174 y la API en http://localhost:3001/api.
 
-```powershell
-npm.cmd install
-npm.cmd run install:all
-```
+En el panel administrativo abre Apertura de matrícula, establece las fechas y habilita el periodo. Crea cursos con horarios y cupos desde Administración académica. Monitoreo en vivo muestra la actividad de la cola.
 
-Configura `backend/.env` y `frontend/.env` a partir de sus archivos `.env.example`.
-La [guía de desarrollo](docs/desarrollo.md) detalla las variables de entorno y la
-comprobación del esquema antes de iniciar.
+El estudiante entra a Matrícula masiva, envía solicitudes y consulta sus estados. La matrícula y el horario se actualizan al confirmar el trabajo.
 
-## Comandos principales
+## Comprobación
 
-Desde la raíz:
+npm.cmd run build compila ambos proyectos.
+npm.cmd test ejecuta las pruebas del backend y de la interfaz.
+npm.cmd run test:carga compila el backend y ejecuta el escenario de carga sobre un esquema temporal.
 
-| Comando | Acción |
-| --- | --- |
-| `npm.cmd run dev` | Iniciar backend y frontend |
-| `npm.cmd run dev:backend` | Iniciar solo el backend |
-| `npm.cmd run dev:frontend` | Iniciar solo el frontend |
-| `npm.cmd run tools:install` | Instalar las herramientas opcionales de desarrollo |
-| `npm.cmd run lint` | Analizar el código tras instalar las herramientas |
-| `npm.cmd run format:check` | Revisar el formato tras instalar las herramientas |
+Para un worker separado configura WORKER_EMBEBIDO=false en backend/.env, inicia la API y ejecuta npm.cmd run worker desde backend. En producción se puede usar npm.cmd run worker:prod después del build.
 
-El backend escucha en `http://localhost:3000` y Vite anuncia la dirección de la
-interfaz, normalmente `http://localhost:5173`. El arranque no aplica migraciones
-ni crea usuarios; las operaciones de base de datos son explícitas.
+Consulta docs/arquitectura.md, docs/base-de-datos.md y docs/pruebas-de-rendimiento.md para estudiar la implementación y los resultados.
 
-## Documentación
+## Demostración visual
 
-- [Guía visual para explicar y modificar el proyecto](docs/guia-defensa.md)
-- [Desarrollo local y verificaciones](docs/desarrollo.md)
-- [Organización y convenciones](docs/estructura.md)
-- [Migraciones de base de datos](backend/src/database/README.md)
-- [Oferta académica y prerrequisitos](docs/oferta-academica.md)
-- [API y administración del backend](backend/README.md)
-- [Interfaz y contrato de autenticación](frontend/README.md)
+Entra como administrador y abre Demostración visual o /admin/simulacion. Elige estudiantes y cupos y pulsa Iniciar demostración. El servidor ejecuta el escenario real de carga en un esquema temporal y publica muestras del avance.
+
+El modo exposición añade pausas de 40 ms para observar reservas y procesamiento. Desactívalo para medir la prueba sin esas pausas. Los tiempos incluyen la configuración elegida. El panel permite descargar el resultado y explica cada comprobación.
+
+El proceso requiere permisos para crear esquemas y mantiene una sola demostración activa por base de datos. La API conserva el estado de la última demostración en memoria mientras siga ejecutándose.

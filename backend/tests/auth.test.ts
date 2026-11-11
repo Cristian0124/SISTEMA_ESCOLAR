@@ -1,3 +1,5 @@
+import { guardarPeriodo } from "../src/repositorios/periodos.repository";
+import { procesarSiguiente } from "../src/colas/matriculas.worker";
 import { crearBaseAislada } from './database.fixture';
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
@@ -175,6 +177,8 @@ test("registro y autenticación", async (contexto) => {
     assert.equal(cuerpo.codigo, "CREDENCIALES_INVALIDAS");
   });
 
+  await guardarPeriodo(new Date(Date.now()-60000).toISOString(),new Date(Date.now()+3600000).toISOString(),true);
+
   await contexto.test("el profesor asignado solo ve sus matriculados y puede calificarlos", async () => {
     const tokenProfesor = `Bearer ${tokenPara(profesorId, "profesor")}`;
     const matricula = await fetch(`${baseUrl}/api/matriculas`, {
@@ -182,7 +186,8 @@ test("registro y autenticación", async (contexto) => {
       headers: { authorization: `Bearer ${tokenPara(estudianteId, "estudiante")}`, "content-type": "application/json" },
       body: JSON.stringify({ cursoId: cursoProfesorId })
     });
-    assert.equal(matricula.status, 201);
+    assert.equal(matricula.status, 202);
+    await procesarSiguiente();
 
     const cursosRespuesta = await fetch(`${baseUrl}/api/matriculas/docente/cursos`, {
       headers: { authorization: tokenProfesor }
@@ -230,9 +235,13 @@ test("registro y autenticación", async (contexto) => {
     });
     const cuerpo = await respuesta.json() as { codigo: string; mensaje: string };
 
-    assert.equal(respuesta.status, 409);
-    assert.equal(cuerpo.codigo, "PRERREQUISITOS_PENDIENTES");
-    assert.match(cuerpo.mensaje, /09001/);
+    assert.equal(respuesta.status, 202);
+    const solicitudId = (cuerpo as unknown as { id:string }).id;
+    await procesarSiguiente();
+    const estado = (await pool.query("SELECT estado,codigo_error,motivo FROM solicitudes_matricula WHERE id=$1",[solicitudId])).rows[0];
+    assert.equal(estado.estado, "rechazada");
+    assert.equal(estado.codigo_error, "PRERREQUISITOS_PENDIENTES");
+    assert.match(estado.motivo, /09001/);
   });
 
   await contexto.test("desbloquea Cálculo I cuando se aprueba 09001 con 3.0", async () => {

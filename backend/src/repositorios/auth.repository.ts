@@ -31,6 +31,7 @@ export interface NuevoEstudiante {
   carreraCodigo?: string | null;
 }
 
+// Columnas compartidas por las búsquedas y el alta. AS adapta el nombre de carrera al objeto TypeScript.
 const columnasUsuario = `
   id, nombre, correo, password_hash, rol, activo,
   cedula, fecha_nacimiento, fecha_ingreso, nacionalidad, genero, carrera_codigo AS "carreraCodigo"
@@ -39,6 +40,8 @@ const columnasUsuario = `
 export async function buscarUsuarioPorCorreo(
   correo: string
 ): Promise<UsuarioAuth | null> {
+  // Compara el correo sin espacios en los extremos y en minúsculas.
+  // $1 recibe el correo con la misma normalización desde TypeScript.
   const consulta = `
     SELECT ${columnasUsuario}
     FROM usuarios
@@ -56,6 +59,7 @@ export async function buscarUsuarioPorCorreo(
 
 export async function buscarUsuarioPorId(id: number): Promise<UsuarioAuth | null> {
   const resultado = await pool.query<UsuarioAuth>(
+    // Busca por la clave primaria $1. rows[0] es el usuario y, si falta, se devuelve null.
     `SELECT ${columnasUsuario} FROM usuarios WHERE id = $1 LIMIT 1`,
     [id]
   );
@@ -65,6 +69,7 @@ export async function buscarUsuarioPorId(id: number): Promise<UsuarioAuth | null
 
 export async function listarProfesoresActivos(): Promise<ProfesorDisponible[]> {
   const resultado = await pool.query<ProfesorDisponible>(
+    // Filtra cuentas activas con rol de profesor y devuelve los datos para seleccionar un docente.
     `SELECT id, nombre, correo
      FROM usuarios
      WHERE rol = 'profesor' AND activo = TRUE
@@ -101,6 +106,9 @@ async function insertarUsuario(
   rol: RolUsuario
 ): Promise<UsuarioAuth | null> {
   try {
+    // Las tres altas comparten este INSERT. Los parámetros siguen el orden de VALUES.
+    // $2 es el correo normalizado, $3 es el hash y $4 el rol. $10 guarda carrera solo para estudiantes.
+    // RETURNING recupera la fila creada. El error 23505 indica que se violó una restricción de unicidad.
     const resultado = await pool.query<UsuarioAuth>(
       `INSERT INTO usuarios (
         nombre, correo, password_hash, rol, activo, cedula,

@@ -1,3 +1,5 @@
+import { useCursosStore } from "./cursos.store"
+import { useMatriculasStore } from "./matriculas.store"
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import * as autenticacionApi from '@/api/autenticacion.api'
@@ -37,6 +39,7 @@ export const useAutenticacionStore = defineStore('auth', () => {
 
   // Al recargar la página el token en memoria se pierde: se recupera con la cookie
   function establecerSesion(sesion: LoginResponse) {
+    if (usuario.value?.id !== sesion.usuario.id) { useCursosStore().limpiar(); useMatriculasStore().limpiar() }
     accessToken.value = sesion.accessToken
     usuario.value = sesion.usuario
     sesionRestaurada.value = true
@@ -62,6 +65,8 @@ export const useAutenticacionStore = defineStore('auth', () => {
   }
 
   function limpiarSesion() {
+    useCursosStore().limpiar()
+    useMatriculasStore().limpiar()
     accessToken.value = null
     usuario.value = null
     sesionRestaurada.value = true

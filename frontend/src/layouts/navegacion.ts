@@ -7,15 +7,9 @@ export interface Acceso {
 export interface GrupoMenu { titulo: string; opciones: Acceso[] }
 
 export const gruposEstudiante: GrupoMenu[] = [
-  { titulo: 'Proceso de administración', opciones: [
-    { titulo: 'Actualización de datos personales', icono: '▤', ruta: '/perfil' },
-  ] },
-  { titulo: 'Proceso de novedades académicas', opciones: [
-    { titulo: 'Adición de créditos', icono: '◉', ruta: '/adicion-creditos' },
-  ] },
   { titulo: 'Proceso de matrícula académica', opciones: [
     { titulo: 'Mi pénsum', icono: '▦', ruta: '/catalog' },
-    { titulo: 'Matrícula individual', icono: '▤', ruta: '/matricula' },
+    { titulo: 'Matrícula masiva', icono: '▤', ruta: '/matricula' },
   ] },
   { titulo: 'Consultas académicas', opciones: [
     { titulo: 'Notas registradas', icono: '✓', ruta: '/notas-registradas' },
@@ -24,6 +18,9 @@ export const gruposEstudiante: GrupoMenu[] = [
 ]
 
 export const modulosAdmin: Acceso[] = [
+  { titulo:'Demostración visual', descripcion:'Observa una prueba real de estudiantes compitiendo por cupos.', icono:'▶', ruta:'/admin/simulacion' },
+  { titulo:'Apertura de matrícula', descripcion:'Programa el periodo y su apertura o cierre.', icono:'◷', ruta:'/admin/periodos' },
+  { titulo:'Monitoreo en vivo', descripcion:'Supervisa la cola, reservas, resultados y rendimiento.', icono:'▥', ruta:'/admin/monitoreo' },
   { titulo: 'Facultades y carreras', descripcion: 'Consulta las carreras y sus planes de estudio.', icono: '▦', ruta: '/oferta-academica' },
   {
     titulo: 'Registrar usuarios',
@@ -36,18 +33,6 @@ export const modulosAdmin: Acceso[] = [
     descripcion: 'Crea grupos desde los pensums por facultad y carrera y asígnalos a profesores activos.',
     icono: '✓',
     ruta: '/admin/academico',
-  },
-  {
-    titulo: 'Solicitudes de créditos',
-    descripcion: 'Revisa y decide las solicitudes de créditos adicionales enviadas por estudiantes.',
-    icono: '+',
-    ruta: '/admin/solicitudes-creditos',
-  },
-  {
-    titulo: 'Soporte docente',
-    descripcion: 'Lee y responde las consultas enviadas por los profesores.',
-    icono: '?',
-    ruta: '/admin/soporte-docente',
   },
   {
     titulo: 'Matrículas',
@@ -69,11 +54,5 @@ export const accesosProfesor: Acceso[] = [
     descripcion: 'Consulta el horario de tus cursos asignados.',
     icono: '▤',
     ruta: '/profesor/horario',
-  },
-  {
-    titulo: 'Soporte administrativo',
-    descripcion: 'Envía consultas a los administradores y revisa sus respuestas.',
-    icono: '▧',
-    ruta: '/profesor/soporte',
   },
 ]

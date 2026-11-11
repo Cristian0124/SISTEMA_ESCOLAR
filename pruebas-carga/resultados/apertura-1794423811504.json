@@ -1,0 +1,48 @@
+{
+  "fecha": "2026-11-11T19:03:31.503Z",
+  "aceptadas": 2000,
+  "noAceptadas": 0,
+  "pausaDemostracionMs": 40,
+  "estudiantes": 2000,
+  "concurrenciaSolicitada": 2000,
+  "conexionesMaximas": 128,
+  "cupos": 100,
+  "entorno": {
+    "node": "v24.21.0",
+    "plataforma": "win32",
+    "workers": 4,
+    "pool": 10,
+    "alcance": "HTTP matrícula con JWT de prueba, mismo equipo para generador, API y workers"
+  },
+  "envioMs": 6190,
+  "totalMs": 31426,
+  "solicitudesPorSegundo": 323,
+  "latenciaHttpMs": {
+    "p50": 3108,
+    "p95": 5684,
+    "p99": 5859
+  },
+  "tiempoTotalP95Ms": 24192,
+  "estados": [
+    {
+      "estado": "rechazada",
+      "cantidad": 1900
+    },
+    {
+      "estado": "confirmada",
+      "cantidad": 100
+    }
+  ],
+  "motivosRechazo": [
+    {
+      "codigo_error": "SIN_CUPOS",
+      "cantidad": 1900
+    }
+  ],
+  "matriculas": 100,
+  "duplicadas": 0,
+  "idempotente": true,
+  "errores": {},
+  "erroresTransporte": {},
+  "correcto": true
+}

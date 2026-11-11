@@ -14,10 +14,12 @@ async function ejecutar() {
   try {
     await cliente.query('SELECT pg_advisory_lock(hashtext(current_database()), hashtext(current_schema()))');
     const pendientes = await migracionesPendientes(cliente);
+    await cliente.query('CREATE TABLE IF NOT EXISTS sis_migraciones (archivo TEXT PRIMARY KEY, aplicada_en TIMESTAMPTZ NOT NULL DEFAULT NOW())');
     for (const migracion of migraciones.filter(m => pendientes.includes(m.archivo))) {
       const sql = await readFile(path.resolve(__dirname, '../database/migrations', migracion.archivo), 'utf8');
       await cliente.query('BEGIN');
       await cliente.query(sql);
+      await cliente.query('INSERT INTO sis_migraciones(archivo) VALUES($1) ON CONFLICT DO NOTHING', [migracion.archivo]);
       await cliente.query('COMMIT');
       console.log(`Aplicada: ${migracion.archivo}`);
     }

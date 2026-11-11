@@ -29,6 +29,21 @@ export function listarTodasLasMatriculas() {
   return consultarMatriculas('/matriculas/admin/todas')
 }
 
-export async function crearMatricula(cursoId: number): Promise<void> {
-  await api.post('/matriculas', { cursoId })
+export interface SolicitudMatricula {
+  id: string
+  curso_id: number
+  curso_codigo: string
+  materia: string
+  estado: 'en_espera' | 'procesando' | 'confirmada' | 'rechazada'
+  motivo: string | null
+  matricula_id: number | null
+  creada_en: string
+}
+export async function crearMatricula(cursoId: number, clave: string = crypto.randomUUID()) {
+  return (await api.post<Pick<SolicitudMatricula,'id' | 'estado' | 'curso_id' | 'motivo' | 'matricula_id'>>(
+    '/matriculas', { cursoId }, { headers: { 'Idempotency-Key':clave } }
+  )).data
+}
+export async function listarSolicitudes() {
+  return (await api.get<SolicitudMatricula[]>('/matriculas/solicitudes')).data
 }

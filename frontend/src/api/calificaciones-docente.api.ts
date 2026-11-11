@@ -21,7 +21,7 @@ export async function listarEstudiantesDelCurso(cursoId: number): Promise<Estudi
   return data
 }
 
-export async function registrarNota(estudianteId: number, codigoMateria: string, cortes: { corte1: number; corte2: number; corte3: number }): Promise<{ nota: number }> {
-  const { data } = await api.put<{ nota: number }>(`/matriculas/calificaciones/${estudianteId}/${codigoMateria}`, cortes)
+export async function registrarNota(estudianteId: number, codigoMateria: string, nota: number): Promise<{ nota: number }> {
+  const { data } = await api.put<{ nota: number }>(`/matriculas/calificaciones/${estudianteId}/${codigoMateria}`, { nota })
   return data
 }

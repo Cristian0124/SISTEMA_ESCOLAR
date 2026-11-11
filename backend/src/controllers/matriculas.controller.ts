@@ -2,7 +2,6 @@ import type { RequestHandler, Response } from "express";
 import type { UsuarioAutenticado } from "../middlewares/auth.middleware";
 import { HttpError } from "../types/http-error";
 import {
-  crearMatricula as crearMatriculaServicio,
   listarMisMatriculas as listarMisMatriculasServicio,
   listarTodasMatriculasAdministrador as listarTodasMatriculasAdministradorServicio,
   eliminarMatricula as eliminarMatriculaServicio,
@@ -39,37 +38,6 @@ function esIdValido(valor: unknown): valor is number {
     valor <= 2147483647
   );
 }
-
-export const crearMatricula: RequestHandler = async (
-  req,
-  res,
-  next
-) => {
-  try {
-    const usuarioId = obtenerUsuarioId(res);
-    const cursoId: unknown = req.body?.cursoId;
-
-    if (!esIdValido(cursoId)) {
-      throw new HttpError(
-        400,
-        "CURSO_INVALIDO",
-        "Debes enviar un cursoId numérico válido"
-      );
-    }
-
-    const resultado = await crearMatriculaServicio(
-      usuarioId,
-      cursoId
-    );
-
-    // Un reintento de una matrícula existente no crea duplicados.
-    res
-      .status(resultado.creada ? 201 : 200)
-      .json(resultado.matricula);
-  } catch (error) {
-    next(error);
-  }
-};
 
 export const listarMisMatriculas: RequestHandler = async (
   _req,
@@ -120,7 +88,9 @@ export const registrarCalificacion: RequestHandler = async (req, res, next) => {
     const registradaPor = obtenerUsuarioId(res);
     const usuarioId = Number(req.params.usuarioId);
     const codigoMateria = req.params.codigoMateria;
-    const cortes = { corte1: req.body?.corte1, corte2: req.body?.corte2, corte3: req.body?.corte3 };
+    const cortes = req.body?.nota !== undefined
+      ? { corte1:req.body.nota, corte2:req.body.nota, corte3:req.body.nota }
+      : { corte1: req.body?.corte1, corte2: req.body?.corte2, corte3: req.body?.corte3 };
 
     if (!esIdValido(usuarioId) || typeof codigoMateria !== "string" || !/^(?:[A-Z]{3}\d{2}|\d{5})$/.test(codigoMateria)) {
       throw new HttpError(400, "DATOS_INVALIDOS", "El estudiante o el código de materia no es válido");

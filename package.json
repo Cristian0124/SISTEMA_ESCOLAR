@@ -1,6 +1,6 @@
 {
-  "name": "sistema-escolar",
-  "version": "1.0.0",
+  "name": "sistema-escolar-v2",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "concurrently --kill-others \"npm:dev:backend\" \"npm:dev:frontend\"",
@@ -10,7 +10,10 @@
     "tools:install": "npm install --prefix herramientas",
     "lint": "node herramientas/node_modules/eslint/bin/eslint.js --config herramientas/eslint.config.mjs backend/src backend/tests frontend/src frontend/tests frontend/vite.config.ts",
     "format:check": "node herramientas/node_modules/prettier/bin/prettier.cjs . --check",
-    "format": "node herramientas/node_modules/prettier/bin/prettier.cjs . --write"
+    "format": "node herramientas/node_modules/prettier/bin/prettier.cjs . --write",
+    "build": "npm --prefix backend run build && npm --prefix frontend run build",
+    "test": "npm --prefix backend test && npm --prefix frontend test -- --run",
+    "test:carga": "npm --prefix backend run build && node pruebas-carga/apertura-masiva.js"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"
