@@ -35,7 +35,7 @@ const auth = useAutenticacionStore()
           <span class="module-icon" aria-hidden="true">{{ modulo.icono }}</span>
           <strong>{{ modulo.titulo }}</strong>
           <span class="module-description">{{ modulo.descripcion }}</span>
-          <span class="card-action">Abrir</span>
+          <span :class="['card-action', modulo.claseAccion]">Abrir</span>
         </RouterLink>
       </div>
     </section>
@@ -265,6 +265,34 @@ const auth = useAutenticacionStore()
   font-size: 10px;
   font-weight: 400;
   text-decoration: underline;
+}
+
+.card-action--demostracion-visual {
+  align-self: center;
+}
+
+.card-action--apertura-matricula {
+  align-self: center;
+}
+
+.card-action--monitoreo-en-vivo {
+  align-self: center;
+}
+
+.card-action--facultades-carreras {
+  align-self: start;
+}
+
+.card-action--registrar-usuarios {
+  align-self: center;
+}
+
+.card-action--administracion-academica {
+  align-self: center;
+}
+
+.card-action--matriculas {
+  align-self: center;
 }
 
 @media (max-width: 680px) {
