@@ -115,7 +115,7 @@ onMounted(() => void cargar())
 
 <template>
   <main class="assignment-page">
-    <RouterLink class="back-link" to="/admin/home">← Volver al panel administrativo</RouterLink>
+    <RouterLink class="back-link" to="/admin/home">Volver a administración</RouterLink>
     <header class="page-heading">
       <p class="eyebrow">Administración académica</p>
       <h1>Oferta y asignación de cursos</h1>
@@ -220,7 +220,11 @@ onMounted(() => void cargar())
 
 <style scoped>
 .assignment-page { max-width: 1240px; margin: 0 auto; padding: 30px clamp(16px, 4vw, 42px); color: var(--school-ink); }
-.back-link { color: var(--school-blue); font-size: 13px; text-decoration: none; }
+.back-link { color: var(--school-blue);
+  margin-left: 0px;
+  margin-top: 0px;
+  font-size: 13px;
+  text-decoration: none; }
 .page-heading { margin: 22px 0; }
 .eyebrow { margin: 0 0 7px; color: #9466a0; font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 h1 { margin: 0; font-size: clamp(24px, 4vw, 32px); }

@@ -37,7 +37,7 @@ onMounted(cargar)
 
 <template>
   <main class="academic-page">
-    <RouterLink to="/inicio">← Volver al inicio</RouterLink>
+    <RouterLink to="/admin/home">Volver a administración</RouterLink>
     <h1>Facultades, carreras y pénsum</h1>
     <p>Facultad de Ingeniería</p>
     <label>Carrera

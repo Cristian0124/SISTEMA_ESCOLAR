@@ -45,6 +45,7 @@ async function registrar() {
 
 <template>
   <section class="registration-page">
+    <RouterLink to="/admin/home">Volver a administración</RouterLink>
     <header>
       <p class="eyebrow">Administración de usuarios</p>
       <h1>Registrar usuario</h1>
