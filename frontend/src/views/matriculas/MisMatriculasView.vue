@@ -32,7 +32,7 @@ onMounted(() => void cargar())
 <template>
   <main class="academic-page">
     <nav aria-label="Navegación académica">
-      <RouterLink to="/admin/home">Inicio</RouterLink>
+      <RouterLink to="/admin/home">Volver a administración</RouterLink>
     </nav>
     <h1>Matrículas del periodo</h1>
     <p class="intro">Consulta los cursos matriculados por los estudiantes durante el periodo vigente.</p>
