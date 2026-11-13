@@ -15,6 +15,9 @@ const { JWT_ACCESS_SECRET } = require(path.join(backend,"dist/config/env"));
 const { migraciones } = require(path.join(backend,"dist/database/migraciones"));
 const app = require(path.join(backend,"dist/app")).default;
 const { iniciarWorker } = require(path.join(backend,"dist/colas/matriculas.worker"));
+const { Pool } = require(path.join(backend,"node_modules/pg"));
+const { obtenerMetricasProceso } = require(path.join(backend,"dist/monitoreo/metricas"));
+const { registrarPruebaCarga, actualizarPruebaCarga, finalizarPruebaCarga } = require(path.join(backend,"dist/repositorios/telemetria.repository"));
 
 async function main() {
   const cantidad=Number(process.env.CARGA_ESTUDIANTES ?? 1000);
@@ -37,7 +40,13 @@ async function main() {
   if (!Number.isInteger(cantidad) || cantidad<1 || cantidad>10000 || !Number.isInteger(capacidad) || capacidad<1 || capacidad>cantidad) {
     throw new Error("Configura entre 1 y 10000 estudiantes y un cupo positivo menor o igual a la cantidad.");
   }
-  const schema="carga_"+randomUUID().replaceAll("-","");
+  const idPrueba=randomUUID();
+  const schema="carga_"+idPrueba.replaceAll("-","");
+  let monitor;
+  let registrada=false;
+  let resultadoFinal=null;
+  let errorEjecucion=null;
+  let falloTelemetriaReportado=false;
   let servidor, detener;
   let esquemaCreado=false;
   let observador;
@@ -61,12 +70,30 @@ async function main() {
         (SELECT count(*)::integer FROM reservas_cupos WHERE vence_en>clock_timestamp()) AS reservas,
         (SELECT count(*)::integer FROM matriculas) AS matriculas
         FROM solicitudes_matricula`)).rows[0];
-      comunicar({tipo:'progreso',datos:{...datos,fase,enviadas,estudiantes:cantidad,cupos:capacidad,
-        transcurridoMs:Math.round(performance.now()-comienzoPrueba)}});
-    } catch { /* La salida final del proceso comunica los fallos de la ejecución. */ }
+      const instantanea={...datos,fase,enviadas,estudiantes:cantidad,cupos:capacidad,
+        transcurridoMs:Math.round(performance.now()-comienzoPrueba)};
+      comunicar({tipo:'progreso',datos:instantanea});
+      if (registrada) await actualizarPruebaCarga(idPrueba,fase,instantanea,obtenerMetricasProceso(),monitor);
+    } catch {
+      if (!falloTelemetriaReportado) console.error('No se pudo actualizar la telemetría de la prueba.');
+      falloTelemetriaReportado=true;
+    }
     finally { muestreando=false; }
   }
   try {
+    // Esta conexión conserva el esquema principal aunque la carga cambie su search_path.
+    // La demostración visual continúa usando su canal IPC.
+    if (!process.send) {
+      monitor=new Pool({...pool.options,max:1});
+      try {
+        await registrarPruebaCarga({id:idPrueba,estudiantes:cantidad,cupos:capacidad,conexiones,
+          pausaMs:Number(process.env.CARGA_PAUSA_MS??0),pid:process.pid},monitor);
+        registrada=true;
+      } catch (error) {
+        if (error.code==='42P01') throw new Error('Ejecuta npm.cmd --prefix backend run db:migrate antes de iniciar la prueba.');
+        throw error;
+      }
+    }
     await pool.query(`CREATE SCHEMA "${schema}"`);
     esquemaCreado=true;
     comunicar({tipo:"esquema",schema});
@@ -91,7 +118,9 @@ async function main() {
         clock_timestamp()-interval '1 minute',clock_timestamp()+interval '1 hour',true)`
     );
     comunicar({tipo:'preparada'});
-    if (process.send) observador=setInterval(()=>{muestreo=progreso();},250);
+    if (process.send || registrada) observador=setInterval(()=>{
+      if (!muestreando) muestreo=progreso();
+    },500);
     servidor=app.listen({port:0,backlog:4096});
     await once(servidor,"listening");
     const base="http://127.0.0.1:"+servidor.address().port+"/api";
@@ -175,24 +204,47 @@ async function main() {
       latenciaHttpMs:{p50:percentil(.5),p95:percentil(.95),p99:percentil(.99)},
       tiempoTotalP95Ms:Math.round(tiempos.p95??0),estados,motivosRechazo,matriculas:inscritas,duplicadas,idempotente,errores,erroresTransporte,correcto
     };
+    resultadoFinal=resultado;
     const carpeta=path.join(__dirname,"resultados");
     fs.mkdirSync(carpeta,{recursive:true});
     const archivo=path.join(carpeta,"apertura-"+Date.now()+".json");
     fs.writeFileSync(archivo,JSON.stringify(resultado,null,2)+"\n");
+    clearInterval(observador);
+    await muestreo;
     await progreso();
     comunicar({tipo:"resultado",resultado});
     console.log(JSON.stringify({resultado,archivo},null,2));
     if (!correcto) process.exitCode=1;
+  } catch (error) {
+    errorEjecucion=error;
+    throw error;
   } finally {
     clearInterval(observador);
     await muestreo;
-    agente.destroy();
-    if (servidor) await new Promise(resolve=>servidor.close(resolve));
-    if (detener) await detener();
-    // Solo borra el esquema generado por esta ejecución y verificado por su patrón.
-    if (esquemaCreado && /^carga_[a-f0-9]{32}$/.test(schema)) await pool.query(`DROP SCHEMA "${schema}" CASCADE`);
-    await pool.end();
-    if (process.connected) process.disconnect();
+    try {
+      agente.destroy();
+      if (servidor) await new Promise(resolve=>servidor.close(resolve));
+      if (detener) await detener();
+      // Solo borra el esquema generado por esta ejecución y verificado por su patrón.
+      if (esquemaCreado && /^carga_[a-f0-9]{32}$/.test(schema)) await pool.query(`DROP SCHEMA "${schema}" CASCADE`);
+    } catch (error) {
+      errorEjecucion=error;
+      throw error;
+    } finally {
+      try {
+        if (registrada) {
+          const correcto=!errorEjecucion && resultadoFinal?.correcto===true;
+          const mensaje=errorEjecucion ? 'La ejecución se interrumpió. Revisa la terminal.'
+            : correcto ? 'Prueba completada. Los datos temporales fueron retirados.'
+            : 'La prueba terminó con verificaciones fallidas. Revisa el resultado.';
+          await finalizarPruebaCarga(idPrueba,correcto,resultadoFinal,mensaje,monitor);
+        }
+      } finally {
+        if (monitor) await monitor.end();
+        await pool.end();
+        if (process.connected) process.disconnect();
+      }
+    }
   }
 }
 main().catch(error=>{console.error("Prueba fallida",error.cause?.code??error.code??error.message);process.exitCode=1;});

@@ -1,3 +1,5 @@
+//comprueba si la matrícula está abierta
+
 import type { PoolClient } from "pg";
 import { pool } from "../config/database";
 import { HttpError } from "../types/http-error";

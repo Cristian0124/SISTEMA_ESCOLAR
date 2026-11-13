@@ -32,3 +32,9 @@ La restricción UNIQUE de matrícula por estudiante, curso y periodo y los bloqu
 ## Operaciones
 
 Desde backend ejecuta npm.cmd run db:migrate para actualizar y npm.cmd run db:check para comprobar el esquema. Las pruebas funcionales y de carga usan esquemas temporales con identificadores aleatorios y los eliminan al terminar.
+
+## Registro compartido de pruebas de carga
+
+004_telemetria_carga.sql crea telemetria_pruebas_carga. Guarda la configuración, el avance, las métricas del proceso, el resultado y las fechas de cada ejecución por terminal.
+
+telemetria.repository.ts registra y actualiza estas muestras desde una conexión que conserva el esquema principal. Las solicitudes de la prueba siguen en un esquema temporal independiente. La limpieza de ese esquema conserva el registro de telemetría. El monitoreo consulta este registro para presentar el avance entre procesos.

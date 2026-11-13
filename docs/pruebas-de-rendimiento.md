@@ -41,3 +41,11 @@ backend/tests/masiva.test.ts cubre duplicados simultáneos, competencia por cupo
 El modo exposición usa CARGA_PAUSA_MS=40. La ejecución normal usa cero. Los resultados nuevos incluyen pausaDemostracionMs y motivosRechazo. La validación exige que todos los rechazos esperados tengan el código SIN_CUPOS.
 
 La API ejecuta el escenario en un proceso hijo y coordina una única prueba por base mediante un bloqueo de sesión. Al terminar se elimina el esquema temporal. El JSON de la última ejecución puede descargarse desde la vista. Las pruebas de interfaz y de integración cubren permisos, muestras, verificaciones e independencia de los datos habituales.
+
+## Seguimiento desde Monitoreo en vivo
+
+Las ejecuciones por terminal publican muestras en telemetria_pruebas_carga. El panel administrativo las consulta cada dos segundos y conserva el resultado final después de la limpieza. Se muestran las últimas cinco ejecuciones iniciadas durante las últimas 24 horas.
+
+Las métricas del proceso de carga incluyen solicitudes HTTP, errores 5xx, tiempo HTTP promedio, memoria y conexiones de su pool. Los contadores de la API que sirve el panel aparecen en su propia sección. La demostración visual mantiene su canal de seguimiento específico.
+
+Si se interrumpe una ejecución y deja de enviar muestras durante veinte segundos, aparece un aviso de falta de actualización.

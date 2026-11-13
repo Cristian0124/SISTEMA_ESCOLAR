@@ -35,3 +35,23 @@ Entra como administrador y abre Demostración visual o /admin/simulacion. Elige 
 El modo exposición añade pausas de 40 ms para observar reservas y procesamiento. Desactívalo para medir la prueba sin esas pausas. Los tiempos incluyen la configuración elegida. El panel permite descargar el resultado y explica cada comprobación.
 
 El proceso requiere permisos para crear esquemas y mantiene una sola demostración activa por base de datos. La API conserva el estado de la última demostración en memoria mientras siga ejecutándose.
+
+## Diagramas de base de datos
+
+1. **Conexión de los archivos de base de datos.** Explica cómo se conectan los repositorios, las reservas, la configuración y PostgreSQL. [Ver diagrama 1](docs/diagrama-base-de-datos.md).
+
+   ![Diagrama 1. Conexión de los archivos de base de datos](docs/imagenes/01-conexion-archivos-bd.png)
+2. **Creación y actualización de la base de datos.** Explica cómo se comprueban y ejecutan las migraciones SQL. [Ver diagrama 2](docs/diagrama-migraciones.md).
+
+   ![Diagrama 2. Creación y actualización de la base de datos](docs/imagenes/02-migraciones-bd.png)
+3. **Control de cupos durante la matrícula masiva.** Explica cómo los bloqueos, las reservas y las transacciones protegen los cupos y permiten recuperarse de fallos. [Ver diagrama 3](docs/diagrama-control-de-cupos.md).
+
+   ![Diagrama 3. Control de cupos durante la matrícula masiva](docs/imagenes/03-control-cupos.png)
+
+## Monitorear una prueba de carga por terminal
+
+Después de aplicar las migraciones, inicia la aplicación con npm.cmd run dev. Entra como administrador y abre Monitoreo en vivo. En una segunda terminal, desde la raíz de SIS, configura $env:CARGA_ESTUDIANTES='2000' y ejecuta npm.cmd run test:carga.
+
+La sección Pruebas de carga desde la terminal muestra el avance, las confirmaciones, los rechazos y las métricas del proceso que ejecuta la prueba. Se actualiza cada dos segundos y permite consultar las últimas cinco ejecuciones de las últimas 24 horas. El resultado permanece después de retirar el esquema temporal.
+
+La migración 004_telemetria_carga.sql crea el registro compartido en PostgreSQL. Si el proceso deja de publicar muestras durante veinte segundos, el panel avisa que se revise la terminal.

@@ -1,6 +1,7 @@
 import type { RequestHandler } from "express";
 import { performance } from "node:perf_hooks";
 import { pool } from "../config/database";
+import { listarPruebasCarga } from "../repositorios/telemetria.repository";
 
 let solicitudesHttp = 0;
 let erroresHttp = 0;
@@ -14,6 +15,11 @@ export const medirHttp: RequestHandler = (_req,res,next) => {
   });
   next();
 };
+export function obtenerMetricasProceso() {
+  return { pid:process.pid, solicitudesHttp, erroresHttp, promedioHttpMs:solicitudesHttp ? duracionHttpMs/solicitudesHttp:0,
+    memoriaMb:Math.round(process.memoryUsage().rss/1024/1024), activoSegundos:Math.floor(process.uptime()),
+    conexionesBD:pool.totalCount, conexionesLibresBD:pool.idleCount, conexionesEnEsperaBD:pool.waitingCount };
+}
 export async function consultarMetricas() {
   const resultado = await pool.query(
     `SELECT count(*) FILTER(WHERE estado='en_espera')::integer AS pendientes,
@@ -27,7 +33,5 @@ export async function consultarMetricas() {
      FROM solicitudes_matricula WHERE creada_en>=CURRENT_DATE`
   );
   return { ...resultado.rows[0], actualizadoEn:new Date().toISOString(),
-    proceso: { pid:process.pid, solicitudesHttp, erroresHttp, promedioHttpMs:solicitudesHttp ? duracionHttpMs/solicitudesHttp:0,
-      memoriaMb:Math.round(process.memoryUsage().rss/1024/1024), activoSegundos:Math.floor(process.uptime()),
-      conexionesBD:pool.totalCount, conexionesLibresBD:pool.idleCount, conexionesEnEsperaBD:pool.waitingCount } };
+    proceso:obtenerMetricasProceso(), pruebasCarga:await listarPruebasCarga() };
 }

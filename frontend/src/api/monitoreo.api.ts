@@ -8,6 +8,7 @@ export interface PeriodoMatricula {
   abierto: boolean
 }
 export interface MetricasMatricula {
+  pruebasCarga: PruebaCargaTelemetria[]
   pendientes: number
   procesando: number
   confirmadas: number
@@ -36,4 +37,34 @@ export async function guardarPeriodo(datos: Pick<PeriodoMatricula,'apertura' | '
 }
 export async function consultarMetricas() {
   return (await api.get<MetricasMatricula>('/masiva/monitoreo')).data
+}
+
+export interface PruebaCargaTelemetria {
+  id: string
+  estado: 'preparando' | 'ejecutando' | 'verificando' | 'completada' | 'fallida'
+  estudiantes: number
+  cupos: number
+  conexiones: number
+  pausaMs: number
+  pid: number
+  progreso: Partial<{
+    pendientes:number; procesando:number; confirmadas:number; rechazadas:number
+    reservas:number; matriculas:number; recibidas:number; enviadas:number; transcurridoMs:number
+  }>
+  proceso: MetricasMatricula['proceso'] | null
+  resultado: {
+    correcto:boolean
+    totalMs:number
+    duplicadas:number
+    idempotente:boolean
+    estados:{estado:string;cantidad:number}[]
+    latenciaHttpMs:{p50:number;p95:number;p99:number}
+    errores:Record<string,number>
+    erroresTransporte:Record<string,number>
+  } | null
+  mensaje: string | null
+  iniciadaEn: string
+  actualizadaEn: string
+  terminadaEn: string | null
+  sinActualizacion: boolean
 }

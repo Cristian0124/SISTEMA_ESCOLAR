@@ -31,9 +31,13 @@ export async function migracionesPendientes(cliente: Pick<PoolClient, 'query'> =
   if (registro.rows[0].presente) {
     const aplicadas = new Set((await cliente.query<{ archivo:string }>('SELECT archivo FROM sis_migraciones')).rows.map(m=>m.archivo));
     if (aplicadas.has('003_matricula_masiva.sql') && !nuevas.rows[0].presente) throw new Error('El esquema de matrícula masiva está incompleto.');
+    if (aplicadas.has('004_telemetria_carga.sql')) {
+      const telemetria = await cliente.query<{presente:boolean}>("SELECT to_regclass('telemetria_pruebas_carga') IS NOT NULL AS presente");
+      if (!telemetria.rows[0].presente) throw new Error('El esquema de telemetría está incompleto.');
+    }
     return migraciones.filter(m=>!aplicadas.has(m.archivo)).map(m=>m.archivo);
   }
-  return [...(rows[0].cargado ? [] : [catalogo.archivo]), '003_matricula_masiva.sql'];
+  return [...(rows[0].cargado ? [] : [catalogo.archivo]), '003_matricula_masiva.sql', '004_telemetria_carga.sql'];
 }
 
 export async function verificarEsquema(): Promise<void> {
